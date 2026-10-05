@@ -13,6 +13,10 @@ erDiagram
     RUN ||--|{ TOOL_REPORT : "produce"
     RUN ||--o{ HISTORY_ROW : "agrega en"
     TOOL_REPORT ||--o{ FINDING : "contiene"
+    RUN ||--|{ CONTROL_RESULT : "evalúa"
+    CONTROL ||--o{ CONTROL_RESULT : "resultado por host"
+    CONTROL ||--o{ ASSERTION : "espera en la evidencia"
+    CONTROL_RESULT }o--o{ EVIDENCE : "enlaza"
     CONTROL ||--o{ CONTROL_REF : "mapea a"
     CONTROL ||--o{ FINDING : "clasifica"
     EXCEPTION }o--|{ CONTROL : "exime"
@@ -77,7 +81,7 @@ erDiagram
     }
     TOOL_REPORT {
         string run_id FK
-        string tool "lynis | openscap | docker-bench | trivy | ansible-check"
+        string tool "lynis | openscap | docker-bench | trivy | lab-probe | ansible-check"
         string tool_version
         string scope "host o lab"
         float native_score
@@ -95,6 +99,21 @@ erDiagram
         string severity
         string exception_id FK "nullable"
         datetime observed_at
+    }
+    CONTROL_RESULT {
+        string run_id FK
+        string host FK
+        string control_id FK
+        string status "el más grave entre fuentes"
+        string severity
+        string exception_id FK "nullable"
+        string sources "tool:check_id decisivos"
+    }
+    ASSERTION {
+        string control_id FK
+        string probe "sshd_effective, firewall..."
+        string pattern "regex multilínea"
+        string expect "present | absent"
     }
     EVIDENCE {
         string ref PK "evidence/lab-web/HL-SSH-001.txt"
@@ -137,7 +156,8 @@ reports/
   runs/<run_id>/
     run.json                              # RUN
     raw/<tool>/<host>.<ext>               # salida nativa sin tocar (report.dat, ARF .xml, .json)
-    findings/<tool>.json                  # TOOL_REPORT + FINDING normalizados
+    findings/<tool>.json                  # TOOL_REPORT + FINDING normalizados (JSON compacto)
+    controls.json                         # CONTROL_RESULT: estado de cada control del catálogo por host
     evidence/<host>/<control_id>.txt      # EVIDENCE (sondas: sshd -T, nft list ruleset, stat…)
     summary.csv                           # una fila por FINDING
     drift.json                            # DRIFT_REPORT (solo en fases drift/scheduled)
@@ -145,6 +165,10 @@ reports/
   baseline.json                           # BASELINE: run endurecido aprobado como referencia
   site/                                   # informe HTML generado (no se versiona; se publica en Pages)
 ```
+
+**Qué se versiona.** Todo lo derivado (run, findings, controls, summary, evidencia, drift) y las salidas crudas pequeñas
+(Lynis, docker-bench JSON, hechos, versiones, Compose efectivo). El XML de OpenSCAP (~700 KB por host), el JSON de Trivy
+y el del modo check no se versionan: su **SHA-256 queda en `findings/<tool>.json`** y CI los conserva como artefacto.
 
 ## 3. Entidades, campos y restricciones
 
@@ -174,7 +198,8 @@ reports/
 | `method` | enum | `examine` \| `test` | Métodos de evaluación de NIST SP 800-53A [#43]. |
 | `applies_to` | list[role] | ≥ 1 | Ej. fail2ban solo en `bastion`. |
 | `remediation` | objeto | `{role, tags[]}` | Rol Ansible y tag que lo corrige; permite `--tags HL-SSH-001`. |
-| `refs[]` | list | `framework` + `ref_id` | `cis_ubuntu2404_v1: 5.1.20`, `ssg: sshd_disable_root_login`, `lynis: SSH-7408`, `cis_docker_v1_6: 5.3`, `trivy: DS-0002`… [#3, #14, #22, #18]. |
+| `refs[]` | list | `framework` + `ref_id` (+ `match` regex opcional) | `cis_ubuntu2404_v1: 5.1.20` toma toda regla SSG que cite ese ID; `lynis: SSH-7408` con `match: PermitRootLogin` filtra por detalle; `docker_bench: 5.4`; `trivy: DS-0002` o `HLC-007` (checks propios en Rego) [#3, #14, #22, #56]. |
+| `assertions[]` | list | `{probe, pattern, expect}` | Expectativa sobre la salida de una sonda (`sshd -T`, `nft list ruleset`…), evaluada en la ingesta como hallazgo `lab-probe` [#43]. |
 
 ### 3.3 Excepciones — `controls/exceptions.yml`
 
@@ -208,7 +233,7 @@ reports/
 
 | Entidad | Campo | Tipo | Restricción | Regla / fuente |
 |---|---|---|---|---|
-| TOOL_REPORT | `tool` | enum | `lynis` \| `openscap` \| `docker-bench` \| `trivy` \| `ansible-check` | |
+| TOOL_REPORT | `tool` | enum | `lynis` \| `openscap` \| `docker-bench` \| `trivy` \| `lab-probe` \| `ansible-check` | `lab-probe` agrupa las pruebas de flujos de red (método *test*) y las aserciones sobre evidencia (método *examine*). |
 | TOOL_REPORT | `native_score` / `native_score_max` | number | Lynis 0–100 [#14]; OpenSCAP 0–100; docker-bench sin máximo fijo (+1 PASS / −1 WARN) [#23]; Trivy sin puntaje nativo (null) | Se reporta **tal cual**, sin mezclar escalas. |
 | TOOL_REPORT | `raw_ref` | objeto | `{path, sha256}` | La salida nativa queda intacta como evidencia [#43]. |
 | FINDING | `finding_id` | string | `sha256(run_id\|tool\|host\|check_id\|item)` | Determinista: reingerir el mismo run da el mismo resultado. |
@@ -227,7 +252,9 @@ reports/
 run_id,observed_at,phase,host,tool,check_id,control_id,status,severity,exception_id,evidence_ref
 ```
 
-**`reports/history.csv`** — una fila por (run, host, herramienta); solo se agregan filas y la clave (`run_id`, `host`, `tool`) es única:
+**`reports/runs/<run_id>/controls.json`** — CONTROL_RESULT: por host y control, el estado agregado (gana el más grave entre fuentes), la excepción aplicada, las fuentes decisivas y la evidencia con su SHA-256.
+
+**`reports/history.csv`** — una fila por (run, host, herramienta) más una fila `tool = catalog` con el resumen de los controles del host; solo se agregan filas y la clave (`run_id`, `host`, `tool`) es única:
 
 ```text
 schema_version,run_id,finished_at,phase,git_sha,host,role,tool,tool_version,native_score,pass,fail,exception,notapplicable,notchecked,info,error,critical_fail,high_fail,medium_fail,low_fail,strict_compliance,compliance_with_exceptions
@@ -257,7 +284,7 @@ schema_version,run_id,finished_at,phase,git_sha,host,role,tool,tool_version,nati
 | `info` | `informational` | — | `INFO` | — | — |
 | `error` | `error`, `unknown` | — | — | — | tarea `failed` / `unreachable` |
 
-`notselected` (regla fuera del perfil) se descarta y no cuenta.
+`notselected` (regla fuera del perfil) se descarta y no cuenta. Los hallazgos de `ansible-check` se guardan y se grafican, pero **no deciden el estado de un control**: el estado lo fijan los auditores independientes y el modo check se reporta aparte como tareas con cambios pendientes (regla R6).
 
 ### 4.2 Severidad (`severity`)
 
@@ -275,7 +302,7 @@ Si el hallazgo tiene `control_id`, **manda la severidad del catálogo**.
 
 | # | Regla | Fuente |
 |---|---|---|
-| R1 | Una excepción solo cubre un hallazgo si está `active`, hoy ≤ `review_by` y el host está en su `scope`. Si venció, el hallazgo vuelve a `fail` y el informe lo destaca. | CM-6(c) [#42], SP 800-128 [#44] |
+| R1 | Una excepción solo cubre un hallazgo en `fail` o `error` (regla que no puede evaluarse en el contenedor) si está `active`, hoy ≤ `review_by` y el host está en su `scope`. Si venció, el hallazgo vuelve a `fail` y el informe lo destaca. | CM-6(c) [#42], SP 800-128 [#44] |
 | R2 | Toda excepción tiene justificación y al menos un control compensatorio (salvo `not_applicable_container`). | SP 800-128 [#44] |
 | R3 | Todo hallazgo conserva la referencia a su evidencia (salida nativa o sonda) con SHA-256; el informe enlaza la evidencia de cada control. | SP 800-53A [#43] |
 | R4 | Un run es de solo escritura: no se modifica después de cerrarse. Reingerir la salida cruda reproduce exactamente los mismos `finding_id`. | Reproducibilidad |
