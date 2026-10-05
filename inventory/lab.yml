@@ -1,0 +1,42 @@
+---
+# Inventario del laboratorio: es a la vez el inventario de Ansible y el registro de activos (hosts, roles, versiones).
+# Todos los datos son ficticios. Las IP coinciden con lab/compose*.yaml (lo verifica tests/test_inventory.py).
+all:
+  vars:
+    lab_name: hardening-lab
+    lab_os: {name: ubuntu, version: "24.04", image: "ubuntu:noble-20260917"}
+    lab_image_digest: "sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55"
+  children:
+    bastion:
+      hosts:
+        lab-bastion:
+          lab_role: bastion
+          lab_exposure: edge
+          lab_criticality: alta
+          lab_owner_role: "Equipo de plataforma (ficticio)"
+          lab_ip: {baseline: 10.213.0.11, edge: 10.213.10.11, admin: 10.213.20.11}
+          lab_services:
+            - {name: sshd, package: openssh-server, version: "1:9.6p1-3ubuntu13.19", port: 22, run_as: root}
+            - {name: fail2ban, package: fail2ban, version: "1.0.2-3ubuntu0.1", port: null, run_as: root}
+    web:
+      hosts:
+        lab-web:
+          lab_role: web
+          lab_exposure: internal
+          lab_criticality: media
+          lab_owner_role: "Equipo de aplicaciones (ficticio)"
+          lab_ip: {baseline: 10.213.0.12, edge: 10.213.10.12, admin: 10.213.20.12, data: 10.213.30.12}
+          lab_services:
+            - {name: sshd, package: openssh-server, version: "1:9.6p1-3ubuntu13.19", port: 22, run_as: root}
+            - {name: nginx, package: nginx, version: "1.24.0-2ubuntu7.18", port: 8080, run_as: www-data}
+    db:
+      hosts:
+        lab-db:
+          lab_role: db
+          lab_exposure: internal
+          lab_criticality: alta
+          lab_owner_role: "Equipo de datos (ficticio)"
+          lab_ip: {baseline: 10.213.0.13, admin: 10.213.20.13, data: 10.213.30.13}
+          lab_services:
+            - {name: sshd, package: openssh-server, version: "1:9.6p1-3ubuntu13.19", port: 22, run_as: root}
+            - {name: postgresql, package: postgresql-16, version: "16", port: 5432, run_as: postgres}
