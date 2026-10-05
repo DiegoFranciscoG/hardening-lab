@@ -1,0 +1,7 @@
+# host: lab-bastion
+# probe: listening_ports
+# command: ss -tlnp
+# exit_code: 0
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess                      
+LISTEN 0      128          0.0.0.0:22         0.0.0.0:*    users:(("sshd",pid=14,fd=3))
+LISTEN 0      4096      127.0.0.11:46127      0.0.0.0:*                                

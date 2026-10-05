@@ -1,0 +1,329 @@
+{
+  "dockerbenchsecurity": "1.6.0",
+  "start": 1791169390,
+  "tests": [
+    {
+      "id": "4",
+      "desc": "Container Images and Build File",
+      "results": [
+        {
+          "id": "4.1",
+          "desc": "Ensure that a user for the container has been created (Automated)",
+          "result": "WARN",
+          "details": "running as root:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion","lab-web","lab-db"
+          ],
+          "remediation": "You should ensure that the Dockerfile for each container image contains the information: USER <username or ID>. If there is no specific user created in the container base image, then make use of the useradd command to add a specific user before the USER instruction in the Dockerfile.",
+          "remediation-impact": "Running as a non-root user can present challenges where you wish to bind mount volumes from the underlying host. In this case, care should be taken to ensure that the user running the contained process can read and write to the bound directory, according to their requirements."
+        },
+        {
+          "id": "4.2",
+          "desc": "Ensure that containers use only trusted base images (Manual)",
+          "result": "NOTE",
+          "remediation": "Configure and use Docker Content trust. View the history of each Docker image to evaluate its risk, dependent on the sensitivity of the application you wish to deploy using it. Scan Docker images for vulnerabilities at regular intervals.",
+          "remediation-impact": "None."
+        },
+        {
+          "id": "4.3",
+          "desc": "Ensure that unnecessary packages are not installed in the container (Manual)",
+          "result": "NOTE",
+          "remediation": "You should not install anything within the container that is not required. You should consider using a minimal base image if you can. Some of the options available include BusyBox and Alpine. Not only can this trim your image size considerably, but there would also be fewer pieces of software which could contain vectors for attack.",
+          "remediation-impact": "None."
+        },
+        {
+          "id": "4.4",
+          "desc": "Ensure images are scanned and rebuilt to include security patches (Manual)",
+          "result": "NOTE",
+          "remediation": "Images should be re-built ensuring that the latest version of the base images are used, to keep the operating system patch level at an appropriate level. Once the images have been re-built, containers should be re-started making use of the updated images.",
+          "remediation-impact": "None."
+        },
+        {
+          "id": "4.5",
+          "desc": "Ensure Content trust for Docker is Enabled (Automated)",
+          "result": "WARN",
+          "remediation": "Add DOCKER_CONTENT_TRUST variable to the /etc/environment file using command echo DOCKER_CONTENT_TRUST=1 | sudo tee -a /etc/environment.",
+          "remediation-impact": "This prevents users from working with tagged images unless they contain a signature."
+        },
+        {
+          "id": "4.6",
+          "desc": "Ensure that HEALTHCHECK instructions have been added to container images (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "4.7",
+          "desc": "Ensure update instructions are not used alone in the Dockerfile (Manual)",
+          "result": "PASS"
+        },
+        {
+          "id": "4.8",
+          "desc": "Ensure setuid and setgid permissions are removed (Manual)",
+          "result": "NOTE",
+          "remediation": "You should allow setuid and setgid permissions only on executables which require them. You could remove these permissions at build time by adding the following command in your Dockerfile, preferably towards the end of the Dockerfile: RUN find / -perm /6000 -type f -exec chmod a-s {} ; || true",
+          "remediation-impact": "The above command would break all executables that depend on setuid or setgid permissions including legitimate ones. You should therefore be careful to modify the command to suit your requirements so that it does not reduce the permissions of legitimate programs excessively. Because of this, you should exercise a degree of caution and examine all processes carefully before making this type of modification in order to avoid outages."
+        },
+        {
+          "id": "4.9",
+          "desc": "Ensure that COPY is used instead of ADD in Dockerfiles (Manual)",
+          "result": "PASS"
+        },
+        {
+          "id": "4.10",
+          "desc": "Ensure secrets are not stored in Dockerfiles (Manual)",
+          "result": "NOTE",
+          "remediation": "Do not store any kind of secrets within Dockerfiles. Where secrets are required during the build process, make use of a secrets management tool, such as the buildkit builder included with Docker.",
+          "remediation-impact": "A proper secrets management process will be required for Docker image building."
+        },
+        {
+          "id": "4.11",
+          "desc": "Ensure only verified packages are installed (Manual)",
+          "result": "NOTE",
+          "remediation": "You should use a secure package distribution mechanism of your choice to ensure the authenticity of software packages.",
+          "remediation-impact": "None."
+        },
+        {
+          "id": "4.12",
+          "desc": "Ensure all signed artifacts are validated (Manual)",
+          "result": "NOTE",
+          "remediation": "Validate artifacts signatures before uploading to the package registry.",
+          "remediation-impact": "None."
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "desc": "Container Runtime",
+      "results": [
+        {
+          "id": "5.1",
+          "desc": "Ensure swarm mode is not Enabled, if not needed (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.2",
+          "desc": "Ensure that, if applicable, an AppArmor Profile is enabled (Automated)",
+          "result": "WARN",
+          "details": "Containers with no AppArmorProfile:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion","lab-web","lab-db"
+          ],
+          "remediation": "If AppArmor is applicable for your Linux OS, you should enable it. Alternatively, Docker's default AppArmor policy can be used.",
+          "remediation-impact": "The container will have the security controls defined in the AppArmor profile. It should be noted that if the AppArmor profile is misconfigured, this may cause issues with the operation of the container."
+        },
+        {
+          "id": "5.3",
+          "desc": "Ensure that, if applicable, SELinux security options are set (Automated)",
+          "result": "WARN",
+          "details": "Containers with no SecurityOptions:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion","lab-web","lab-db"
+          ],
+          "remediation": "Set the SELinux State. Set the SELinux Policy. Create or import a SELinux policy template for Docker containers. Start Docker in daemon mode with SELinux enabled. Start your Docker container using the security options.",
+          "remediation-impact": "Any restrictions defined in the SELinux policy will be applied to your containers. It should be noted that if your SELinux policy is misconfigured, this may have an impact on the correct operation of the affected containers."
+        },
+        {
+          "id": "5.4",
+          "desc": "Ensure that Linux kernel capabilities are restricted within containers (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.5",
+          "desc": "Ensure that privileged containers are not used (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.6",
+          "desc": "Ensure sensitive host system directories are not mounted on containers (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.7",
+          "desc": "Ensure sshd is not run within containers (Automated)",
+          "result": "WARN",
+          "details": "Containers with sshd/docker exec failures:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion","lab-web","lab-db"
+          ],
+          "remediation": "Uninstall the SSH daemon from the container and use docker exec to enter a container on the remote host.",
+          "remediation-impact": "None."
+        },
+        {
+          "id": "5.8",
+          "desc": "Ensure privileged ports are not mapped within containers (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.9",
+          "desc": "Ensure that only needed ports are open on the container (Manual)",
+          "result": "WARN",
+          "details": "Containers with open ports:  lab-bastion:2222 lab-web:2223 lab-web:18080 lab-db:2224 lab-db:15432",
+          "items": [
+            "lab-bastion:2222","lab-web:2223","lab-web:18080","lab-db:2224","lab-db:15432"
+          ],
+          "remediation": "You should ensure that the Dockerfile for each container image only exposes needed ports.",
+          "remediation-impact": "None."
+        },
+        {
+          "id": "5.10",
+          "desc": "Ensure that the host's network namespace is not shared (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.11",
+          "desc": "Ensure that the memory usage for containers is limited (Automated)",
+          "result": "WARN",
+          "details": "Container running without memory restrictions:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion","lab-web","lab-db"
+          ],
+          "remediation": "You should run the container with only as much memory as it requires by using the --memory argument.",
+          "remediation-impact": "If correct memory limits are not set on each container, one process can expand its usage and cause other containers to run out of resources."
+        },
+        {
+          "id": "5.12",
+          "desc": "Ensure that CPU priority is set appropriately on containers (Automated)",
+          "result": "WARN",
+          "details": "Containers running without CPU restrictions:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion","lab-web","lab-db"
+          ],
+          "remediation": "You should manage the CPU runtime between your containers dependent on their priority within your organization. To do so start the container using the --cpu-shares argument.",
+          "remediation-impact": "If you do not correctly assign CPU thresholds, the container process may run out of resources and become unresponsive. If CPU resources on the host are not constrainted, CPU shares do not place any restrictions on individual resources."
+        },
+        {
+          "id": "5.13",
+          "desc": "Ensure that the container's root filesystem is mounted as read only (Automated)",
+          "result": "WARN",
+          "details": "Containers running with root FS mounted R/W:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion","lab-web","lab-db"
+          ],
+          "remediation": "You should add a --read-only flag at a container's runtime to enforce the container's root filesystem being mounted as read only.",
+          "remediation-impact": "Enabling --read-only at container runtime may break some container OS packages if a data writing strategy is not defined. You should define what the container's data should and should not persist at runtime in order to decide which strategy to use."
+        },
+        {
+          "id": "5.14",
+          "desc": "Ensure that incoming container traffic is bound to a specific host interface (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.15",
+          "desc": "Ensure that the 'on-failure' container restart policy is set to '5' (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.16",
+          "desc": "Ensure that the host's process namespace is not shared (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.17",
+          "desc": "Ensure that the host's IPC namespace is not shared (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.18",
+          "desc": "Ensure that host devices are not directly exposed to containers (Manual)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.19",
+          "desc": "Ensure that the default ulimit is overwritten at runtime if needed (Manual)",
+          "result": "INFO",
+          "details": "Containers with no default ulimit override:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion","lab-web","lab-db"
+          ],
+          "remediation": "You should only override the default ulimit settings if needed in a specific case.",
+          "remediation-impact": "If ulimits are not set correctly, overutilization by individual containers could make the host system unusable."
+        },
+        {
+          "id": "5.20",
+          "desc": "Ensure mount propagation mode is not set to shared (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.21",
+          "desc": "Ensure that the host's UTS namespace is not shared (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.22",
+          "desc": "Ensure the default seccomp profile is not Disabled (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.23",
+          "desc": "Ensure that docker exec commands are not used with the privileged option (Automated)",
+          "result": "NOTE",
+          "remediation": "You should not use the --privileged option in docker exec commands.",
+          "remediation-impact": "If you need enhanced capabilities within a container, then run it with all the permissions it requires. These should be specified individually."
+        },
+        {
+          "id": "5.24",
+          "desc": "Ensure that docker exec commands are not used with the user=root option (Manual)",
+          "result": "NOTE",
+          "remediation": "You should not use the --user=root option in docker exec commands.",
+          "remediation-impact": "None."
+        },
+        {
+          "id": "5.25",
+          "desc": "Ensure that cgroup usage is confirmed (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.26",
+          "desc": "Ensure that the container is restricted from acquiring additional privileges (Automated)",
+          "result": "WARN",
+          "details": "Containers without restricted privileges:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion","lab-web","lab-db"
+          ],
+          "remediation": "You should start your container with the options: docker run --rm -it --security-opt=no-new-privileges ubuntu bash",
+          "remediation-impact": "The no_new_priv option prevents LSMs like SELinux from allowing processes to acquire new privileges."
+        },
+        {
+          "id": "5.27",
+          "desc": "Ensure that container health is checked at runtime (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.28",
+          "desc": "Ensure that Docker commands always make use of the latest version of their image (Manual)",
+          "result": "INFO",
+          "remediation": "You should use proper version pinning mechanisms (the <latest> tag which is assigned by default is still vulnerable to caching attacks) to avoid extracting cached older versions. Version pinning mechanisms should be used for base images, packages, and entire images. You can customize version pinning rules according to your requirements.",
+          "remediation-impact": "None."
+        },
+        {
+          "id": "5.29",
+          "desc": "Ensure that the PIDs cgroup limit is used (Automated)",
+          "result": "WARN",
+          "details": "Containers without PIDs cgroup limit:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion","lab-web","lab-db"
+          ],
+          "remediation": "Use --pids-limit flag with an appropriate value when launching the container.",
+          "remediation-impact": "Set the PIDs limit value as appropriate. Incorrect values might leave containers unusable."
+        },
+        {
+          "id": "5.30",
+          "desc": "Ensure that Docker's default bridge 'docker0' is not used (Manual)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.31",
+          "desc": "Ensure that the host's user namespaces are not shared (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.32",
+          "desc": "Ensure that the Docker socket is not mounted inside any containers (Automated)",
+          "result": "PASS"
+        }
+      ]
+    }
+  ],
+  "checks": 44,
+  "score": 7,
+  "end": 1791169403
+}

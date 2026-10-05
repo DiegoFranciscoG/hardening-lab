@@ -1,0 +1,53 @@
+# host: lab-bastion
+# probe: firewall
+# command: nft list ruleset 2>&1
+# exit_code: 0
+# Warning: table ip nat is managed by iptables-nft, do not touch!
+table ip nat {
+	chain DOCKER_OUTPUT {
+		ip daddr 127.0.0.11 tcp dport 53 counter packets 0 bytes 0 # Warning: XT target DNAT not found
+xt target "DNAT"
+		ip daddr 127.0.0.11 udp dport 53 counter packets 8 bytes 560 # Warning: XT target DNAT not found
+xt target "DNAT"
+	}
+
+	chain OUTPUT {
+		type nat hook output priority dstnat; policy accept;
+		ip daddr 127.0.0.11 counter packets 8 bytes 560 jump DOCKER_OUTPUT
+	}
+
+	chain DOCKER_POSTROUTING {
+		ip saddr 127.0.0.11 tcp sport 46127 counter packets 0 bytes 0 # Warning: XT target SNAT not found
+xt target "SNAT"
+		ip saddr 127.0.0.11 udp sport 38415 counter packets 0 bytes 0 # Warning: XT target SNAT not found
+xt target "SNAT"
+	}
+
+	chain POSTROUTING {
+		type nat hook postrouting priority srcnat; policy accept;
+		ip daddr 127.0.0.11 counter packets 8 bytes 560 jump DOCKER_POSTROUTING
+	}
+}
+table inet filter {
+	chain input {
+		type filter hook input priority filter; policy drop;
+		iif "lo" accept
+		ip saddr 127.0.0.0/8 iif != "lo" drop
+		ip6 saddr ::1 iif != "lo" drop
+		ct state vmap { invalid : drop, established : accept, related : accept }
+		ip protocol icmp icmp type { destination-unreachable, echo-request, time-exceeded } limit rate 10/second burst 5 packets accept
+		ip saddr 10.213.10.0/24 tcp dport 22 ct state new accept comment "SSH desde el controlador y el anfitrion"
+	}
+
+	chain forward {
+		type filter hook forward priority filter; policy drop;
+	}
+
+	chain output {
+		type filter hook output priority filter; policy drop;
+		oif "lo" accept
+		ct state vmap { invalid : drop, established : accept, related : accept }
+		ip protocol icmp icmp type { echo-reply, destination-unreachable, echo-request, time-exceeded } accept
+		ip daddr 10.213.20.0/24 tcp dport 22 ct state new accept comment "Salto SSH hacia los nodos internos"
+	}
+}

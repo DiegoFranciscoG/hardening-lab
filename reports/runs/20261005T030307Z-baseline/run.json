@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "run_id": "20261005T030307Z-baseline",
+  "phase": "baseline",
+  "lab_state": "baseline",
+  "started_at": "2026-10-05T03:03:24Z",
+  "finished_at": "2026-10-05T03:07:17Z",
+  "git_sha": "b67e979636b542df563f8d6f178b4a0f9299ac98",
+  "git_dirty": true,
+  "inventory_sha256": "cf85f9e31905d1a65f478be8a6e11af1602d70fa7892c5cb1b1024371d9d38c8",
+  "hosts": [
+    "lab-bastion",
+    "lab-db",
+    "lab-web"
+  ],
+  "tools": [
+    {
+      "name": "lynis",
+      "version": "3.1.7",
+      "artifact_sha256": null
+    },
+    {
+      "name": "openscap",
+      "version": "1.3.9 (SSG 0.1.82)",
+      "artifact_sha256": null
+    },
+    {
+      "name": "docker-bench",
+      "version": "docker-bench-security (CIS Docker 1.6.0)",
+      "artifact_sha256": null
+    },
+    {
+      "name": "trivy",
+      "version": "0.75.0",
+      "artifact_sha256": null
+    },
+    {
+      "name": "lab-probe",
+      "version": "nc (netcat-openbsd)",
+      "artifact_sha256": null
+    },
+    {
+      "name": "ansible-check",
+      "version": "2.21.4",
+      "artifact_sha256": null
+    },
+    {
+      "name": "ansible-core",
+      "version": "2.21.4",
+      "artifact_sha256": null
+    },
+    {
+      "name": "hardening-lab",
+      "version": "1.0.0",
+      "artifact_sha256": null
+    },
+    {
+      "name": "lynis",
+      "version": "3.1.7",
+      "artifact_sha256": "b5314a07fd85fa3ffc7da57b508f0108ec3280d84e4af823f805d95cbbc2428c"
+    },
+    {
+      "name": "scap-security-guide",
+      "version": "0.1.82",
+      "artifact_sha256": null
+    },
+    {
+      "name": "trivy",
+      "version": "0.75.0",
+      "artifact_sha256": "c6e65abddb348e25f10549df887045629cf28cc72453cd1c63acb717316b3f3f"
+    }
+  ],
+  "benchmarks": [
+    {
+      "name": "CIS Ubuntu Linux 24.04 LTS",
+      "version": "1.0.0",
+      "via": "SCAP Security Guide (perfil cis_level1_server)"
+    },
+    {
+      "name": "CIS Docker",
+      "version": "1.6.0",
+      "via": "docker-bench-security"
+    }
+  ],
+  "status": "completed",
+  "errors": []
+}

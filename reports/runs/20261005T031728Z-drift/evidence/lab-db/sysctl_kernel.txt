@@ -1,0 +1,9 @@
+# host: lab-db
+# probe: sysctl_kernel
+# command: sysctl kernel.randomize_va_space kernel.yama.ptrace_scope fs.suid_dumpable kernel.kptr_restrict kernel.dmesg_restrict 2>&1
+# exit_code: 0
+kernel.randomize_va_space = 2
+kernel.yama.ptrace_scope = 1
+fs.suid_dumpable = 0
+kernel.kptr_restrict = 0
+kernel.dmesg_restrict = 0

@@ -1,0 +1,8 @@
+# host: lab-bastion
+# probe: services
+# command: supervisorctl status
+# exit_code: 3
+cron                             RUNNING   pid 15, uptime 0:01:57
+fail2ban                         STOPPED   Not started
+rsyslog                          STOPPED   Not started
+sshd                             RUNNING   pid 14, uptime 0:01:57

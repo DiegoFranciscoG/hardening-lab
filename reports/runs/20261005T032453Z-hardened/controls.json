@@ -1,0 +1,3809 @@
+{
+  "schema_version": "1.0",
+  "run_id": "20261005T032453Z-hardened",
+  "generated_at": "2026-10-05T03:29:53Z",
+  "results": [
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-001:1",
+        "lynis:SSH-7408",
+        "openscap:sshd_disable_root_login"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sshd_effective.txt",
+          "sha256": "2214b492a0818f1bc853d8eb137f26bbb87a75a8e9e2d8cd80b9178e83cfd6c6",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-002",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-002:1",
+        "lab-probe:assert:HL-SSH-002:2",
+        "lab-probe:assert:HL-SSH-002:3",
+        "lab-probe:assert:HL-SSH-002:4",
+        "openscap:sshd_disable_empty_passwords"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sshd_effective.txt",
+          "sha256": "2214b492a0818f1bc853d8eb137f26bbb87a75a8e9e2d8cd80b9178e83cfd6c6",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-003:1",
+        "lab-probe:assert:HL-SSH-003:2",
+        "lab-probe:assert:HL-SSH-003:3",
+        "openscap:sshd_use_strong_ciphers",
+        "openscap:sshd_use_strong_kex",
+        "openscap:sshd_use_strong_macs"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sshd_effective.txt",
+          "sha256": "2214b492a0818f1bc853d8eb137f26bbb87a75a8e9e2d8cd80b9178e83cfd6c6",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-004:1",
+        "lab-probe:assert:HL-SSH-004:2",
+        "lynis:SSH-7408",
+        "openscap:sshd_set_login_grace_time",
+        "openscap:sshd_set_max_auth_tries",
+        "openscap:sshd_set_max_sessions",
+        "openscap:sshd_set_maxstartups"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sshd_effective.txt",
+          "sha256": "2214b492a0818f1bc853d8eb137f26bbb87a75a8e9e2d8cd80b9178e83cfd6c6",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-005",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-005:1",
+        "lab-probe:assert:HL-SSH-005:2",
+        "lynis:SSH-7408"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sshd_effective.txt",
+          "sha256": "2214b492a0818f1bc853d8eb137f26bbb87a75a8e9e2d8cd80b9178e83cfd6c6",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-006",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-006:1",
+        "lab-probe:assert:HL-SSH-006:2",
+        "lynis:SSH-7408",
+        "openscap:sshd_set_idle_timeout",
+        "openscap:sshd_set_keepalive"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sshd_effective.txt",
+          "sha256": "2214b492a0818f1bc853d8eb137f26bbb87a75a8e9e2d8cd80b9178e83cfd6c6",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-007",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-016",
+      "sources": [
+        "lab-probe:assert:HL-SSH-007:1",
+        "openscap:sshd_set_loglevel_info"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sshd_effective.txt",
+          "sha256": "2214b492a0818f1bc853d8eb137f26bbb87a75a8e9e2d8cd80b9178e83cfd6c6",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-008",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-008:1",
+        "lab-probe:assert:HL-SSH-008:2",
+        "openscap:sshd_enable_warning_banner_net",
+        "openscap:sshd_limit_user_access"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sshd_effective.txt",
+          "sha256": "2214b492a0818f1bc853d8eb137f26bbb87a75a8e9e2d8cd80b9178e83cfd6c6",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-009",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-009:1",
+        "lab-probe:assert:HL-SSH-009:2",
+        "lab-probe:assert:HL-SSH-009:3",
+        "lab-probe:assert:HL-SSH-009:4",
+        "openscap:disable_host_auth",
+        "openscap:sshd_disable_rhosts",
+        "openscap:sshd_do_not_permit_user_env",
+        "openscap:sshd_enable_pam"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sshd_effective.txt",
+          "sha256": "2214b492a0818f1bc853d8eb137f26bbb87a75a8e9e2d8cd80b9178e83cfd6c6",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-010",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-010:1",
+        "openscap:file_groupowner_sshd_config",
+        "openscap:file_groupowner_sshd_drop_in_config",
+        "openscap:file_owner_sshd_config",
+        "openscap:file_owner_sshd_drop_in_config",
+        "openscap:file_permissions_sshd_config",
+        "openscap:file_permissions_sshd_drop_in_config",
+        "openscap:file_permissions_sshd_private_key",
+        "openscap:file_permissions_sshd_pub_key"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sshd_files.txt",
+          "sha256": "cfbab0d66edc0d48b34443e427c2b6b47e7596f6fd2452f3207272b6a5c89cfd",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SSH-011",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-011:1"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/fail2ban.txt",
+          "sha256": "2dbb451a6d3283aa9c6a0af99e4859d2e25aab1237c79e8a7a857b286a64d1f9",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-ACC-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-001:1",
+        "lab-probe:assert:HL-ACC-001:2",
+        "lynis:AUTH-9286",
+        "openscap:account_disable_post_pw_expiration",
+        "openscap:accounts_maximum_age_login_defs",
+        "openscap:accounts_password_set_max_life_existing",
+        "openscap:accounts_password_warn_age_login_defs",
+        "openscap:accounts_set_post_pw_existing"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/accounts.txt",
+          "sha256": "c53def64f55af2873dcd5a78f5db0e77200b73fcc41228e5edd3e83839f7cc1b",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-ACC-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-002:1",
+        "lynis:AUTH-9230",
+        "openscap:set_password_hashing_algorithm_logindefs",
+        "openscap:set_password_hashing_algorithm_systemauth"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/accounts.txt",
+          "sha256": "c53def64f55af2873dcd5a78f5db0e77200b73fcc41228e5edd3e83839f7cc1b",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-ACC-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:no_invalid_shell_accounts_unlocked",
+        "openscap:no_shelllogin_for_systemaccounts"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/accounts.txt",
+          "sha256": "c53def64f55af2873dcd5a78f5db0e77200b73fcc41228e5edd3e83839f7cc1b",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-ACC-004",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_no_uid_except_zero",
+        "openscap:accounts_root_gid_zero",
+        "openscap:accounts_root_path_dirs_no_write",
+        "openscap:groups_no_zero_gid_except_root",
+        "openscap:no_dirs_unowned_by_root",
+        "openscap:root_path_all_dirs",
+        "openscap:root_path_no_dot"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/accounts.txt",
+          "sha256": "c53def64f55af2873dcd5a78f5db0e77200b73fcc41228e5edd3e83839f7cc1b",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-ACC-005",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-005:1",
+        "lynis:AUTH-9328",
+        "openscap:accounts_tmout",
+        "openscap:accounts_umask_etc_bashrc",
+        "openscap:accounts_umask_etc_login_defs",
+        "openscap:accounts_umask_etc_profile",
+        "openscap:accounts_umask_root"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/accounts.txt",
+          "sha256": "c53def64f55af2873dcd5a78f5db0e77200b73fcc41228e5edd3e83839f7cc1b",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-ACC-006",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-006:1"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sudoers.txt",
+          "sha256": "04798af6660433801b6f5faec390ed914ca09ada6856144b9d5030ec8dead9d5",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SUDO-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SUDO-001:1",
+        "lab-probe:assert:HL-SUDO-001:2",
+        "openscap:sudo_add_use_pty",
+        "openscap:sudo_custom_logfile"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sudoers.txt",
+          "sha256": "04798af6660433801b6f5faec390ed914ca09ada6856144b9d5030ec8dead9d5",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SUDO-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:sudo_remove_no_authenticate",
+        "openscap:sudo_require_reauthentication"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sudoers.txt",
+          "sha256": "04798af6660433801b6f5faec390ed914ca09ada6856144b9d5030ec8dead9d5",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SUDO-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:ensure_pam_wheel_group_empty",
+        "openscap:use_pam_wheel_group_for_su"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SUDO-004",
+      "status": "exception",
+      "severity": "high",
+      "exception_id": "EXC-008",
+      "sources": [
+        "lab-probe:assert:HL-SUDO-004:1",
+        "lab-probe:assert:HL-SUDO-004:2"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sudoers.txt",
+          "sha256": "04798af6660433801b6f5faec390ed914ca09ada6856144b9d5030ec8dead9d5",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-PAM-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PAM-001:1",
+        "openscap:accounts_passwords_pam_faillock_deny",
+        "openscap:accounts_passwords_pam_faillock_enabled",
+        "openscap:accounts_passwords_pam_faillock_unlock_time"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/pam_policy.txt",
+          "sha256": "60d3a308a5855592ff95225781efbc9054eadd26ed0c530e1909adf1fd0ec662",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-PAM-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PAM-002:1",
+        "openscap:accounts_password_pam_dcredit",
+        "openscap:accounts_password_pam_dictcheck",
+        "openscap:accounts_password_pam_difok",
+        "openscap:accounts_password_pam_enforce_root",
+        "openscap:accounts_password_pam_enforcing",
+        "openscap:accounts_password_pam_lcredit",
+        "openscap:accounts_password_pam_maxrepeat",
+        "openscap:accounts_password_pam_maxsequence",
+        "openscap:accounts_password_pam_minclass",
+        "openscap:accounts_password_pam_minlen",
+        "openscap:accounts_password_pam_ocredit",
+        "openscap:accounts_password_pam_pwquality_enabled",
+        "openscap:accounts_password_pam_ucredit"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/pam_policy.txt",
+          "sha256": "60d3a308a5855592ff95225781efbc9054eadd26ed0c530e1909adf1fd0ec662",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-PAM-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_password_pam_pwhistory_enabled",
+        "openscap:accounts_password_pam_pwhistory_enforce_root",
+        "openscap:accounts_password_pam_pwhistory_remember",
+        "openscap:accounts_password_pam_pwhistory_use_authtok"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-PAM-004",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_password_pam_unix_authtok",
+        "openscap:accounts_password_pam_unix_no_remember",
+        "openscap:no_empty_passwords_unix"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-PERM-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "openscap:file_groupowner_backup_etc_group",
+        "openscap:file_groupowner_backup_etc_gshadow",
+        "openscap:file_groupowner_backup_etc_passwd",
+        "openscap:file_groupowner_backup_etc_shadow",
+        "openscap:file_groupowner_etc_group",
+        "openscap:file_groupowner_etc_gshadow",
+        "openscap:file_groupowner_etc_passwd",
+        "openscap:file_groupowner_etc_security_opasswd",
+        "openscap:file_groupowner_etc_security_opasswd_old",
+        "openscap:file_groupowner_etc_shadow",
+        "openscap:file_groupowner_etc_shells",
+        "openscap:file_owner_backup_etc_group",
+        "openscap:file_owner_backup_etc_gshadow",
+        "openscap:file_owner_backup_etc_passwd",
+        "openscap:file_owner_backup_etc_shadow",
+        "openscap:file_owner_etc_group",
+        "openscap:file_owner_etc_gshadow",
+        "openscap:file_owner_etc_passwd",
+        "openscap:file_owner_etc_security_opasswd",
+        "openscap:file_owner_etc_security_opasswd_old",
+        "openscap:file_owner_etc_shadow",
+        "openscap:file_owner_etc_shells",
+        "openscap:file_permissions_backup_etc_group",
+        "openscap:file_permissions_backup_etc_gshadow",
+        "openscap:file_permissions_backup_etc_passwd"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/file_permissions.txt",
+          "sha256": "4966558eda6e3e531ac8360be6a1a1e4fa6ce515a49fa7c3afc9952e93eb9e65",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-PERM-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PERM-002:1",
+        "openscap:file_permissions_unauthorized_world_writable",
+        "openscap:file_permissions_ungroupowned",
+        "openscap:no_files_unowned_by_user"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/file_permissions.txt",
+          "sha256": "4966558eda6e3e531ac8360be6a1a1e4fa6ce515a49fa7c3afc9952e93eb9e65",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-PERM-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PERM-003:1",
+        "openscap:file_at_allow_exists",
+        "openscap:file_cron_allow_exists",
+        "openscap:file_cron_deny_not_exist",
+        "openscap:file_groupowner_at_allow",
+        "openscap:file_groupowner_at_deny",
+        "openscap:file_groupowner_cron_allow",
+        "openscap:file_groupowner_cron_d",
+        "openscap:file_groupowner_cron_daily",
+        "openscap:file_groupowner_cron_hourly",
+        "openscap:file_groupowner_cron_monthly",
+        "openscap:file_groupowner_cron_weekly",
+        "openscap:file_groupowner_crontab",
+        "openscap:file_owner_at_allow",
+        "openscap:file_owner_at_deny",
+        "openscap:file_owner_cron_allow",
+        "openscap:file_owner_cron_d",
+        "openscap:file_owner_cron_daily",
+        "openscap:file_owner_cron_hourly",
+        "openscap:file_owner_cron_monthly",
+        "openscap:file_owner_cron_weekly",
+        "openscap:file_owner_crontab",
+        "openscap:file_permissions_at_allow",
+        "openscap:file_permissions_at_deny",
+        "openscap:file_permissions_cron_allow"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/file_permissions.txt",
+          "sha256": "4966558eda6e3e531ac8360be6a1a1e4fa6ce515a49fa7c3afc9952e93eb9e65",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-PERM-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_user_dot_group_ownership",
+        "openscap:accounts_user_dot_user_ownership",
+        "openscap:accounts_user_interactive_home_directory_exists",
+        "openscap:file_groupownership_home_directories",
+        "openscap:file_ownership_home_directories",
+        "openscap:file_permission_user_bash_history",
+        "openscap:file_permission_user_init_files",
+        "openscap:file_permissions_home_directories",
+        "openscap:no_forward_files",
+        "openscap:no_netrc_files"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-PERM-005",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "openscap:banner_etc_issue_cis",
+        "openscap:banner_etc_issue_net_cis",
+        "openscap:banner_etc_motd_cis",
+        "openscap:file_groupowner_etc_issue",
+        "openscap:file_groupowner_etc_issue_net",
+        "openscap:file_groupowner_etc_motd",
+        "openscap:file_owner_etc_issue",
+        "openscap:file_owner_etc_issue_net",
+        "openscap:file_owner_etc_motd",
+        "openscap:file_permissions_etc_issue",
+        "openscap:file_permissions_etc_issue_net",
+        "openscap:file_permissions_etc_motd"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SVC-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SVC-001:1",
+        "lynis:INSE-8300",
+        "openscap:package_ftp_removed",
+        "openscap:package_inetutils-telnet_removed",
+        "openscap:package_nis_removed",
+        "openscap:package_openldap-clients_removed",
+        "openscap:package_rsh_removed",
+        "openscap:package_talk_removed",
+        "openscap:package_telnet_removed",
+        "openscap:package_tnftp_removed"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/packages.txt",
+          "sha256": "04e835e41d3c0e615b221d63cf0a47de8b5fcd5dbf100b34caa16a1c6e0f1e80",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SVC-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:package_autofs_removed",
+        "openscap:package_avahi_removed",
+        "openscap:package_httpd_removed",
+        "openscap:package_nginx_removed",
+        "openscap:package_rsync_removed",
+        "openscap:package_tftp-server_removed",
+        "openscap:package_vsftpd_removed",
+        "openscap:package_ypserv_removed",
+        "openscap:service_httpd_disabled",
+        "openscap:service_nginx_disabled",
+        "openscap:service_rsyncd_disabled",
+        "openscap:service_tftp_disabled",
+        "openscap:service_vsftpd_disabled",
+        "openscap:service_ypserv_disabled"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/listening_ports.txt",
+          "sha256": "4dab893fafbc6dda1d59245ce691f8794fa45416be01a81762ee7b4abd927559",
+          "method": "examine"
+        },
+        {
+          "path": "evidence/lab-bastion/services.txt",
+          "sha256": "4e39d790642359e6776eccd5ecca028ff3780cb502039962473ebe80a2148999",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SVC-003",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "openscap:package_prelink_removed"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SVC-004",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-003",
+      "sources": [
+        "openscap:aide_build_database",
+        "openscap:package_aide_installed"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-SVC-005",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-014",
+      "sources": [
+        "openscap:ntp_single_service_active",
+        "openscap:package_timesyncd_installed",
+        "openscap:service_timesyncd_enabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-KRN-001",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "lynis:NETW-3200",
+        "lynis:STRG-1846",
+        "lynis:USB-1000",
+        "openscap:kernel_module_cramfs_disabled",
+        "openscap:kernel_module_freevxfs_disabled",
+        "openscap:kernel_module_hfs_disabled",
+        "openscap:kernel_module_hfsplus_disabled",
+        "openscap:kernel_module_jffs2_disabled",
+        "openscap:kernel_module_usb-storage_disabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-KRN-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lynis:KRNL-5820",
+        "openscap:disable_users_coredumps",
+        "openscap:sysctl_fs_suid_dumpable",
+        "openscap:sysctl_kernel_randomize_va_space",
+        "openscap:sysctl_kernel_yama_ptrace_scope"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sysctl_kernel.txt",
+          "sha256": "cc9820fa0eaf8ec6a02786eaeba51dfd05797681e455240a69a94bdcd06d0d26",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-KRN-003",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "openscap:mount_option_dev_shm_nodev",
+        "openscap:mount_option_dev_shm_noexec",
+        "openscap:mount_option_dev_shm_nosuid",
+        "openscap:mount_option_tmp_nodev",
+        "openscap:mount_option_tmp_noexec",
+        "openscap:mount_option_tmp_nosuid",
+        "openscap:partition_for_tmp"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-KRN-004",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-002",
+      "sources": [
+        "docker-bench:5.2",
+        "openscap:grub2_enable_apparmor",
+        "openscap:package_apparmor-utils_installed",
+        "openscap:package_apparmor_installed"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-NET-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-NET-001:1",
+        "lab-probe:assert:HL-NET-001:2",
+        "openscap:sysctl_net_ipv4_conf_all_accept_redirects",
+        "openscap:sysctl_net_ipv4_conf_all_secure_redirects",
+        "openscap:sysctl_net_ipv4_conf_all_send_redirects",
+        "openscap:sysctl_net_ipv4_conf_default_accept_redirects",
+        "openscap:sysctl_net_ipv4_conf_default_secure_redirects",
+        "openscap:sysctl_net_ipv4_conf_default_send_redirects",
+        "openscap:sysctl_net_ipv6_conf_all_accept_redirects",
+        "openscap:sysctl_net_ipv6_conf_default_accept_redirects"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sysctl_network.txt",
+          "sha256": "042d344b5d86bd686e93f1dec91f1a0dae4a501c293159a635b58770b868e0ac",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-NET-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-NET-002:1",
+        "lab-probe:assert:HL-NET-002:2",
+        "openscap:sysctl_net_ipv4_conf_all_accept_source_route",
+        "openscap:sysctl_net_ipv4_conf_all_log_martians",
+        "openscap:sysctl_net_ipv4_conf_all_rp_filter",
+        "openscap:sysctl_net_ipv4_conf_default_accept_source_route",
+        "openscap:sysctl_net_ipv4_conf_default_log_martians",
+        "openscap:sysctl_net_ipv4_conf_default_rp_filter",
+        "openscap:sysctl_net_ipv6_conf_all_accept_source_route",
+        "openscap:sysctl_net_ipv6_conf_default_accept_source_route"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sysctl_network.txt",
+          "sha256": "042d344b5d86bd686e93f1dec91f1a0dae4a501c293159a635b58770b868e0ac",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-NET-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-NET-003:1",
+        "lab-probe:assert:HL-NET-003:2",
+        "openscap:sysctl_net_ipv4_icmp_echo_ignore_broadcasts",
+        "openscap:sysctl_net_ipv4_icmp_ignore_bogus_error_responses",
+        "openscap:sysctl_net_ipv4_tcp_syncookies",
+        "openscap:sysctl_net_ipv6_conf_all_accept_ra",
+        "openscap:sysctl_net_ipv6_conf_default_accept_ra"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sysctl_network.txt",
+          "sha256": "042d344b5d86bd686e93f1dec91f1a0dae4a501c293159a635b58770b868e0ac",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-NET-004",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-004",
+      "sources": [
+        "lab-probe:assert:HL-NET-004:1",
+        "openscap:sysctl_net_ipv4_ip_forward"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/sysctl_network.txt",
+          "sha256": "042d344b5d86bd686e93f1dec91f1a0dae4a501c293159a635b58770b868e0ac",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-FW-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-FW-001:1",
+        "openscap:nftables_ensure_default_deny_policy",
+        "openscap:nftables_rules_permanent",
+        "openscap:package_nftables_installed",
+        "openscap:set_nftables_base_chain",
+        "openscap:set_nftables_loopback_traffic",
+        "openscap:set_nftables_table"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/firewall.txt",
+          "sha256": "054d7d0a02ee58907efbc7c3e8de68c8f1127cbd81221debf6d26facdbc56418",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-FW-002",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-013",
+      "sources": [
+        "openscap:firewall_single_service_active",
+        "openscap:service_nftables_enabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-FW-003",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:flow:lab-bastion->lab-db:5432",
+        "trivy:HLC-007",
+        "trivy:HLC-010"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/listening_ports.txt",
+          "sha256": "4dab893fafbc6dda1d59245ce691f8794fa45416be01a81762ee7b4abd927559",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-FW-004",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:flow:lab-bastion->lab-db:22",
+        "lab-probe:flow:lab-bastion->lab-web:22"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-LOG-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-LOG-001:1",
+        "lynis:LOGG-2130",
+        "openscap:package_rsyslog_installed"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/logging.txt",
+          "sha256": "8886ece2e02138df760844b117974e889aae3a1a2bdcdcc8d8331ce6e09df52d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-LOG-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:file_groupowner_var_log_auth",
+        "openscap:file_groupowner_var_log_cloud_init",
+        "openscap:file_groupowner_var_log_journal",
+        "openscap:file_groupowner_var_log_lastlog",
+        "openscap:file_groupowner_var_log_localmessages",
+        "openscap:file_groupowner_var_log_messages",
+        "openscap:file_groupowner_var_log_secure",
+        "openscap:file_groupowner_var_log_syslog",
+        "openscap:file_groupowner_var_log_waagent",
+        "openscap:file_groupowner_var_log_wbtmp",
+        "openscap:file_groupownerships_var_log",
+        "openscap:file_groupownerships_var_log_apt",
+        "openscap:file_groupownerships_var_log_gdm",
+        "openscap:file_groupownerships_var_log_gdm3",
+        "openscap:file_groupownerships_var_log_landscape",
+        "openscap:file_groupownerships_var_log_sssd",
+        "openscap:file_owner_var_log_auth",
+        "openscap:file_owner_var_log_cloud_init",
+        "openscap:file_owner_var_log_journal",
+        "openscap:file_owner_var_log_lastlog",
+        "openscap:file_owner_var_log_localmessages",
+        "openscap:file_owner_var_log_messages",
+        "openscap:file_owner_var_log_secure",
+        "openscap:file_owner_var_log_syslog",
+        "openscap:file_owner_var_log_waagent"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/logging.txt",
+          "sha256": "8886ece2e02138df760844b117974e889aae3a1a2bdcdcc8d8331ce6e09df52d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-LOG-003",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-013",
+      "sources": [
+        "openscap:journald_forward_to_syslog",
+        "openscap:logging_services_active",
+        "openscap:service_rsyslog_enabled",
+        "openscap:service_systemd-journald_enabled",
+        "openscap:socket_systemd-journal-remote_disabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-AUD-001",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-001",
+      "sources": [
+        "lynis:ACCT-9628"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-UPD-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-UPD-001:1"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-bastion/updates.txt",
+          "sha256": "f06fbf94ed9c8867169322af9c62c347fc78cf8dd187e861fe8e8d4a9edc43e8",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.14",
+        "trivy:HLC-001"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-002",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-010",
+      "sources": [
+        "docker-bench:5.4"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-003",
+      "status": "pass",
+      "severity": "critical",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.32",
+        "docker-bench:5.5",
+        "docker-bench:5.6",
+        "trivy:HLC-003",
+        "trivy:HLC-006"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.11",
+        "docker-bench:5.12",
+        "docker-bench:5.29",
+        "trivy:HLC-004"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-005",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.15",
+        "trivy:HLC-005"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-006",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-006",
+      "sources": [
+        "docker-bench:5.26",
+        "trivy:HLC-008"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-007",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-009",
+      "sources": [
+        "docker-bench:5.13",
+        "trivy:HLC-009"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-008",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-005",
+      "sources": [
+        "docker-bench:4.1",
+        "docker-bench:5.7",
+        "trivy:DS-0002"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-009",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-011",
+      "sources": [
+        "docker-bench:5.9",
+        "trivy:DS-0004"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-010",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.30"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-011",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:4.6",
+        "docker-bench:5.27",
+        "trivy:DS-0026"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-012",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.10",
+        "docker-bench:5.16",
+        "docker-bench:5.17",
+        "docker-bench:5.20",
+        "docker-bench:5.21",
+        "docker-bench:5.22",
+        "docker-bench:5.31"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-bastion",
+      "control_id": "HL-CTR-013",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-012",
+      "sources": [
+        "docker-bench:4.5"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SSH-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-001:1",
+        "lynis:SSH-7408",
+        "openscap:sshd_disable_root_login"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sshd_effective.txt",
+          "sha256": "ad445b81370586433ca9d9e92c9c810d97dc8f756e263fff13c7e166e0c3430f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SSH-002",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-002:1",
+        "lab-probe:assert:HL-SSH-002:2",
+        "lab-probe:assert:HL-SSH-002:3",
+        "lab-probe:assert:HL-SSH-002:4",
+        "openscap:sshd_disable_empty_passwords"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sshd_effective.txt",
+          "sha256": "ad445b81370586433ca9d9e92c9c810d97dc8f756e263fff13c7e166e0c3430f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SSH-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-003:1",
+        "lab-probe:assert:HL-SSH-003:2",
+        "lab-probe:assert:HL-SSH-003:3",
+        "openscap:sshd_use_strong_ciphers",
+        "openscap:sshd_use_strong_kex",
+        "openscap:sshd_use_strong_macs"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sshd_effective.txt",
+          "sha256": "ad445b81370586433ca9d9e92c9c810d97dc8f756e263fff13c7e166e0c3430f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SSH-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-004:1",
+        "lab-probe:assert:HL-SSH-004:2",
+        "lynis:SSH-7408",
+        "openscap:sshd_set_login_grace_time",
+        "openscap:sshd_set_max_auth_tries",
+        "openscap:sshd_set_max_sessions",
+        "openscap:sshd_set_maxstartups"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sshd_effective.txt",
+          "sha256": "ad445b81370586433ca9d9e92c9c810d97dc8f756e263fff13c7e166e0c3430f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SSH-005",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-005:1",
+        "lab-probe:assert:HL-SSH-005:2",
+        "lynis:SSH-7408"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sshd_effective.txt",
+          "sha256": "ad445b81370586433ca9d9e92c9c810d97dc8f756e263fff13c7e166e0c3430f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SSH-006",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-006:1",
+        "lab-probe:assert:HL-SSH-006:2",
+        "lynis:SSH-7408",
+        "openscap:sshd_set_idle_timeout",
+        "openscap:sshd_set_keepalive"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sshd_effective.txt",
+          "sha256": "ad445b81370586433ca9d9e92c9c810d97dc8f756e263fff13c7e166e0c3430f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SSH-007",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-016",
+      "sources": [
+        "lab-probe:assert:HL-SSH-007:1",
+        "openscap:sshd_set_loglevel_info"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sshd_effective.txt",
+          "sha256": "ad445b81370586433ca9d9e92c9c810d97dc8f756e263fff13c7e166e0c3430f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SSH-008",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-008:1",
+        "lab-probe:assert:HL-SSH-008:2",
+        "openscap:sshd_enable_warning_banner_net",
+        "openscap:sshd_limit_user_access"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sshd_effective.txt",
+          "sha256": "ad445b81370586433ca9d9e92c9c810d97dc8f756e263fff13c7e166e0c3430f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SSH-009",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-009:1",
+        "lab-probe:assert:HL-SSH-009:2",
+        "lab-probe:assert:HL-SSH-009:3",
+        "lab-probe:assert:HL-SSH-009:4",
+        "openscap:disable_host_auth",
+        "openscap:sshd_disable_rhosts",
+        "openscap:sshd_do_not_permit_user_env",
+        "openscap:sshd_enable_pam"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sshd_effective.txt",
+          "sha256": "ad445b81370586433ca9d9e92c9c810d97dc8f756e263fff13c7e166e0c3430f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SSH-010",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-010:1",
+        "openscap:file_groupowner_sshd_config",
+        "openscap:file_groupowner_sshd_drop_in_config",
+        "openscap:file_owner_sshd_config",
+        "openscap:file_owner_sshd_drop_in_config",
+        "openscap:file_permissions_sshd_config",
+        "openscap:file_permissions_sshd_drop_in_config",
+        "openscap:file_permissions_sshd_private_key",
+        "openscap:file_permissions_sshd_pub_key"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sshd_files.txt",
+          "sha256": "4ce1b0b4f69d2c1f0434b79d2adce4fc72741313cb248163328ba9315f95ae46",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-ACC-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-001:1",
+        "lab-probe:assert:HL-ACC-001:2",
+        "lynis:AUTH-9286",
+        "openscap:account_disable_post_pw_expiration",
+        "openscap:accounts_maximum_age_login_defs",
+        "openscap:accounts_password_set_max_life_existing",
+        "openscap:accounts_password_warn_age_login_defs",
+        "openscap:accounts_set_post_pw_existing"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/accounts.txt",
+          "sha256": "cbfb423e1e1c5b347fe878ed14d26a631c622290d542d2e763d02cabcf062b40",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-ACC-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-002:1",
+        "lynis:AUTH-9230",
+        "openscap:set_password_hashing_algorithm_logindefs",
+        "openscap:set_password_hashing_algorithm_systemauth"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/accounts.txt",
+          "sha256": "cbfb423e1e1c5b347fe878ed14d26a631c622290d542d2e763d02cabcf062b40",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-ACC-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:no_invalid_shell_accounts_unlocked",
+        "openscap:no_shelllogin_for_systemaccounts"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/accounts.txt",
+          "sha256": "cbfb423e1e1c5b347fe878ed14d26a631c622290d542d2e763d02cabcf062b40",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-ACC-004",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_no_uid_except_zero",
+        "openscap:accounts_root_gid_zero",
+        "openscap:accounts_root_path_dirs_no_write",
+        "openscap:groups_no_zero_gid_except_root",
+        "openscap:no_dirs_unowned_by_root",
+        "openscap:root_path_all_dirs",
+        "openscap:root_path_no_dot"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/accounts.txt",
+          "sha256": "cbfb423e1e1c5b347fe878ed14d26a631c622290d542d2e763d02cabcf062b40",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-ACC-005",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-005:1",
+        "lynis:AUTH-9328",
+        "openscap:accounts_tmout",
+        "openscap:accounts_umask_etc_bashrc",
+        "openscap:accounts_umask_etc_login_defs",
+        "openscap:accounts_umask_etc_profile",
+        "openscap:accounts_umask_root"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/accounts.txt",
+          "sha256": "cbfb423e1e1c5b347fe878ed14d26a631c622290d542d2e763d02cabcf062b40",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-ACC-006",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-006:1"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sudoers.txt",
+          "sha256": "bd6ed3807c6df2e96db2093b59c865cbc9db104e7a9b0e22564131623b601b60",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SUDO-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SUDO-001:1",
+        "lab-probe:assert:HL-SUDO-001:2",
+        "openscap:sudo_add_use_pty",
+        "openscap:sudo_custom_logfile"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sudoers.txt",
+          "sha256": "bd6ed3807c6df2e96db2093b59c865cbc9db104e7a9b0e22564131623b601b60",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SUDO-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:sudo_remove_no_authenticate",
+        "openscap:sudo_require_reauthentication"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sudoers.txt",
+          "sha256": "bd6ed3807c6df2e96db2093b59c865cbc9db104e7a9b0e22564131623b601b60",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SUDO-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:ensure_pam_wheel_group_empty",
+        "openscap:use_pam_wheel_group_for_su"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SUDO-004",
+      "status": "exception",
+      "severity": "high",
+      "exception_id": "EXC-008",
+      "sources": [
+        "lab-probe:assert:HL-SUDO-004:1",
+        "lab-probe:assert:HL-SUDO-004:2"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sudoers.txt",
+          "sha256": "bd6ed3807c6df2e96db2093b59c865cbc9db104e7a9b0e22564131623b601b60",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-PAM-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PAM-001:1",
+        "openscap:accounts_passwords_pam_faillock_deny",
+        "openscap:accounts_passwords_pam_faillock_enabled",
+        "openscap:accounts_passwords_pam_faillock_unlock_time"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/pam_policy.txt",
+          "sha256": "0b4388be814da2204185686312782f01a7f57e191d9887e00f30b5b7b787b067",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-PAM-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PAM-002:1",
+        "openscap:accounts_password_pam_dcredit",
+        "openscap:accounts_password_pam_dictcheck",
+        "openscap:accounts_password_pam_difok",
+        "openscap:accounts_password_pam_enforce_root",
+        "openscap:accounts_password_pam_enforcing",
+        "openscap:accounts_password_pam_lcredit",
+        "openscap:accounts_password_pam_maxrepeat",
+        "openscap:accounts_password_pam_maxsequence",
+        "openscap:accounts_password_pam_minclass",
+        "openscap:accounts_password_pam_minlen",
+        "openscap:accounts_password_pam_ocredit",
+        "openscap:accounts_password_pam_pwquality_enabled",
+        "openscap:accounts_password_pam_ucredit"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/pam_policy.txt",
+          "sha256": "0b4388be814da2204185686312782f01a7f57e191d9887e00f30b5b7b787b067",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-PAM-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_password_pam_pwhistory_enabled",
+        "openscap:accounts_password_pam_pwhistory_enforce_root",
+        "openscap:accounts_password_pam_pwhistory_remember",
+        "openscap:accounts_password_pam_pwhistory_use_authtok"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-PAM-004",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_password_pam_unix_authtok",
+        "openscap:accounts_password_pam_unix_no_remember",
+        "openscap:no_empty_passwords_unix"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-PERM-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "openscap:file_groupowner_backup_etc_group",
+        "openscap:file_groupowner_backup_etc_gshadow",
+        "openscap:file_groupowner_backup_etc_passwd",
+        "openscap:file_groupowner_backup_etc_shadow",
+        "openscap:file_groupowner_etc_group",
+        "openscap:file_groupowner_etc_gshadow",
+        "openscap:file_groupowner_etc_passwd",
+        "openscap:file_groupowner_etc_security_opasswd",
+        "openscap:file_groupowner_etc_security_opasswd_old",
+        "openscap:file_groupowner_etc_shadow",
+        "openscap:file_groupowner_etc_shells",
+        "openscap:file_owner_backup_etc_group",
+        "openscap:file_owner_backup_etc_gshadow",
+        "openscap:file_owner_backup_etc_passwd",
+        "openscap:file_owner_backup_etc_shadow",
+        "openscap:file_owner_etc_group",
+        "openscap:file_owner_etc_gshadow",
+        "openscap:file_owner_etc_passwd",
+        "openscap:file_owner_etc_security_opasswd",
+        "openscap:file_owner_etc_security_opasswd_old",
+        "openscap:file_owner_etc_shadow",
+        "openscap:file_owner_etc_shells",
+        "openscap:file_permissions_backup_etc_group",
+        "openscap:file_permissions_backup_etc_gshadow",
+        "openscap:file_permissions_backup_etc_passwd"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/file_permissions.txt",
+          "sha256": "a86b832bc1bbae80096d2be9054533d665e59f549620cb4f00352542ad37a540",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-PERM-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PERM-002:1",
+        "openscap:file_permissions_unauthorized_world_writable",
+        "openscap:file_permissions_ungroupowned",
+        "openscap:no_files_unowned_by_user"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/file_permissions.txt",
+          "sha256": "a86b832bc1bbae80096d2be9054533d665e59f549620cb4f00352542ad37a540",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-PERM-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PERM-003:1",
+        "openscap:file_at_allow_exists",
+        "openscap:file_cron_allow_exists",
+        "openscap:file_cron_deny_not_exist",
+        "openscap:file_groupowner_at_allow",
+        "openscap:file_groupowner_at_deny",
+        "openscap:file_groupowner_cron_allow",
+        "openscap:file_groupowner_cron_d",
+        "openscap:file_groupowner_cron_daily",
+        "openscap:file_groupowner_cron_hourly",
+        "openscap:file_groupowner_cron_monthly",
+        "openscap:file_groupowner_cron_weekly",
+        "openscap:file_groupowner_crontab",
+        "openscap:file_owner_at_allow",
+        "openscap:file_owner_at_deny",
+        "openscap:file_owner_cron_allow",
+        "openscap:file_owner_cron_d",
+        "openscap:file_owner_cron_daily",
+        "openscap:file_owner_cron_hourly",
+        "openscap:file_owner_cron_monthly",
+        "openscap:file_owner_cron_weekly",
+        "openscap:file_owner_crontab",
+        "openscap:file_permissions_at_allow",
+        "openscap:file_permissions_at_deny",
+        "openscap:file_permissions_cron_allow"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/file_permissions.txt",
+          "sha256": "a86b832bc1bbae80096d2be9054533d665e59f549620cb4f00352542ad37a540",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-PERM-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_user_dot_group_ownership",
+        "openscap:accounts_user_dot_user_ownership",
+        "openscap:accounts_user_interactive_home_directory_exists",
+        "openscap:file_groupownership_home_directories",
+        "openscap:file_ownership_home_directories",
+        "openscap:file_permission_user_bash_history",
+        "openscap:file_permission_user_init_files",
+        "openscap:file_permissions_home_directories",
+        "openscap:no_forward_files",
+        "openscap:no_netrc_files"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-PERM-005",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "openscap:banner_etc_issue_cis",
+        "openscap:banner_etc_issue_net_cis",
+        "openscap:banner_etc_motd_cis",
+        "openscap:file_groupowner_etc_issue",
+        "openscap:file_groupowner_etc_issue_net",
+        "openscap:file_groupowner_etc_motd",
+        "openscap:file_owner_etc_issue",
+        "openscap:file_owner_etc_issue_net",
+        "openscap:file_owner_etc_motd",
+        "openscap:file_permissions_etc_issue",
+        "openscap:file_permissions_etc_issue_net",
+        "openscap:file_permissions_etc_motd"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SVC-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SVC-001:1",
+        "lynis:INSE-8300",
+        "openscap:package_ftp_removed",
+        "openscap:package_inetutils-telnet_removed",
+        "openscap:package_nis_removed",
+        "openscap:package_openldap-clients_removed",
+        "openscap:package_rsh_removed",
+        "openscap:package_talk_removed",
+        "openscap:package_telnet_removed",
+        "openscap:package_tnftp_removed"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/packages.txt",
+          "sha256": "171a1e948485b46cc77b739923fee6d866e688073116bfecab8784fcd0c426fd",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SVC-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:package_autofs_removed",
+        "openscap:package_avahi_removed",
+        "openscap:package_httpd_removed",
+        "openscap:package_nginx_removed",
+        "openscap:package_rsync_removed",
+        "openscap:package_tftp-server_removed",
+        "openscap:package_vsftpd_removed",
+        "openscap:package_ypserv_removed",
+        "openscap:service_httpd_disabled",
+        "openscap:service_nginx_disabled",
+        "openscap:service_rsyncd_disabled",
+        "openscap:service_tftp_disabled",
+        "openscap:service_vsftpd_disabled",
+        "openscap:service_ypserv_disabled"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/listening_ports.txt",
+          "sha256": "7a2e65c9c09aed36d21fe341c836effcf687dcab6e48d81a0a8c3c7492485cf5",
+          "method": "examine"
+        },
+        {
+          "path": "evidence/lab-db/services.txt",
+          "sha256": "195cf03fd8828b45e3c5e6c86efa06af47629857cb4997a2d827c2f2f9583d40",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SVC-003",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "openscap:package_prelink_removed"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SVC-004",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-003",
+      "sources": [
+        "openscap:aide_build_database",
+        "openscap:package_aide_installed"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-SVC-005",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-014",
+      "sources": [
+        "openscap:ntp_single_service_active",
+        "openscap:package_timesyncd_installed",
+        "openscap:service_timesyncd_enabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-KRN-001",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "lynis:NETW-3200",
+        "lynis:STRG-1846",
+        "lynis:USB-1000",
+        "openscap:kernel_module_cramfs_disabled",
+        "openscap:kernel_module_freevxfs_disabled",
+        "openscap:kernel_module_hfs_disabled",
+        "openscap:kernel_module_hfsplus_disabled",
+        "openscap:kernel_module_jffs2_disabled",
+        "openscap:kernel_module_usb-storage_disabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-KRN-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lynis:KRNL-5820",
+        "openscap:disable_users_coredumps",
+        "openscap:sysctl_fs_suid_dumpable",
+        "openscap:sysctl_kernel_randomize_va_space",
+        "openscap:sysctl_kernel_yama_ptrace_scope"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sysctl_kernel.txt",
+          "sha256": "86eb4eac6cc6a30807b09b00b97a616fa39587a26b2ce913cfc4497c6eaafd8f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-KRN-003",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "openscap:mount_option_dev_shm_nodev",
+        "openscap:mount_option_dev_shm_noexec",
+        "openscap:mount_option_dev_shm_nosuid",
+        "openscap:mount_option_tmp_nodev",
+        "openscap:mount_option_tmp_noexec",
+        "openscap:mount_option_tmp_nosuid",
+        "openscap:partition_for_tmp"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-KRN-004",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-002",
+      "sources": [
+        "docker-bench:5.2",
+        "openscap:grub2_enable_apparmor",
+        "openscap:package_apparmor-utils_installed",
+        "openscap:package_apparmor_installed"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-NET-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-NET-001:1",
+        "lab-probe:assert:HL-NET-001:2",
+        "openscap:sysctl_net_ipv4_conf_all_accept_redirects",
+        "openscap:sysctl_net_ipv4_conf_all_secure_redirects",
+        "openscap:sysctl_net_ipv4_conf_all_send_redirects",
+        "openscap:sysctl_net_ipv4_conf_default_accept_redirects",
+        "openscap:sysctl_net_ipv4_conf_default_secure_redirects",
+        "openscap:sysctl_net_ipv4_conf_default_send_redirects",
+        "openscap:sysctl_net_ipv6_conf_all_accept_redirects",
+        "openscap:sysctl_net_ipv6_conf_default_accept_redirects"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sysctl_network.txt",
+          "sha256": "368ee4aef69422b69c670ac6e60ce0be859496a0d344ab3d03a52a30abaf0255",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-NET-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-NET-002:1",
+        "lab-probe:assert:HL-NET-002:2",
+        "openscap:sysctl_net_ipv4_conf_all_accept_source_route",
+        "openscap:sysctl_net_ipv4_conf_all_log_martians",
+        "openscap:sysctl_net_ipv4_conf_all_rp_filter",
+        "openscap:sysctl_net_ipv4_conf_default_accept_source_route",
+        "openscap:sysctl_net_ipv4_conf_default_log_martians",
+        "openscap:sysctl_net_ipv4_conf_default_rp_filter",
+        "openscap:sysctl_net_ipv6_conf_all_accept_source_route",
+        "openscap:sysctl_net_ipv6_conf_default_accept_source_route"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sysctl_network.txt",
+          "sha256": "368ee4aef69422b69c670ac6e60ce0be859496a0d344ab3d03a52a30abaf0255",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-NET-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-NET-003:1",
+        "lab-probe:assert:HL-NET-003:2",
+        "openscap:sysctl_net_ipv4_icmp_echo_ignore_broadcasts",
+        "openscap:sysctl_net_ipv4_icmp_ignore_bogus_error_responses",
+        "openscap:sysctl_net_ipv4_tcp_syncookies",
+        "openscap:sysctl_net_ipv6_conf_all_accept_ra",
+        "openscap:sysctl_net_ipv6_conf_default_accept_ra"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sysctl_network.txt",
+          "sha256": "368ee4aef69422b69c670ac6e60ce0be859496a0d344ab3d03a52a30abaf0255",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-NET-004",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-004",
+      "sources": [
+        "lab-probe:assert:HL-NET-004:1",
+        "openscap:sysctl_net_ipv4_ip_forward"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/sysctl_network.txt",
+          "sha256": "368ee4aef69422b69c670ac6e60ce0be859496a0d344ab3d03a52a30abaf0255",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-FW-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-FW-001:1",
+        "openscap:nftables_ensure_default_deny_policy",
+        "openscap:nftables_rules_permanent",
+        "openscap:package_nftables_installed",
+        "openscap:set_nftables_base_chain",
+        "openscap:set_nftables_loopback_traffic",
+        "openscap:set_nftables_table"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/firewall.txt",
+          "sha256": "451c575f125c1ccd6797b2fbd1d0a0a6633c8adae8c1c3058dfb4d87b1bafc5e",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-FW-002",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-013",
+      "sources": [
+        "openscap:firewall_single_service_active",
+        "openscap:service_nftables_enabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-FW-003",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "trivy:HLC-007",
+        "trivy:HLC-010"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/listening_ports.txt",
+          "sha256": "7a2e65c9c09aed36d21fe341c836effcf687dcab6e48d81a0a8c3c7492485cf5",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-FW-004",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:flow:lab-db->lab-web:22"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-LOG-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-LOG-001:1",
+        "lynis:LOGG-2130",
+        "openscap:package_rsyslog_installed"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/logging.txt",
+          "sha256": "d365e1b1ef2090017467020f9c57594549c296c4b323b1f1ec4affe1a6ab549f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-LOG-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:file_groupowner_var_log_auth",
+        "openscap:file_groupowner_var_log_cloud_init",
+        "openscap:file_groupowner_var_log_journal",
+        "openscap:file_groupowner_var_log_lastlog",
+        "openscap:file_groupowner_var_log_localmessages",
+        "openscap:file_groupowner_var_log_messages",
+        "openscap:file_groupowner_var_log_secure",
+        "openscap:file_groupowner_var_log_syslog",
+        "openscap:file_groupowner_var_log_waagent",
+        "openscap:file_groupowner_var_log_wbtmp",
+        "openscap:file_groupownerships_var_log",
+        "openscap:file_groupownerships_var_log_apt",
+        "openscap:file_groupownerships_var_log_gdm",
+        "openscap:file_groupownerships_var_log_gdm3",
+        "openscap:file_groupownerships_var_log_landscape",
+        "openscap:file_groupownerships_var_log_sssd",
+        "openscap:file_owner_var_log_auth",
+        "openscap:file_owner_var_log_cloud_init",
+        "openscap:file_owner_var_log_journal",
+        "openscap:file_owner_var_log_lastlog",
+        "openscap:file_owner_var_log_localmessages",
+        "openscap:file_owner_var_log_messages",
+        "openscap:file_owner_var_log_secure",
+        "openscap:file_owner_var_log_syslog",
+        "openscap:file_owner_var_log_waagent"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/logging.txt",
+          "sha256": "d365e1b1ef2090017467020f9c57594549c296c4b323b1f1ec4affe1a6ab549f",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-LOG-003",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-013",
+      "sources": [
+        "openscap:journald_forward_to_syslog",
+        "openscap:logging_services_active",
+        "openscap:service_rsyslog_enabled",
+        "openscap:service_systemd-journald_enabled",
+        "openscap:socket_systemd-journal-remote_disabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-AUD-001",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-001",
+      "sources": [
+        "lynis:ACCT-9628"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-UPD-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-UPD-001:1"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/updates.txt",
+          "sha256": "7db8bf3876f40dfd18538cb1e97c01122066110f097f96b8db3f17256b4b90d8",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.14",
+        "trivy:HLC-001"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-002",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-010",
+      "sources": [
+        "docker-bench:5.4"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-003",
+      "status": "pass",
+      "severity": "critical",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.32",
+        "docker-bench:5.5",
+        "docker-bench:5.6",
+        "trivy:HLC-003",
+        "trivy:HLC-006"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.11",
+        "docker-bench:5.12",
+        "docker-bench:5.29",
+        "trivy:HLC-004"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-005",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.15",
+        "trivy:HLC-005"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-006",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-006",
+      "sources": [
+        "docker-bench:5.26",
+        "trivy:HLC-008"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-007",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-009",
+      "sources": [
+        "docker-bench:5.13",
+        "trivy:HLC-009"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-008",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-005",
+      "sources": [
+        "docker-bench:4.1",
+        "docker-bench:5.7",
+        "trivy:DS-0002"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-009",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-011",
+      "sources": [
+        "trivy:DS-0004"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-010",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.30"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-011",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:4.6",
+        "docker-bench:5.27",
+        "trivy:DS-0026"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-012",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.10",
+        "docker-bench:5.16",
+        "docker-bench:5.17",
+        "docker-bench:5.20",
+        "docker-bench:5.21",
+        "docker-bench:5.22",
+        "docker-bench:5.31"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-CTR-013",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-012",
+      "sources": [
+        "docker-bench:4.5"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-DB-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-DB-001:1"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/postgresql_config.txt",
+          "sha256": "a5acad7d9212fe18a5a60395095b595b1c98f27009cff2e7f393c4d224861ec5",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-DB-002",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-DB-002:1",
+        "lab-probe:assert:HL-DB-002:2"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/postgresql_config.txt",
+          "sha256": "a5acad7d9212fe18a5a60395095b595b1c98f27009cff2e7f393c4d224861ec5",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-DB-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-DB-003:1",
+        "lab-probe:assert:HL-DB-003:2"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-db/postgresql_config.txt",
+          "sha256": "a5acad7d9212fe18a5a60395095b595b1c98f27009cff2e7f393c4d224861ec5",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-db",
+      "control_id": "HL-DB-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lynis:DBS-1828"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SSH-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-001:1",
+        "lynis:SSH-7408",
+        "openscap:sshd_disable_root_login"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sshd_effective.txt",
+          "sha256": "d2b83f67428bbdc0e8ed8c5d81a3dfba6e569efc30c48b4a5768ff4726da0c7d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SSH-002",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-002:1",
+        "lab-probe:assert:HL-SSH-002:2",
+        "lab-probe:assert:HL-SSH-002:3",
+        "lab-probe:assert:HL-SSH-002:4",
+        "openscap:sshd_disable_empty_passwords"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sshd_effective.txt",
+          "sha256": "d2b83f67428bbdc0e8ed8c5d81a3dfba6e569efc30c48b4a5768ff4726da0c7d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SSH-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-003:1",
+        "lab-probe:assert:HL-SSH-003:2",
+        "lab-probe:assert:HL-SSH-003:3",
+        "openscap:sshd_use_strong_ciphers",
+        "openscap:sshd_use_strong_kex",
+        "openscap:sshd_use_strong_macs"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sshd_effective.txt",
+          "sha256": "d2b83f67428bbdc0e8ed8c5d81a3dfba6e569efc30c48b4a5768ff4726da0c7d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SSH-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-004:1",
+        "lab-probe:assert:HL-SSH-004:2",
+        "lynis:SSH-7408",
+        "openscap:sshd_set_login_grace_time",
+        "openscap:sshd_set_max_auth_tries",
+        "openscap:sshd_set_max_sessions",
+        "openscap:sshd_set_maxstartups"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sshd_effective.txt",
+          "sha256": "d2b83f67428bbdc0e8ed8c5d81a3dfba6e569efc30c48b4a5768ff4726da0c7d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SSH-005",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-005:1",
+        "lab-probe:assert:HL-SSH-005:2",
+        "lynis:SSH-7408"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sshd_effective.txt",
+          "sha256": "d2b83f67428bbdc0e8ed8c5d81a3dfba6e569efc30c48b4a5768ff4726da0c7d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SSH-006",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-006:1",
+        "lab-probe:assert:HL-SSH-006:2",
+        "lynis:SSH-7408",
+        "openscap:sshd_set_idle_timeout",
+        "openscap:sshd_set_keepalive"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sshd_effective.txt",
+          "sha256": "d2b83f67428bbdc0e8ed8c5d81a3dfba6e569efc30c48b4a5768ff4726da0c7d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SSH-007",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-016",
+      "sources": [
+        "lab-probe:assert:HL-SSH-007:1",
+        "openscap:sshd_set_loglevel_info"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sshd_effective.txt",
+          "sha256": "d2b83f67428bbdc0e8ed8c5d81a3dfba6e569efc30c48b4a5768ff4726da0c7d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SSH-008",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-008:1",
+        "lab-probe:assert:HL-SSH-008:2",
+        "openscap:sshd_enable_warning_banner_net",
+        "openscap:sshd_limit_user_access"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sshd_effective.txt",
+          "sha256": "d2b83f67428bbdc0e8ed8c5d81a3dfba6e569efc30c48b4a5768ff4726da0c7d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SSH-009",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-009:1",
+        "lab-probe:assert:HL-SSH-009:2",
+        "lab-probe:assert:HL-SSH-009:3",
+        "lab-probe:assert:HL-SSH-009:4",
+        "openscap:disable_host_auth",
+        "openscap:sshd_disable_rhosts",
+        "openscap:sshd_do_not_permit_user_env",
+        "openscap:sshd_enable_pam"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sshd_effective.txt",
+          "sha256": "d2b83f67428bbdc0e8ed8c5d81a3dfba6e569efc30c48b4a5768ff4726da0c7d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SSH-010",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SSH-010:1",
+        "openscap:file_groupowner_sshd_config",
+        "openscap:file_groupowner_sshd_drop_in_config",
+        "openscap:file_owner_sshd_config",
+        "openscap:file_owner_sshd_drop_in_config",
+        "openscap:file_permissions_sshd_config",
+        "openscap:file_permissions_sshd_drop_in_config",
+        "openscap:file_permissions_sshd_private_key",
+        "openscap:file_permissions_sshd_pub_key"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sshd_files.txt",
+          "sha256": "178c66e9f6cc3ab0124fe1e2dcd8af64900d6fbaaedf4584b0b98ffd7826a6ba",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-ACC-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-001:1",
+        "lab-probe:assert:HL-ACC-001:2",
+        "lynis:AUTH-9286",
+        "openscap:account_disable_post_pw_expiration",
+        "openscap:accounts_maximum_age_login_defs",
+        "openscap:accounts_password_set_max_life_existing",
+        "openscap:accounts_password_warn_age_login_defs",
+        "openscap:accounts_set_post_pw_existing"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/accounts.txt",
+          "sha256": "6c932df8c3721f3a4ae8c961b828b5b369bac014b3a812a1d3e208dc04773486",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-ACC-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-002:1",
+        "lynis:AUTH-9230",
+        "openscap:set_password_hashing_algorithm_logindefs",
+        "openscap:set_password_hashing_algorithm_systemauth"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/accounts.txt",
+          "sha256": "6c932df8c3721f3a4ae8c961b828b5b369bac014b3a812a1d3e208dc04773486",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-ACC-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:no_invalid_shell_accounts_unlocked",
+        "openscap:no_shelllogin_for_systemaccounts"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/accounts.txt",
+          "sha256": "6c932df8c3721f3a4ae8c961b828b5b369bac014b3a812a1d3e208dc04773486",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-ACC-004",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_no_uid_except_zero",
+        "openscap:accounts_root_gid_zero",
+        "openscap:accounts_root_path_dirs_no_write",
+        "openscap:groups_no_zero_gid_except_root",
+        "openscap:no_dirs_unowned_by_root",
+        "openscap:root_path_all_dirs",
+        "openscap:root_path_no_dot"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/accounts.txt",
+          "sha256": "6c932df8c3721f3a4ae8c961b828b5b369bac014b3a812a1d3e208dc04773486",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-ACC-005",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-005:1",
+        "lynis:AUTH-9328",
+        "openscap:accounts_tmout",
+        "openscap:accounts_umask_etc_bashrc",
+        "openscap:accounts_umask_etc_login_defs",
+        "openscap:accounts_umask_etc_profile",
+        "openscap:accounts_umask_root"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/accounts.txt",
+          "sha256": "6c932df8c3721f3a4ae8c961b828b5b369bac014b3a812a1d3e208dc04773486",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-ACC-006",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-ACC-006:1"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sudoers.txt",
+          "sha256": "362654d91c0660af1ac9e1a01198bd0f10abd1a5ff54d0019681f7dc9b20d57d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SUDO-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SUDO-001:1",
+        "lab-probe:assert:HL-SUDO-001:2",
+        "openscap:sudo_add_use_pty",
+        "openscap:sudo_custom_logfile"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sudoers.txt",
+          "sha256": "362654d91c0660af1ac9e1a01198bd0f10abd1a5ff54d0019681f7dc9b20d57d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SUDO-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:sudo_remove_no_authenticate",
+        "openscap:sudo_require_reauthentication"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sudoers.txt",
+          "sha256": "362654d91c0660af1ac9e1a01198bd0f10abd1a5ff54d0019681f7dc9b20d57d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SUDO-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:ensure_pam_wheel_group_empty",
+        "openscap:use_pam_wheel_group_for_su"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SUDO-004",
+      "status": "exception",
+      "severity": "high",
+      "exception_id": "EXC-008",
+      "sources": [
+        "lab-probe:assert:HL-SUDO-004:1",
+        "lab-probe:assert:HL-SUDO-004:2"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sudoers.txt",
+          "sha256": "362654d91c0660af1ac9e1a01198bd0f10abd1a5ff54d0019681f7dc9b20d57d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-PAM-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PAM-001:1",
+        "openscap:accounts_passwords_pam_faillock_deny",
+        "openscap:accounts_passwords_pam_faillock_enabled",
+        "openscap:accounts_passwords_pam_faillock_unlock_time"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/pam_policy.txt",
+          "sha256": "ec62197ea7c527f2fa3a2ba5a74f06a5c9ac5e59fa945ffbd8f2e2c7608064b8",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-PAM-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PAM-002:1",
+        "openscap:accounts_password_pam_dcredit",
+        "openscap:accounts_password_pam_dictcheck",
+        "openscap:accounts_password_pam_difok",
+        "openscap:accounts_password_pam_enforce_root",
+        "openscap:accounts_password_pam_enforcing",
+        "openscap:accounts_password_pam_lcredit",
+        "openscap:accounts_password_pam_maxrepeat",
+        "openscap:accounts_password_pam_maxsequence",
+        "openscap:accounts_password_pam_minclass",
+        "openscap:accounts_password_pam_minlen",
+        "openscap:accounts_password_pam_ocredit",
+        "openscap:accounts_password_pam_pwquality_enabled",
+        "openscap:accounts_password_pam_ucredit"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/pam_policy.txt",
+          "sha256": "ec62197ea7c527f2fa3a2ba5a74f06a5c9ac5e59fa945ffbd8f2e2c7608064b8",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-PAM-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_password_pam_pwhistory_enabled",
+        "openscap:accounts_password_pam_pwhistory_enforce_root",
+        "openscap:accounts_password_pam_pwhistory_remember",
+        "openscap:accounts_password_pam_pwhistory_use_authtok"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-PAM-004",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_password_pam_unix_authtok",
+        "openscap:accounts_password_pam_unix_no_remember",
+        "openscap:no_empty_passwords_unix"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-PERM-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "openscap:file_groupowner_backup_etc_group",
+        "openscap:file_groupowner_backup_etc_gshadow",
+        "openscap:file_groupowner_backup_etc_passwd",
+        "openscap:file_groupowner_backup_etc_shadow",
+        "openscap:file_groupowner_etc_group",
+        "openscap:file_groupowner_etc_gshadow",
+        "openscap:file_groupowner_etc_passwd",
+        "openscap:file_groupowner_etc_security_opasswd",
+        "openscap:file_groupowner_etc_security_opasswd_old",
+        "openscap:file_groupowner_etc_shadow",
+        "openscap:file_groupowner_etc_shells",
+        "openscap:file_owner_backup_etc_group",
+        "openscap:file_owner_backup_etc_gshadow",
+        "openscap:file_owner_backup_etc_passwd",
+        "openscap:file_owner_backup_etc_shadow",
+        "openscap:file_owner_etc_group",
+        "openscap:file_owner_etc_gshadow",
+        "openscap:file_owner_etc_passwd",
+        "openscap:file_owner_etc_security_opasswd",
+        "openscap:file_owner_etc_security_opasswd_old",
+        "openscap:file_owner_etc_shadow",
+        "openscap:file_owner_etc_shells",
+        "openscap:file_permissions_backup_etc_group",
+        "openscap:file_permissions_backup_etc_gshadow",
+        "openscap:file_permissions_backup_etc_passwd"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/file_permissions.txt",
+          "sha256": "a79776bf6664c8ce1762abd9c14562cf9e2deaf8429e2d87d0c64dc1609a4d02",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-PERM-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PERM-002:1",
+        "openscap:file_permissions_unauthorized_world_writable",
+        "openscap:file_permissions_ungroupowned",
+        "openscap:no_files_unowned_by_user"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/file_permissions.txt",
+          "sha256": "a79776bf6664c8ce1762abd9c14562cf9e2deaf8429e2d87d0c64dc1609a4d02",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-PERM-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-PERM-003:1",
+        "openscap:file_at_allow_exists",
+        "openscap:file_cron_allow_exists",
+        "openscap:file_cron_deny_not_exist",
+        "openscap:file_groupowner_at_allow",
+        "openscap:file_groupowner_at_deny",
+        "openscap:file_groupowner_cron_allow",
+        "openscap:file_groupowner_cron_d",
+        "openscap:file_groupowner_cron_daily",
+        "openscap:file_groupowner_cron_hourly",
+        "openscap:file_groupowner_cron_monthly",
+        "openscap:file_groupowner_cron_weekly",
+        "openscap:file_groupowner_crontab",
+        "openscap:file_owner_at_allow",
+        "openscap:file_owner_at_deny",
+        "openscap:file_owner_cron_allow",
+        "openscap:file_owner_cron_d",
+        "openscap:file_owner_cron_daily",
+        "openscap:file_owner_cron_hourly",
+        "openscap:file_owner_cron_monthly",
+        "openscap:file_owner_cron_weekly",
+        "openscap:file_owner_crontab",
+        "openscap:file_permissions_at_allow",
+        "openscap:file_permissions_at_deny",
+        "openscap:file_permissions_cron_allow"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/file_permissions.txt",
+          "sha256": "a79776bf6664c8ce1762abd9c14562cf9e2deaf8429e2d87d0c64dc1609a4d02",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-PERM-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:accounts_user_dot_group_ownership",
+        "openscap:accounts_user_dot_user_ownership",
+        "openscap:accounts_user_interactive_home_directory_exists",
+        "openscap:file_groupownership_home_directories",
+        "openscap:file_ownership_home_directories",
+        "openscap:file_permission_user_bash_history",
+        "openscap:file_permission_user_init_files",
+        "openscap:file_permissions_home_directories",
+        "openscap:no_forward_files",
+        "openscap:no_netrc_files"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-PERM-005",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "openscap:banner_etc_issue_cis",
+        "openscap:banner_etc_issue_net_cis",
+        "openscap:banner_etc_motd_cis",
+        "openscap:file_groupowner_etc_issue",
+        "openscap:file_groupowner_etc_issue_net",
+        "openscap:file_groupowner_etc_motd",
+        "openscap:file_owner_etc_issue",
+        "openscap:file_owner_etc_issue_net",
+        "openscap:file_owner_etc_motd",
+        "openscap:file_permissions_etc_issue",
+        "openscap:file_permissions_etc_issue_net",
+        "openscap:file_permissions_etc_motd"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SVC-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-SVC-001:1",
+        "lynis:INSE-8300",
+        "openscap:package_ftp_removed",
+        "openscap:package_inetutils-telnet_removed",
+        "openscap:package_nis_removed",
+        "openscap:package_openldap-clients_removed",
+        "openscap:package_rsh_removed",
+        "openscap:package_talk_removed",
+        "openscap:package_telnet_removed",
+        "openscap:package_tnftp_removed"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/packages.txt",
+          "sha256": "52df30864f3a3fd8471441e6f49b7ed875077af9264c88febcb7e30ed898dcde",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SVC-002",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-015",
+      "sources": [
+        "openscap:package_nginx_removed",
+        "openscap:service_nginx_disabled"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/listening_ports.txt",
+          "sha256": "cfcec8b00373b2cf9d8a578bad3c3e5be4078e470581141628be00e9560a8b2d",
+          "method": "examine"
+        },
+        {
+          "path": "evidence/lab-web/services.txt",
+          "sha256": "c5265fd5451cbeb4ae35c797a93ec114f14095bd9a42e5f9103f288e4685c9e6",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SVC-003",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "openscap:package_prelink_removed"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SVC-004",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-003",
+      "sources": [
+        "openscap:aide_build_database",
+        "openscap:package_aide_installed"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-SVC-005",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-014",
+      "sources": [
+        "openscap:ntp_single_service_active",
+        "openscap:package_timesyncd_installed",
+        "openscap:service_timesyncd_enabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-KRN-001",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "lynis:NETW-3200",
+        "lynis:STRG-1846",
+        "lynis:USB-1000",
+        "openscap:kernel_module_cramfs_disabled",
+        "openscap:kernel_module_freevxfs_disabled",
+        "openscap:kernel_module_hfs_disabled",
+        "openscap:kernel_module_hfsplus_disabled",
+        "openscap:kernel_module_jffs2_disabled",
+        "openscap:kernel_module_usb-storage_disabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-KRN-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lynis:KRNL-5820",
+        "openscap:disable_users_coredumps",
+        "openscap:sysctl_fs_suid_dumpable",
+        "openscap:sysctl_kernel_randomize_va_space",
+        "openscap:sysctl_kernel_yama_ptrace_scope"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sysctl_kernel.txt",
+          "sha256": "c80a04e753753ccc348a2bd9ea109a3ade8d840559fb32c6833d6d30d365b604",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-KRN-003",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "openscap:mount_option_dev_shm_nodev",
+        "openscap:mount_option_dev_shm_noexec",
+        "openscap:mount_option_dev_shm_nosuid",
+        "openscap:mount_option_tmp_nodev",
+        "openscap:mount_option_tmp_noexec",
+        "openscap:mount_option_tmp_nosuid",
+        "openscap:partition_for_tmp"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-KRN-004",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-002",
+      "sources": [
+        "docker-bench:5.2",
+        "openscap:grub2_enable_apparmor",
+        "openscap:package_apparmor-utils_installed",
+        "openscap:package_apparmor_installed"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-NET-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-NET-001:1",
+        "lab-probe:assert:HL-NET-001:2",
+        "openscap:sysctl_net_ipv4_conf_all_accept_redirects",
+        "openscap:sysctl_net_ipv4_conf_all_secure_redirects",
+        "openscap:sysctl_net_ipv4_conf_all_send_redirects",
+        "openscap:sysctl_net_ipv4_conf_default_accept_redirects",
+        "openscap:sysctl_net_ipv4_conf_default_secure_redirects",
+        "openscap:sysctl_net_ipv4_conf_default_send_redirects",
+        "openscap:sysctl_net_ipv6_conf_all_accept_redirects",
+        "openscap:sysctl_net_ipv6_conf_default_accept_redirects"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sysctl_network.txt",
+          "sha256": "a7ce4aa4b9a9ea7da3b2a562a20e03e038082eff30b70e3786f7d055369be3d2",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-NET-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-NET-002:1",
+        "lab-probe:assert:HL-NET-002:2",
+        "openscap:sysctl_net_ipv4_conf_all_accept_source_route",
+        "openscap:sysctl_net_ipv4_conf_all_log_martians",
+        "openscap:sysctl_net_ipv4_conf_all_rp_filter",
+        "openscap:sysctl_net_ipv4_conf_default_accept_source_route",
+        "openscap:sysctl_net_ipv4_conf_default_log_martians",
+        "openscap:sysctl_net_ipv4_conf_default_rp_filter",
+        "openscap:sysctl_net_ipv6_conf_all_accept_source_route",
+        "openscap:sysctl_net_ipv6_conf_default_accept_source_route"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sysctl_network.txt",
+          "sha256": "a7ce4aa4b9a9ea7da3b2a562a20e03e038082eff30b70e3786f7d055369be3d2",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-NET-003",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-NET-003:1",
+        "lab-probe:assert:HL-NET-003:2",
+        "openscap:sysctl_net_ipv4_icmp_echo_ignore_broadcasts",
+        "openscap:sysctl_net_ipv4_icmp_ignore_bogus_error_responses",
+        "openscap:sysctl_net_ipv4_tcp_syncookies",
+        "openscap:sysctl_net_ipv6_conf_all_accept_ra",
+        "openscap:sysctl_net_ipv6_conf_default_accept_ra"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sysctl_network.txt",
+          "sha256": "a7ce4aa4b9a9ea7da3b2a562a20e03e038082eff30b70e3786f7d055369be3d2",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-NET-004",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-004",
+      "sources": [
+        "lab-probe:assert:HL-NET-004:1",
+        "openscap:sysctl_net_ipv4_ip_forward"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/sysctl_network.txt",
+          "sha256": "a7ce4aa4b9a9ea7da3b2a562a20e03e038082eff30b70e3786f7d055369be3d2",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-FW-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-FW-001:1",
+        "openscap:nftables_ensure_default_deny_policy",
+        "openscap:nftables_rules_permanent",
+        "openscap:package_nftables_installed",
+        "openscap:set_nftables_base_chain",
+        "openscap:set_nftables_loopback_traffic",
+        "openscap:set_nftables_table"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/firewall.txt",
+          "sha256": "3083c41f5e6f7fecf11f385b9ff651c04ac459aa44e93b3a446453247f5f1760",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-FW-002",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-013",
+      "sources": [
+        "openscap:firewall_single_service_active",
+        "openscap:service_nftables_enabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-FW-003",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:flow:lab-web->lab-db:5432",
+        "trivy:HLC-007",
+        "trivy:HLC-010"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/listening_ports.txt",
+          "sha256": "cfcec8b00373b2cf9d8a578bad3c3e5be4078e470581141628be00e9560a8b2d",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-FW-004",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:flow:lab-web->lab-bastion:22"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-LOG-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-LOG-001:1",
+        "lynis:LOGG-2130",
+        "openscap:package_rsyslog_installed"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/logging.txt",
+          "sha256": "f65d7b9307d40a3c06c25be1f98ae5617eab972a3747e522e5178f2ea8292494",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-LOG-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "openscap:file_groupowner_var_log_auth",
+        "openscap:file_groupowner_var_log_cloud_init",
+        "openscap:file_groupowner_var_log_journal",
+        "openscap:file_groupowner_var_log_lastlog",
+        "openscap:file_groupowner_var_log_localmessages",
+        "openscap:file_groupowner_var_log_messages",
+        "openscap:file_groupowner_var_log_secure",
+        "openscap:file_groupowner_var_log_syslog",
+        "openscap:file_groupowner_var_log_waagent",
+        "openscap:file_groupowner_var_log_wbtmp",
+        "openscap:file_groupownerships_var_log",
+        "openscap:file_groupownerships_var_log_apt",
+        "openscap:file_groupownerships_var_log_gdm",
+        "openscap:file_groupownerships_var_log_gdm3",
+        "openscap:file_groupownerships_var_log_landscape",
+        "openscap:file_groupownerships_var_log_sssd",
+        "openscap:file_owner_var_log_auth",
+        "openscap:file_owner_var_log_cloud_init",
+        "openscap:file_owner_var_log_journal",
+        "openscap:file_owner_var_log_lastlog",
+        "openscap:file_owner_var_log_localmessages",
+        "openscap:file_owner_var_log_messages",
+        "openscap:file_owner_var_log_secure",
+        "openscap:file_owner_var_log_syslog",
+        "openscap:file_owner_var_log_waagent"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/logging.txt",
+          "sha256": "f65d7b9307d40a3c06c25be1f98ae5617eab972a3747e522e5178f2ea8292494",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-LOG-003",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-013",
+      "sources": [
+        "openscap:journald_forward_to_syslog",
+        "openscap:logging_services_active",
+        "openscap:service_rsyslog_enabled",
+        "openscap:service_systemd-journald_enabled",
+        "openscap:socket_systemd-journal-remote_disabled"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-AUD-001",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-001",
+      "sources": [
+        "lynis:ACCT-9628"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-UPD-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-UPD-001:1"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/updates.txt",
+          "sha256": "8c6778d7fa6c30ec132c6bd2dc01bc63713d8536127b71e62247436b63b3bb31",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-001",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.14",
+        "trivy:HLC-001"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-002",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-010",
+      "sources": [
+        "docker-bench:5.4"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-003",
+      "status": "pass",
+      "severity": "critical",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.32",
+        "docker-bench:5.5",
+        "docker-bench:5.6",
+        "trivy:HLC-003",
+        "trivy:HLC-006"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.11",
+        "docker-bench:5.12",
+        "docker-bench:5.29",
+        "trivy:HLC-004"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-005",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.15",
+        "trivy:HLC-005"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-006",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-006",
+      "sources": [
+        "docker-bench:5.26",
+        "trivy:HLC-008"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-007",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-009",
+      "sources": [
+        "docker-bench:5.13",
+        "trivy:HLC-009"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-008",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-005",
+      "sources": [
+        "docker-bench:4.1",
+        "docker-bench:5.7",
+        "trivy:DS-0002"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-009",
+      "status": "exception",
+      "severity": "medium",
+      "exception_id": "EXC-011",
+      "sources": [
+        "docker-bench:5.9",
+        "trivy:DS-0004"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-010",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.30"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-011",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:4.6",
+        "docker-bench:5.27",
+        "trivy:DS-0026"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-012",
+      "status": "pass",
+      "severity": "high",
+      "exception_id": null,
+      "sources": [
+        "docker-bench:5.10",
+        "docker-bench:5.16",
+        "docker-bench:5.17",
+        "docker-bench:5.20",
+        "docker-bench:5.21",
+        "docker-bench:5.22",
+        "docker-bench:5.31"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-CTR-013",
+      "status": "exception",
+      "severity": "low",
+      "exception_id": "EXC-012",
+      "sources": [
+        "docker-bench:4.5"
+      ],
+      "evidence": []
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-WEB-001",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-WEB-001:1",
+        "lab-probe:assert:HL-WEB-001:2",
+        "lab-probe:assert:HL-WEB-001:3"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/nginx_config.txt",
+          "sha256": "82a6b67f9166e15965053b216b8f46629b2f6725d9cdd03b1e0f9bce2859a56b",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-WEB-002",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-WEB-002:1",
+        "lab-probe:assert:HL-WEB-002:2"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/nginx_config.txt",
+          "sha256": "82a6b67f9166e15965053b216b8f46629b2f6725d9cdd03b1e0f9bce2859a56b",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-WEB-003",
+      "status": "pass",
+      "severity": "low",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-WEB-003:1",
+        "lab-probe:assert:HL-WEB-003:2"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/nginx_config.txt",
+          "sha256": "82a6b67f9166e15965053b216b8f46629b2f6725d9cdd03b1e0f9bce2859a56b",
+          "method": "examine"
+        }
+      ]
+    },
+    {
+      "host": "lab-web",
+      "control_id": "HL-WEB-004",
+      "status": "pass",
+      "severity": "medium",
+      "exception_id": null,
+      "sources": [
+        "lab-probe:assert:HL-WEB-004:1",
+        "lab-probe:assert:HL-WEB-004:2",
+        "lynis:HTTP-6710"
+      ],
+      "evidence": [
+        {
+          "path": "evidence/lab-web/nginx_config.txt",
+          "sha256": "82a6b67f9166e15965053b216b8f46629b2f6725d9cdd03b1e0f9bce2859a56b",
+          "method": "examine"
+        }
+      ]
+    }
+  ]
+}

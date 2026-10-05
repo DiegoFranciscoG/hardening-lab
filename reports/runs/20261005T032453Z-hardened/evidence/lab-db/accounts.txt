@@ -1,0 +1,16 @@
+# host: lab-db
+# probe: accounts
+# command: echo '# UID 0'; awk -F: '$3==0{print $1}' /etc/passwd; echo '# cuentas de sistema con shell'; awk -F: '$3<1000 && $1!="root" && $7!~/(nologin|false)$/ {print $1":"$7}' /etc/passwd; echo '# login.defs'; grep -E '^(PASS_MAX_DAYS|PASS_MIN_DAYS|PASS_WARN_AGE|ENCRYPT_METHOD|UMASK)' /etc/login.defs; echo '# useradd'; useradd -D | grep INACTIVE
+# exit_code: 0
+# UID 0
+root
+# cuentas de sistema con shell
+sync:/bin/sync
+# login.defs
+UMASK	027
+PASS_MAX_DAYS	365
+PASS_MIN_DAYS	1
+PASS_WARN_AGE	7
+ENCRYPT_METHOD	YESCRYPT
+# useradd
+INACTIVE=45

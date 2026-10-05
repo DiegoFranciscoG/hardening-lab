@@ -1,0 +1,47 @@
+{
+    "flow_rcs": [
+        1,
+        0,
+        0
+    ],
+    "flow_tests": [
+        {
+            "control": "HL-FW-003",
+            "expect": "blocked",
+            "network": "data",
+            "port": 5432,
+            "source": "lab-bastion",
+            "target": "lab-db"
+        },
+        {
+            "control": "HL-FW-004",
+            "expect": "open",
+            "network": "admin",
+            "port": 22,
+            "source": "lab-bastion",
+            "target": "lab-web"
+        },
+        {
+            "control": "HL-FW-004",
+            "expect": "open",
+            "network": "admin",
+            "port": 22,
+            "source": "lab-bastion",
+            "target": "lab-db"
+        }
+    ],
+    "host": "lab-bastion",
+    "kernel": "6.6.87.2-microsoft-standard-WSL2",
+    "lab_state": "hardened",
+    "os": "Ubuntu 24.04",
+    "oscap_rc": 2,
+    "role": "bastion",
+    "versions": [
+        "openscap=1.3.9",
+        "fail2ban=1.0.2-3ubuntu0.1",
+        "openscap-scanner=1.3.9+dfsg-1.1ubuntu2",
+        "openssh-server=1:9.6p1-3ubuntu13.19",
+        "sudo=1.9.15p5-3ubuntu5.24.04.3"
+    ],
+    "virtualization": "docker"
+}

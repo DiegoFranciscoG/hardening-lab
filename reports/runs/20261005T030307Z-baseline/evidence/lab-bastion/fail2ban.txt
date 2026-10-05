@@ -1,0 +1,5 @@
+# host: lab-bastion
+# probe: fail2ban
+# command: fail2ban-client status sshd 2>&1
+# exit_code: 255
+2026-10-05 03:04:53,286 fail2ban                [27441]: ERROR   Failed to access socket path: /var/run/fail2ban/fail2ban.sock. Is fail2ban running?

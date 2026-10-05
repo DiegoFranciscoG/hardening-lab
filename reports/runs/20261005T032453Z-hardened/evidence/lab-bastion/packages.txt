@@ -1,0 +1,19 @@
+# host: lab-bastion
+# probe: packages
+# command: dpkg-query -W -f='${Package} ${Version} ${db:Status-Status}\n' openssh-server sudo telnet ftp tnftp rsh-redone-client talk nftables ufw fail2ban nginx postgresql-16 unattended-upgrades libpam-pwquality openscap-scanner 2>&1
+# exit_code: 1
+dpkg-query: no packages found matching telnet
+dpkg-query: no packages found matching ftp
+dpkg-query: no packages found matching tnftp
+dpkg-query: no packages found matching rsh-redone-client
+dpkg-query: no packages found matching talk
+dpkg-query: no packages found matching nginx
+dpkg-query: no packages found matching postgresql-16
+fail2ban 1.0.2-3ubuntu0.1 installed
+libpam-pwquality 1.4.5-3build1 installed
+nftables 1.0.9-1ubuntu0.1 installed
+openscap-scanner 1.3.9+dfsg-1.1ubuntu2 installed
+openssh-server 1:9.6p1-3ubuntu13.19 installed
+sudo 1.9.15p5-3ubuntu5.24.04.3 installed
+ufw  not-installed
+unattended-upgrades 2.9.1+nmu4ubuntu1 installed

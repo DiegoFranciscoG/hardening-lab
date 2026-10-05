@@ -1,0 +1,9 @@
+# host: lab-db
+# probe: services
+# command: supervisorctl status
+# exit_code: 3
+cron                             RUNNING   pid 15, uptime 0:06:27
+nftables                         EXITED    Oct 05 03:09 AM
+postgresql                       RUNNING   pid 1394, uptime 0:04:05
+rsyslog                          RUNNING   pid 880, uptime 0:05:07
+sshd                             RUNNING   pid 14, uptime 0:06:27

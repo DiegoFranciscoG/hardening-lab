@@ -1,0 +1,6 @@
+# host: lab-bastion
+# probe: firewall
+# command: nft list ruleset 2>&1
+# exit_code: 1
+Operation not permitted (you must be root)
+netlink: Error: cache initialization failed: Operation not permitted

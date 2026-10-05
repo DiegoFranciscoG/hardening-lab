@@ -1,0 +1,10 @@
+# host: lab-db
+# probe: listening_ports
+# command: ss -tlnp
+# exit_code: 0
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess                      
+LISTEN 0      128          0.0.0.0:22         0.0.0.0:*    users:(("sshd",pid=20,fd=3))
+LISTEN 0      200          0.0.0.0:5432       0.0.0.0:*                                
+LISTEN 0      4096      127.0.0.11:38291      0.0.0.0:*                                
+LISTEN 0      128             [::]:22            [::]:*    users:(("sshd",pid=20,fd=4))
+LISTEN 0      200             [::]:5432          [::]:*                                
