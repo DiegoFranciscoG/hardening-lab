@@ -53,5 +53,5 @@ HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=6 \
   CMD ["/usr/bin/pgrep", "-x", "sshd"]
 
 # El nodo emula una máquina completa: supervisord (PID 1) necesita root para lanzar sshd.
-# Excepción documentada en controls/exceptions.yml (EXC-006).
+# Excepción documentada en controls/exceptions.yml (EXC-005).
 ENTRYPOINT ["/usr/local/sbin/hlab-entrypoint"]
