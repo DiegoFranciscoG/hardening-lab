@@ -1,0 +1,1001 @@
+# Catálogo de controles de hardening-lab.
+# - control_id: identificador propio y estable (no cambia si CIS renumera entre v1.0.0 y v2.0.0).
+# - title_es: redacción propia; no se copia texto de CIS (CC BY-NC-SA 4.0), solo su ID.
+# - refs: de dónde sale el estado. cis_ubuntu2404_v1 toma todas las reglas SSG que citan ese ID CIS.
+# - assertions: expectativas sobre la evidencia guardada (método "examine" de NIST SP 800-53A).
+# - Las tareas Ansible que remedian un control se llaman "HL-XXX-NNN | ...": el modo check las enlaza solo.
+controls:
+  # ------------------------------------------------------------------ SSH
+  - control_id: HL-SSH-001
+    domain: ssh
+    title_es: Acceso directo de root por SSH deshabilitado
+    severity: high
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: ssh, tags: [ssh]}
+    evidence: [sshd_effective]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.20"}
+      - {framework: lynis, ref_id: SSH-7408, match: PermitRootLogin}
+    assertions:
+      - {probe: sshd_effective, pattern: '^permitrootlogin no$'}
+
+  - control_id: HL-SSH-002
+    domain: ssh
+    title_es: Autenticación SSH solo con clave pública, sin contraseñas ni contraseñas vacías
+    severity: high
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: ssh, tags: [ssh]}
+    evidence: [sshd_effective]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.19"}
+    assertions:
+      - {probe: sshd_effective, pattern: '^passwordauthentication no$'}
+      - {probe: sshd_effective, pattern: '^kbdinteractiveauthentication no$'}
+      - {probe: sshd_effective, pattern: '^permitemptypasswords no$'}
+      - {probe: sshd_effective, pattern: '^pubkeyauthentication yes$'}
+
+  - control_id: HL-SSH-003
+    domain: ssh
+    title_es: Cifrados, MAC e intercambio de claves SSH sin algoritmos débiles
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: ssh, tags: [ssh]}
+    evidence: [sshd_effective]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.6"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.12"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.15"}
+    assertions:
+      - {probe: sshd_effective, pattern: '^ciphers .*(cbc|arcfour|3des|chacha20)', expect: absent}
+      - {probe: sshd_effective, pattern: '^macs .*(md5|hmac-sha1|umac-64|-96)', expect: absent}
+      - {probe: sshd_effective, pattern: '^kexalgorithms .*(group1-sha1|group14-sha1|exchange-sha1)', expect: absent}
+
+  - control_id: HL-SSH-004
+    domain: ssh
+    title_es: Intentos de autenticación, sesiones y conexiones no autenticadas limitados
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: ssh, tags: [ssh]}
+    evidence: [sshd_effective]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.13"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.16"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.17"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.18"}
+      - {framework: lynis, ref_id: SSH-7408, match: 'MaxAuthTries|MaxSessions'}
+    assertions:
+      - {probe: sshd_effective, pattern: '^maxauthtries [1-4]$'}
+      - {probe: sshd_effective, pattern: '^logingracetime ([1-9]|[1-5][0-9]|60)$'}
+
+  - control_id: HL-SSH-005
+    domain: ssh
+    title_es: Reenvíos SSH (X11, TCP, agente y túneles) deshabilitados
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: ssh, tags: [ssh]}
+    evidence: [sshd_effective]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.8"}
+      - {framework: lynis, ref_id: SSH-7408, match: 'X11Forwarding|AllowTcpForwarding|AllowAgentForwarding'}
+    assertions:
+      - {probe: sshd_effective, pattern: '^disableforwarding yes$'}
+      - {probe: sshd_effective, pattern: '^x11forwarding no$'}
+
+  - control_id: HL-SSH-006
+    domain: ssh
+    title_es: Sesiones SSH inactivas se cierran automáticamente
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: ssh, tags: [ssh]}
+    evidence: [sshd_effective]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.7"}
+      - {framework: lynis, ref_id: SSH-7408, match: TCPKeepAlive}
+    assertions:
+      - {probe: sshd_effective, pattern: '^clientaliveinterval ([1-9][0-9]?|[12][0-9]{2}|300)$'}
+      - {probe: sshd_effective, pattern: '^clientalivecountmax [1-3]$'}
+
+  - control_id: HL-SSH-007
+    domain: ssh
+    title_es: Registro detallado de eventos SSH
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: ssh, tags: [ssh]}
+    evidence: [sshd_effective]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.14"}
+      - {framework: lynis, ref_id: SSH-7408, match: LogLevel}
+    assertions:
+      - {probe: sshd_effective, pattern: '^loglevel verbose$'}
+
+  - control_id: HL-SSH-008
+    domain: ssh
+    title_es: Acceso SSH restringido a un grupo autorizado y con aviso legal
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: ssh, tags: [ssh]}
+    evidence: [sshd_effective]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.5"}
+    assertions:
+      - {probe: sshd_effective, pattern: '^allowgroups sshusers$'}
+      - {probe: sshd_effective, pattern: '^banner /etc/issue\.net$'}
+
+  - control_id: HL-SSH-009
+    domain: ssh
+    title_es: Sin autenticación por host, rhosts, GSSAPI ni variables de entorno del usuario
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: ssh, tags: [ssh]}
+    evidence: [sshd_effective]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.9"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.10"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.11"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.21"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.22"}
+    assertions:
+      - {probe: sshd_effective, pattern: '^hostbasedauthentication no$'}
+      - {probe: sshd_effective, pattern: '^ignorerhosts yes$'}
+      - {probe: sshd_effective, pattern: '^permituserenvironment no$'}
+      - {probe: sshd_effective, pattern: '^gssapiauthentication no$'}
+
+  - control_id: HL-SSH-010
+    domain: ssh
+    title_es: Permisos de la configuración SSH y de las claves de host
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: ssh, tags: [ssh]}
+    evidence: [sshd_files]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.1.3"}
+    assertions:
+      - {probe: sshd_files, pattern: '^600 root:root /etc/ssh/sshd_config$'}
+
+  - control_id: HL-SSH-011
+    domain: ssh
+    title_es: Bloqueo automático de fuerza bruta SSH en el bastión (fail2ban)
+    severity: medium
+    method: examine
+    applies_to: [bastion]
+    remediation: {role: fail2ban, tags: [fail2ban]}
+    evidence: [fail2ban]
+    assertions:
+      - {probe: fail2ban, pattern: 'Status for the jail: sshd'}
+
+  # ------------------------------------------------------------------ cuentas
+  - control_id: HL-ACC-001
+    domain: accounts
+    title_es: Caducidad, aviso e inactividad de contraseñas definidos
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [accounts]}
+    evidence: [accounts]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.1.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.1.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.1.5"}
+      - {framework: lynis, ref_id: AUTH-9286}
+    assertions:
+      - {probe: accounts, pattern: '^PASS_MAX_DAYS\s+365$'}
+      - {probe: accounts, pattern: '^INACTIVE=45$'}
+
+  - control_id: HL-ACC-002
+    domain: accounts
+    title_es: Hash de contraseñas fuerte (yescrypt) con rondas configuradas
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [accounts]}
+    evidence: [accounts]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.1.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.4.3"}
+      - {framework: lynis, ref_id: AUTH-9230}
+    assertions:
+      - {probe: accounts, pattern: '^ENCRYPT_METHOD\s+YESCRYPT$'}
+
+  - control_id: HL-ACC-003
+    domain: accounts
+    title_es: Cuentas de sistema sin shell de inicio de sesión
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [accounts]}
+    evidence: [accounts]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.2.7"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.2.8"}
+
+  - control_id: HL-ACC-004
+    domain: accounts
+    title_es: Solo root tiene UID/GID 0 y su PATH no contiene rutas inseguras
+    severity: high
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [accounts]}
+    evidence: [accounts]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.2.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.2.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.2.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.2.5"}
+
+  - control_id: HL-ACC-005
+    domain: accounts
+    title_es: umask restrictiva (027) y cierre de shells inactivas
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [accounts]}
+    evidence: [accounts]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.2.6"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.3.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.4.3.3"}
+      - {framework: lynis, ref_id: AUTH-9328}
+    assertions:
+      - {probe: accounts, pattern: '^UMASK\s+027$'}
+
+  - control_id: HL-ACC-006
+    domain: accounts
+    title_es: Cuenta heredada sin escalada de privilegios sin contraseña
+    severity: high
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [accounts]}
+    evidence: [sudoers]
+    assertions:
+      - {probe: sudoers, pattern: '^deploy\s.*NOPASSWD', expect: absent}
+
+  # ------------------------------------------------------------------ sudo y PAM
+  - control_id: HL-SUDO-001
+    domain: sudo_pam
+    title_es: sudo con pseudo-terminal y archivo de registro propio
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [sudo]}
+    evidence: [sudoers]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.2.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.2.3"}
+    assertions:
+      - {probe: sudoers, pattern: 'Defaults\s+use_pty'}
+      - {probe: sudoers, pattern: 'Defaults\s+logfile="?/var/log/sudo\.log'}
+
+  - control_id: HL-SUDO-002
+    domain: sudo_pam
+    title_es: Reautenticación de sudo con tiempo de espera acotado
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [sudo]}
+    evidence: [sudoers]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.2.5"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.2.6"}
+
+  - control_id: HL-SUDO-003
+    domain: sudo_pam
+    title_es: Uso de su restringido a un grupo vacío
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [sudo]}
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.2.7"}
+
+  - control_id: HL-SUDO-004
+    domain: sudo_pam
+    title_es: Toda escalada de privilegios con sudo exige contraseña
+    severity: high
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [sudo]}
+    evidence: [sudoers]
+    assertions:
+      - {probe: sudoers, pattern: '^(?!ansible\s)\S+\s.*NOPASSWD', expect: absent}
+      - {probe: sudoers, pattern: '^ansible\s.*NOPASSWD', expect: absent}
+
+  - control_id: HL-PAM-001
+    domain: sudo_pam
+    title_es: Bloqueo de cuentas tras intentos fallidos (pam_faillock)
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [pam]}
+    evidence: [pam_policy]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.2.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.1.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.1.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.1.3"}
+    assertions:
+      - {probe: pam_policy, pattern: '^deny\s*=\s*[1-5]$'}
+
+  - control_id: HL-PAM-002
+    domain: sudo_pam
+    title_es: Calidad mínima de contraseñas (pam_pwquality)
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [pam]}
+    evidence: [pam_policy]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.2.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.2.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.2.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.2.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.2.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.2.5"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.2.6"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.2.7"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.2.8"}
+    assertions:
+      - {probe: pam_policy, pattern: '^minlen\s*=\s*(1[4-9]|[2-9][0-9])$'}
+
+  - control_id: HL-PAM-003
+    domain: sudo_pam
+    title_es: Historial de contraseñas impide reutilizarlas
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [pam]}
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.2.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.3.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.3.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.3.3"}
+
+  - control_id: HL-PAM-004
+    domain: sudo_pam
+    title_es: pam_unix no admite contraseñas vacías y usa use_authtok
+    severity: high
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: accounts, tags: [pam]}
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.4.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.4.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "5.3.3.4.4"}
+
+  # ------------------------------------------------------------------ permisos
+  - control_id: HL-PERM-001
+    domain: file_permissions
+    title_es: Permisos de passwd, shadow, group, gshadow y sus respaldos
+    severity: high
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: file_permissions, tags: [permissions]}
+    evidence: [file_permissions]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.5"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.6"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.7"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.8"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.9"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.10"}
+
+  - control_id: HL-PERM-002
+    domain: file_permissions
+    title_es: Sin directorios escribibles por todos sin sticky bit ni archivos huérfanos
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: file_permissions, tags: [permissions]}
+    evidence: [file_permissions]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.11"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.1.12"}
+    assertions:
+      - {probe: file_permissions, pattern: '^/srv/exchange$', expect: absent}
+
+  - control_id: HL-PERM-003
+    domain: file_permissions
+    title_es: cron y at restringidos y con permisos de solo root
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: file_permissions, tags: [permissions]}
+    evidence: [file_permissions]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.4.1.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.4.1.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.4.1.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.4.1.5"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.4.1.6"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.4.1.7"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.4.1.8"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.4.2.1"}
+    assertions:
+      - {probe: file_permissions, pattern: '^600 root:root /etc/crontab$'}
+
+  - control_id: HL-PERM-004
+    domain: file_permissions
+    title_es: Directorios personales y archivos de inicio de usuario protegidos
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: file_permissions, tags: [permissions]}
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.2.9"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "7.2.10"}
+
+  - control_id: HL-PERM-005
+    domain: file_permissions
+    title_es: Avisos de inicio de sesión sin datos del sistema y con permisos correctos
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: file_permissions, tags: [banner]}
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.6.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.6.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.6.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.6.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.6.5"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.6.6"}
+
+  # ------------------------------------------------------------------ servicios y paquetes
+  - control_id: HL-SVC-001
+    domain: services
+    title_es: Clientes inseguros desinstalados (telnet, ftp, rsh, talk, NIS, LDAP)
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: services, tags: [packages]}
+    evidence: [packages]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.2.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.2.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.2.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.2.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.2.5"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.2.6"}
+      - {framework: lynis, ref_id: INSE-8300}
+    assertions:
+      - {probe: packages, pattern: '^(telnet|ftp|tnftp|rsh-redone-client|talk) \S+ installed$', expect: absent}
+
+  - control_id: HL-SVC-002
+    domain: services
+    title_es: Solo los servicios de red que exige el rol del host
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: services, tags: [services]}
+    evidence: [listening_ports, services]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.1.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.1.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.1.6"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.1.10"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.1.13"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.1.16"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.1.18"}
+
+  - control_id: HL-SVC-003
+    domain: services
+    title_es: Sin prelink ni reporte automático de errores
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: services, tags: [packages]}
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.5.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.5.5"}
+
+  - control_id: HL-SVC-004
+    domain: services
+    title_es: Verificación periódica de integridad de archivos (AIDE)
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "6.3.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "6.3.2"}
+
+  - control_id: HL-SVC-005
+    domain: services
+    title_es: Sincronización de hora con una única fuente
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "2.3.1.1"}
+
+  # ------------------------------------------------------------------ kernel
+  - control_id: HL-KRN-001
+    domain: kernel_network
+    title_es: Módulos de sistemas de archivos raros, almacenamiento USB y protocolos poco usados no cargables
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: kernel, tags: [kernel]}
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.1.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.1.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.1.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.1.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.1.5"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.1.6"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.1.7"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.1.8"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.1.9"}
+      - {framework: lynis, ref_id: USB-1000}
+      - {framework: lynis, ref_id: STRG-1846}
+      - {framework: lynis, ref_id: NETW-3200}
+
+  - control_id: HL-KRN-002
+    domain: kernel_network
+    title_es: ASLR activo, ptrace restringido y volcados de memoria deshabilitados
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: kernel, tags: [kernel]}
+    evidence: [sysctl_kernel]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.5.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.5.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.5.3"}
+      - {framework: lynis, ref_id: KRNL-5820}
+
+  - control_id: HL-KRN-003
+    domain: kernel_network
+    title_es: /tmp y /dev/shm montados por separado con nodev, nosuid y noexec
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.2.1.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.2.1.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.2.1.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.2.1.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.2.2.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.2.2.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.1.2.2.4"}
+
+  - control_id: HL-KRN-004
+    domain: kernel_network
+    title_es: AppArmor instalado y aplicado
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.3.1.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.3.1.2"}
+      - {framework: docker_bench, ref_id: "5.2"}
+
+  # ------------------------------------------------------------------ red
+  - control_id: HL-NET-001
+    domain: kernel_network
+    title_es: Sin envío ni aceptación de redirecciones ICMP
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: kernel, tags: [sysctl]}
+    evidence: [sysctl_network]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.5"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.6"}
+    assertions:
+      - {probe: sysctl_network, pattern: '^net\.ipv4\.conf\.all\.send_redirects = 0$'}
+      - {probe: sysctl_network, pattern: '^net\.ipv4\.conf\.all\.accept_redirects = 0$'}
+
+  - control_id: HL-NET-002
+    domain: kernel_network
+    title_es: Filtrado de ruta inversa, sin enrutamiento por origen y registro de paquetes sospechosos
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: kernel, tags: [sysctl]}
+    evidence: [sysctl_network]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.7"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.8"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.9"}
+    assertions:
+      - {probe: sysctl_network, pattern: '^net\.ipv4\.conf\.all\.rp_filter = 1$'}
+      - {probe: sysctl_network, pattern: '^net\.ipv4\.conf\.all\.log_martians = 1$'}
+
+  - control_id: HL-NET-003
+    domain: kernel_network
+    title_es: Protección contra ICMP falso, broadcast, SYN flood y anuncios de router IPv6
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: kernel, tags: [sysctl]}
+    evidence: [sysctl_network]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.3"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.10"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.11"}
+    assertions:
+      - {probe: sysctl_network, pattern: '^net\.ipv4\.tcp_syncookies = 1$'}
+      - {probe: sysctl_network, pattern: '^net\.ipv6\.conf\.all\.accept_ra = 0$'}
+
+  - control_id: HL-NET-004
+    domain: kernel_network
+    title_es: Reenvío de paquetes IP deshabilitado en el kernel
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: kernel, tags: [sysctl]}
+    evidence: [sysctl_network]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "3.3.1"}
+    assertions:
+      - {probe: sysctl_network, pattern: '^net\.ipv4\.ip_forward = 0$'}
+
+  # ------------------------------------------------------------------ firewall
+  - control_id: HL-FW-001
+    domain: firewall
+    title_es: Firewall nftables persistente con política de denegación por defecto
+    severity: high
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: firewall, tags: [firewall]}
+    evidence: [firewall]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "4.3.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "4.3.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "4.3.5"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "4.3.6"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "4.3.8"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "4.3.10"}
+    assertions:
+      - {probe: firewall, pattern: 'hook input priority (filter|0); policy drop;'}
+
+  - control_id: HL-FW-002
+    domain: firewall
+    title_es: Una sola herramienta de firewall gestionada como servicio
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "4.1.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "4.3.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "4.3.9"}
+
+  - control_id: HL-FW-003
+    domain: firewall
+    title_es: La base de datos solo es alcanzable desde la capa web
+    severity: high
+    method: test
+    applies_to: [bastion, web, db]
+    remediation: {role: firewall, tags: [firewall]}
+    evidence: [listening_ports]
+    refs:
+      - {framework: trivy, ref_id: HLC-007}
+      - {framework: trivy, ref_id: HLC-010}
+
+  - control_id: HL-FW-004
+    domain: firewall
+    title_es: SSH entre nodos solo desde el bastión
+    severity: high
+    method: test
+    applies_to: [bastion, web, db]
+    remediation: {role: firewall, tags: [firewall]}
+
+  # ------------------------------------------------------------------ registros y auditoría
+  - control_id: HL-LOG-001
+    domain: logging
+    title_es: Servicio de registro activo y capturando autenticación
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: services, tags: [logging]}
+    evidence: [logging]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "6.1.3.1"}
+      - {framework: lynis, ref_id: LOGG-2130}
+    assertions:
+      - {probe: logging, pattern: 'rsyslog\s+RUNNING'}
+
+  - control_id: HL-LOG-002
+    domain: logging
+    title_es: Archivos de registro con permisos restrictivos
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: services, tags: [logging]}
+    evidence: [logging]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "6.1.4.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "6.1.3.4"}
+
+  - control_id: HL-LOG-003
+    domain: logging
+    title_es: journald y servicios de registro gestionados por systemd
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "6.1.1.1"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "6.1.1.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "6.1.2.1.4"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "6.1.3.2"}
+      - {framework: cis_ubuntu2404_v1, ref_id: "6.1.3.3"}
+      - {framework: lynis, ref_id: LOGG-2138}
+
+  - control_id: HL-AUD-001
+    domain: auditing
+    title_es: Auditoría del kernel (auditd) con reglas de eventos privilegiados
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: lynis, ref_id: ACCT-9628}
+
+  # ------------------------------------------------------------------ actualizaciones
+  - control_id: HL-UPD-001
+    domain: updates
+    title_es: Actualizaciones de seguridad automáticas configuradas
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    remediation: {role: services, tags: [updates]}
+    evidence: [updates]
+    refs:
+      - {framework: cis_ubuntu2404_v1, ref_id: "1.2.2.1"}
+    assertions:
+      - {probe: updates, pattern: 'APT::Periodic::Unattended-Upgrade "1";'}
+
+  # ------------------------------------------------------------------ runtime de contenedores
+  - control_id: HL-CTR-001
+    domain: container_runtime
+    title_es: Puertos publicados solo en la interfaz de loopback del anfitrión
+    severity: high
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: trivy, ref_id: HLC-001}
+      - {framework: docker_bench, ref_id: "5.14"}
+
+  - control_id: HL-CTR-002
+    domain: container_runtime
+    title_es: Capacidades del kernel mínimas (cap_drop ALL)
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: trivy, ref_id: HLC-002}
+      - {framework: docker_bench, ref_id: "5.4"}
+
+  - control_id: HL-CTR-003
+    domain: container_runtime
+    title_es: Sin contenedores privilegiados, socket de Docker ni directorios sensibles del anfitrión
+    severity: critical
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: trivy, ref_id: HLC-003}
+      - {framework: trivy, ref_id: HLC-006}
+      - {framework: docker_bench, ref_id: "5.5"}
+      - {framework: docker_bench, ref_id: "5.6"}
+      - {framework: docker_bench, ref_id: "5.32"}
+
+  - control_id: HL-CTR-004
+    domain: container_runtime
+    title_es: Límites de memoria, CPU y procesos por contenedor
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: trivy, ref_id: HLC-004}
+      - {framework: docker_bench, ref_id: "5.11"}
+      - {framework: docker_bench, ref_id: "5.12"}
+      - {framework: docker_bench, ref_id: "5.29"}
+
+  - control_id: HL-CTR-005
+    domain: container_runtime
+    title_es: Política de reinicio con tope de intentos
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: trivy, ref_id: HLC-005}
+      - {framework: docker_bench, ref_id: "5.15"}
+
+  - control_id: HL-CTR-006
+    domain: container_runtime
+    title_es: Procesos sin posibilidad de ganar privilegios (no-new-privileges)
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: trivy, ref_id: HLC-008}
+      - {framework: docker_bench, ref_id: "5.26"}
+
+  - control_id: HL-CTR-007
+    domain: container_runtime
+    title_es: Sistema de archivos raíz del contenedor de solo lectura
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: trivy, ref_id: HLC-009}
+      - {framework: docker_bench, ref_id: "5.13"}
+
+  - control_id: HL-CTR-008
+    domain: container_runtime
+    title_es: Contenedor ejecutado con usuario no root y sin sshd
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: trivy, ref_id: DS-0002}
+      - {framework: docker_bench, ref_id: "4.1"}
+      - {framework: docker_bench, ref_id: "5.7"}
+
+  - control_id: HL-CTR-009
+    domain: container_runtime
+    title_es: Solo se publican los puertos que el rol necesita
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: docker_bench, ref_id: "5.9"}
+      - {framework: trivy, ref_id: DS-0004}
+
+  - control_id: HL-CTR-010
+    domain: container_runtime
+    title_es: Segmentación en redes propias (sin bridge por defecto)
+    severity: medium
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: docker_bench, ref_id: "5.30"}
+
+  - control_id: HL-CTR-011
+    domain: container_runtime
+    title_es: Healthcheck definido y verificado en tiempo de ejecución
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: docker_bench, ref_id: "4.6"}
+      - {framework: docker_bench, ref_id: "5.27"}
+      - {framework: trivy, ref_id: DS-0026}
+
+  - control_id: HL-CTR-012
+    domain: container_runtime
+    title_es: Namespaces del anfitrión no compartidos y seccomp por defecto activo
+    severity: high
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: docker_bench, ref_id: "5.10"}
+      - {framework: docker_bench, ref_id: "5.16"}
+      - {framework: docker_bench, ref_id: "5.17"}
+      - {framework: docker_bench, ref_id: "5.20"}
+      - {framework: docker_bench, ref_id: "5.21"}
+      - {framework: docker_bench, ref_id: "5.22"}
+      - {framework: docker_bench, ref_id: "5.31"}
+
+  - control_id: HL-CTR-013
+    domain: container_runtime
+    title_es: Confianza de contenido de imágenes (Docker Content Trust)
+    severity: low
+    method: examine
+    applies_to: [bastion, web, db]
+    refs:
+      - {framework: docker_bench, ref_id: "4.5"}
+
+  # ------------------------------------------------------------------ web
+  - control_id: HL-WEB-001
+    domain: web
+    title_es: nginx sin versión expuesta y con cabeceras de seguridad
+    severity: medium
+    method: examine
+    applies_to: [web]
+    remediation: {role: nginx, tags: [nginx]}
+    evidence: [nginx_config]
+    assertions:
+      - {probe: nginx_config, pattern: '^\s*server_tokens off;'}
+      - {probe: nginx_config, pattern: 'add_header X-Content-Type-Options'}
+      - {probe: nginx_config, pattern: 'add_header Content-Security-Policy'}
+
+  - control_id: HL-WEB-002
+    domain: web
+    title_es: Proceso maestro de nginx sin privilegios de root
+    severity: medium
+    method: examine
+    applies_to: [web]
+    remediation: {role: nginx, tags: [nginx]}
+    evidence: [nginx_config]
+    assertions:
+      - {probe: nginx_config, pattern: '^root\s+nginx: master', expect: absent}
+      - {probe: nginx_config, pattern: '^www-data\s+nginx: master'}
+
+  - control_id: HL-WEB-003
+    domain: web
+    title_es: Métodos HTTP y tamaño de petición acotados
+    severity: low
+    method: examine
+    applies_to: [web]
+    remediation: {role: nginx, tags: [nginx]}
+    evidence: [nginx_config]
+    assertions:
+      - {probe: nginx_config, pattern: 'limit_except GET HEAD'}
+      - {probe: nginx_config, pattern: 'client_max_body_size'}
+
+  - control_id: HL-WEB-004
+    domain: web
+    title_es: Tráfico web cifrado con TLS 1.2 o superior
+    severity: medium
+    method: examine
+    applies_to: [web]
+    remediation: {role: nginx, tags: [nginx]}
+    evidence: [nginx_config]
+    refs:
+      - {framework: lynis, ref_id: HTTP-6710}
+    assertions:
+      - {probe: nginx_config, pattern: 'listen 8443 ssl'}
+      - {probe: nginx_config, pattern: 'ssl_protocols TLSv1\.2 TLSv1\.3;'}
+
+  # ------------------------------------------------------------------ base de datos
+  - control_id: HL-DB-001
+    domain: database
+    title_es: PostgreSQL escucha solo en la red de datos
+    severity: high
+    method: examine
+    applies_to: [db]
+    remediation: {role: postgresql, tags: [postgresql]}
+    evidence: [postgresql_config]
+    assertions:
+      - {probe: postgresql_config, pattern: '^listen_addresses\|\*$', expect: absent}
+
+  - control_id: HL-DB-002
+    domain: database
+    title_es: pg_hba solo admite la capa web con scram-sha-256
+    severity: high
+    method: examine
+    applies_to: [db]
+    remediation: {role: postgresql, tags: [postgresql]}
+    evidence: [postgresql_config]
+    assertions:
+      - {probe: postgresql_config, pattern: '0\.0\.0\.0/0', expect: absent}
+      - {probe: postgresql_config, pattern: '^host\s+\S+\s+\S+\s+\S+\s+(md5|trust|password)$', expect: absent}
+
+  - control_id: HL-DB-003
+    domain: database
+    title_es: Registro de conexiones y desconexiones de la base de datos
+    severity: medium
+    method: examine
+    applies_to: [db]
+    remediation: {role: postgresql, tags: [postgresql]}
+    evidence: [postgresql_config]
+    assertions:
+      - {probe: postgresql_config, pattern: '^log_connections\|on$'}
+      - {probe: postgresql_config, pattern: '^log_disconnections\|on$'}
+
+  - control_id: HL-DB-004
+    domain: database
+    title_es: Archivos de configuración de PostgreSQL no legibles por otros usuarios
+    severity: medium
+    method: examine
+    applies_to: [db]
+    remediation: {role: postgresql, tags: [postgresql]}
+    refs:
+      - {framework: lynis, ref_id: DBS-1828}

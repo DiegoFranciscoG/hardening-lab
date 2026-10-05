@@ -1,0 +1,84 @@
+---
+# Sondas de evidencia (método "examine" de NIST SP 800-53A): cada salida se guarda en
+# reports/runs/<run_id>/evidence/<host>/<probe>.txt con su SHA-256 y se enlaza desde el informe.
+hlab_probes:
+  - name: sshd_effective
+    roles: [bastion, web, db]
+    cmd: sshd -T
+  - name: sshd_files
+    roles: [bastion, web, db]
+    cmd: stat -c '%a %U:%G %n' /etc/ssh/sshd_config /etc/ssh/sshd_config.d/* /etc/ssh/ssh_host_*
+  - name: accounts
+    roles: [bastion, web, db]
+    cmd: >-
+      echo '# UID 0'; awk -F: '$3==0{print $1}' /etc/passwd;
+      echo '# cuentas de sistema con shell'; awk -F: '$3<1000 && $1!="root" && $7!~/(nologin|false)$/ {print $1":"$7}' /etc/passwd;
+      echo '# login.defs'; grep -E '^(PASS_MAX_DAYS|PASS_MIN_DAYS|PASS_WARN_AGE|ENCRYPT_METHOD|UMASK)' /etc/login.defs;
+      echo '# useradd'; useradd -D | grep INACTIVE
+  - name: sudoers
+    roles: [bastion, web, db]
+    cmd: >-
+      echo '# Defaults'; grep -rhE '^\s*Defaults' /etc/sudoers /etc/sudoers.d/;
+      echo '# NOPASSWD'; grep -rhE 'NOPASSWD' /etc/sudoers /etc/sudoers.d/ || true;
+      echo '# archivos'; ls -l /etc/sudoers.d/
+  - name: pam_policy
+    roles: [bastion, web, db]
+    cmd: >-
+      echo '# pwquality'; grep -vE '^\s*(#|$)' /etc/security/pwquality.conf || true;
+      echo '# faillock'; grep -vE '^\s*(#|$)' /etc/security/faillock.conf || true
+  - name: file_permissions
+    roles: [bastion, web, db]
+    cmd: >-
+      stat -c '%a %U:%G %n' /etc/passwd /etc/passwd- /etc/group /etc/group- /etc/shadow /etc/shadow- /etc/gshadow /etc/gshadow-
+      /etc/crontab /etc/cron.d /etc/cron.daily /etc/cron.hourly /etc/cron.weekly /etc/cron.monthly 2>&1;
+      echo '# directorios escribibles por todos sin sticky bit';
+      find / -xdev -type d -perm -0002 ! -perm -1000 2>/dev/null
+  - name: packages
+    roles: [bastion, web, db]
+    cmd: >-
+      dpkg-query -W -f='${Package} ${Version} ${db:Status-Status}\n'
+      openssh-server sudo telnet ftp tnftp rsh-redone-client talk nftables ufw fail2ban nginx postgresql-16
+      unattended-upgrades libpam-pwquality openscap-scanner 2>&1
+  - name: services
+    roles: [bastion, web, db]
+    cmd: supervisorctl status
+  - name: listening_ports
+    roles: [bastion, web, db]
+    cmd: ss -tlnp
+  - name: sysctl_network
+    roles: [bastion, web, db]
+    cmd: >-
+      sysctl net.ipv4.ip_forward net.ipv4.conf.all.send_redirects net.ipv4.conf.all.accept_redirects
+      net.ipv4.conf.all.secure_redirects net.ipv4.conf.all.rp_filter net.ipv4.conf.all.accept_source_route
+      net.ipv4.conf.all.log_martians net.ipv4.tcp_syncookies net.ipv4.icmp_echo_ignore_broadcasts
+      net.ipv4.icmp_ignore_bogus_error_responses net.ipv6.conf.all.accept_ra net.ipv6.conf.all.accept_redirects 2>&1
+  - name: sysctl_kernel
+    roles: [bastion, web, db]
+    cmd: sysctl kernel.randomize_va_space kernel.yama.ptrace_scope fs.suid_dumpable kernel.kptr_restrict kernel.dmesg_restrict 2>&1
+  - name: firewall
+    roles: [bastion, web, db]
+    cmd: nft list ruleset 2>&1
+  - name: logging
+    roles: [bastion, web, db]
+    cmd: >-
+      supervisorctl status rsyslog;
+      stat -c '%a %U:%G %n' /var/log/auth.log /var/log/syslog 2>&1;
+      grep -hE '^\$FileCreateMode|^\$Umask' /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null || true
+  - name: updates
+    roles: [bastion, web, db]
+    cmd: cat /etc/apt/apt.conf.d/20auto-upgrades 2>&1
+  - name: fail2ban
+    roles: [bastion]
+    cmd: fail2ban-client status sshd 2>&1
+  - name: nginx_config
+    roles: [web]
+    cmd: >-
+      nginx -T 2>&1 | grep -E 'server_tokens|listen|add_header|autoindex|user |client_max_body_size|limit_except|ssl_' ;
+      ps -o user=,args= -C nginx
+  - name: postgresql_config
+    roles: [db]
+    cmd: >-
+      runuser -u postgres -- psql -XAt -c "select name, setting from pg_settings where name in
+      ('listen_addresses','log_connections','log_disconnections','password_encryption','ssl')";
+      echo '# pg_hba'; grep -vE '^\s*(#|$)' /etc/postgresql/16/main/pg_hba.conf;
+      ps -o user=,args= -C postgres | head -1

@@ -1,0 +1,273 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.75.0"
+  },
+  "ReportID": "01a1097a-fbc1-7995-97b6-32c40d616e12",
+  "CreatedAt": "2026-10-05T00:33:37.217635316Z",
+  "ArtifactName": "/tmp/trivy-target",
+  "ArtifactType": "filesystem",
+  "Results": [
+    {
+      "Target": "compose/compose.effective.yaml",
+      "Class": "config",
+      "Type": "yaml",
+      "MisconfSummary": {
+        "Successes": 3,
+        "Failures": 17
+      },
+      "Misconfigurations": [
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-002",
+          "AVDID": "HLC-002",
+          "Title": "El contenedor conserva las capacidades por defecto",
+          "Message": "[lab-bastion] no declara cap_drop: [ALL]",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-002",
+          "AVDID": "HLC-002",
+          "Title": "El contenedor conserva las capacidades por defecto",
+          "Message": "[lab-db] no declara cap_drop: [ALL]",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-002",
+          "AVDID": "HLC-002",
+          "Title": "El contenedor conserva las capacidades por defecto",
+          "Message": "[lab-web] no declara cap_drop: [ALL]",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-004",
+          "AVDID": "HLC-004",
+          "Title": "Sin límites de memoria o de procesos",
+          "Message": "[lab-bastion] no define mem_limit y pids_limit",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-004",
+          "AVDID": "HLC-004",
+          "Title": "Sin límites de memoria o de procesos",
+          "Message": "[lab-db] no define mem_limit y pids_limit",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-004",
+          "AVDID": "HLC-004",
+          "Title": "Sin límites de memoria o de procesos",
+          "Message": "[lab-web] no define mem_limit y pids_limit",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-005",
+          "AVDID": "HLC-005",
+          "Title": "Política de reinicio sin tope",
+          "Message": "[lab-bastion] usa restart: always",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-005",
+          "AVDID": "HLC-005",
+          "Title": "Política de reinicio sin tope",
+          "Message": "[lab-db] usa restart: always",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-005",
+          "AVDID": "HLC-005",
+          "Title": "Política de reinicio sin tope",
+          "Message": "[lab-web] usa restart: always",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-007",
+          "AVDID": "HLC-007",
+          "Title": "Puerto de base de datos publicado en el anfitrión",
+          "Message": "[lab-db] publica el puerto 5432 en el anfitrión",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-008",
+          "AVDID": "HLC-008",
+          "Title": "Sin no-new-privileges",
+          "Message": "[lab-bastion] no declara no-new-privileges",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-008",
+          "AVDID": "HLC-008",
+          "Title": "Sin no-new-privileges",
+          "Message": "[lab-db] no declara no-new-privileges",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-008",
+          "AVDID": "HLC-008",
+          "Title": "Sin no-new-privileges",
+          "Message": "[lab-web] no declara no-new-privileges",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-009",
+          "AVDID": "HLC-009",
+          "Title": "Sistema de archivos raíz escribible",
+          "Message": "[lab-bastion] tiene el sistema de archivos raíz escribible",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-009",
+          "AVDID": "HLC-009",
+          "Title": "Sistema de archivos raíz escribible",
+          "Message": "[lab-db] tiene el sistema de archivos raíz escribible",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-009",
+          "AVDID": "HLC-009",
+          "Title": "Sistema de archivos raíz escribible",
+          "Message": "[lab-web] tiene el sistema de archivos raíz escribible",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-010",
+          "AVDID": "HLC-010",
+          "Title": "Base de datos en una red con salida",
+          "Message": "[lab-db] está conectada a la red no interna flat",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-001",
+          "AVDID": "HLC-001",
+          "Title": "Puerto publicado en todas las interfaces del anfitrión",
+          "Message": "No issues found",
+          "Severity": "HIGH",
+          "Status": "PASS"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-003",
+          "AVDID": "HLC-003",
+          "Title": "Contenedor privilegiado",
+          "Message": "No issues found",
+          "Severity": "CRITICAL",
+          "Status": "PASS"
+        },
+        {
+          "Type": "YAML Security Check",
+          "ID": "HLC-006",
+          "AVDID": "HLC-006",
+          "Title": "Socket de Docker montado en el contenedor",
+          "Message": "No issues found",
+          "Severity": "CRITICAL",
+          "Status": "PASS"
+        }
+      ]
+    },
+    {
+      "Target": "images/controller/Dockerfile",
+      "Class": "config",
+      "Type": "dockerfile",
+      "MisconfSummary": {
+        "Successes": 27,
+        "Failures": 0
+      },
+      "Misconfigurations": [
+        {
+          "Type": "Dockerfile Security Check",
+          "ID": "DS-0001",
+          "Title": "':latest' tag used",
+          "Message": "No issues found",
+          "Severity": "MEDIUM",
+          "Status": "PASS"
+        },
+        {
+          "Type": "Dockerfile Security Check",
+          "ID": "DS-0002",
+          "Title": "Image user should not be 'root'",
+          "Message": "No issues found",
+          "Severity": "HIGH",
+          "Status": "PASS"
+        }
+      ]
+    },
+    {
+      "Target": "images/node/Dockerfile",
+      "Class": "config",
+      "Type": "dockerfile",
+      "MisconfSummary": {
+        "Successes": 25,
+        "Failures": 2
+      },
+      "Misconfigurations": [
+        {
+          "Type": "Dockerfile Security Check",
+          "ID": "DS-0002",
+          "Title": "Image user should not be 'root'",
+          "Message": "Specify at least 1 USER command in Dockerfile with non-root user as argument",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "Dockerfile Security Check",
+          "ID": "DS-0004",
+          "Title": "Port 22 exposed",
+          "Message": "Port 22 should not be exposed in Dockerfile",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "Type": "Dockerfile Security Check",
+          "ID": "DS-0001",
+          "Title": "':latest' tag used",
+          "Message": "No issues found",
+          "Severity": "MEDIUM",
+          "Status": "PASS"
+        },
+        {
+          "Type": "Dockerfile Security Check",
+          "ID": "DS-0005",
+          "Title": "ADD instead of COPY",
+          "Message": "No issues found",
+          "Severity": "LOW",
+          "Status": "PASS"
+        }
+      ]
+    }
+  ]
+}

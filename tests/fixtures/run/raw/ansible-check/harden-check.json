@@ -1,0 +1,303 @@
+{
+  "custom_stats": {},
+  "global_custom_stats": {},
+  "plays": [
+    {
+      "play": {
+        "id": "35a7b4e9-fc83-c9f3-026e-000000000004",
+        "name": "Harden every lab host"
+      },
+      "tasks": [
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "gather_facts",
+              "changed": false
+            },
+            "lab-db": {
+              "action": "gather_facts",
+              "changed": false
+            },
+            "lab-web": {
+              "action": "gather_facts",
+              "changed": false
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-0000000000b3",
+            "name": "Gathering Facts"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "All items completed"
+            },
+            "lab-db": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "All items completed"
+            },
+            "lab-web": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "All items completed"
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-00000000000f",
+            "name": "accounts : HL-ACC-001, HL-ACC-002, HL-ACC-005 | Set password aging, hashing and umask in login.defs"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "line replaced"
+            },
+            "lab-db": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "line replaced"
+            },
+            "lab-web": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "line replaced"
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-000000000011",
+            "name": "accounts : HL-ACC-001 | Lock accounts after the password expires"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.getent",
+              "changed": false
+            },
+            "lab-db": {
+              "action": "ansible.builtin.getent",
+              "changed": false
+            },
+            "lab-web": {
+              "action": "ansible.builtin.getent",
+              "changed": false
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-000000000012",
+            "name": "accounts : HL-ACC-003 | Read local accounts"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.user",
+              "changed": false,
+              "msg": "All items skipped",
+              "skipped": true
+            },
+            "lab-db": {
+              "action": "ansible.builtin.user",
+              "changed": true,
+              "msg": "All items completed"
+            },
+            "lab-web": {
+              "action": "ansible.builtin.user",
+              "changed": false,
+              "msg": "All items skipped",
+              "skipped": true
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-000000000013",
+            "name": "accounts : HL-ACC-003 | Remove the login shell from system accounts"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "line replaced"
+            },
+            "lab-db": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "line replaced"
+            },
+            "lab-web": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "line replaced"
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-000000000015",
+            "name": "accounts : HL-ACC-004 | Keep only existing system directories in the default PATH"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.copy",
+              "changed": true
+            },
+            "lab-db": {
+              "action": "ansible.builtin.copy",
+              "changed": true
+            },
+            "lab-web": {
+              "action": "ansible.builtin.copy",
+              "changed": true
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-000000000016",
+            "name": "accounts : HL-ACC-005 | Set the shell timeout for interactive sessions"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "All items completed"
+            },
+            "lab-db": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "All items completed"
+            },
+            "lab-web": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "All items completed"
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-000000000017",
+            "name": "accounts : HL-ACC-005 | Set a restrictive umask for shells"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.file",
+              "changed": true
+            },
+            "lab-db": {
+              "action": "ansible.builtin.file",
+              "changed": true
+            },
+            "lab-web": {
+              "action": "ansible.builtin.file",
+              "changed": true
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-000000000018",
+            "name": "accounts : HL-ACC-006 | Remove the legacy passwordless sudo rule"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.template",
+              "changed": true
+            },
+            "lab-db": {
+              "action": "ansible.builtin.template",
+              "changed": true
+            },
+            "lab-web": {
+              "action": "ansible.builtin.template",
+              "changed": true
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-000000000019",
+            "name": "accounts : HL-SUDO-001, HL-SUDO-002 | Configure sudo defaults"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.group",
+              "changed": true
+            },
+            "lab-db": {
+              "action": "ansible.builtin.group",
+              "changed": true
+            },
+            "lab-web": {
+              "action": "ansible.builtin.group",
+              "changed": true
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-00000000001a",
+            "name": "accounts : HL-SUDO-003 | Create the empty group allowed to use su"
+          }
+        },
+        {
+          "hosts": {
+            "lab-bastion": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "line replaced"
+            },
+            "lab-db": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "line replaced"
+            },
+            "lab-web": {
+              "action": "ansible.builtin.lineinfile",
+              "changed": true,
+              "msg": "line replaced"
+            }
+          },
+          "task": {
+            "id": "35a7b4e9-fc83-c9f3-026e-00000000001b",
+            "name": "accounts : HL-SUDO-003 | Restrict su to that group"
+          }
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "lab-bastion": {
+      "changed": 32,
+      "failures": 1,
+      "ignored": 0,
+      "ok": 43,
+      "rescued": 0,
+      "skipped": 2,
+      "unreachable": 0
+    },
+    "lab-db": {
+      "changed": 33,
+      "failures": 1,
+      "ignored": 0,
+      "ok": 44,
+      "rescued": 0,
+      "skipped": 1,
+      "unreachable": 0
+    },
+    "lab-web": {
+      "changed": 32,
+      "failures": 1,
+      "ignored": 0,
+      "ok": 43,
+      "rescued": 0,
+      "skipped": 2,
+      "unreachable": 0
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "dockerbenchsecurity": "1.6.0",
+  "start": 1791160230,
+  "tests": [
+    {
+      "id": "4",
+      "desc": "Container Images and Build File",
+      "results": [
+        {
+          "id": "4.1",
+          "desc": "Ensure that a user for the container has been created (Automated)",
+          "result": "WARN",
+          "details": "running as root:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion",
+            "lab-web",
+            "lab-db"
+          ],
+          "remediation": "You should ensure that the Dockerfile for each container image contains the information: USER <username or ID>. If there is no specific user created in the container base image, then make use of the useradd command to add a specific user before the USER instruction in the Dockerfile.",
+          "remediation-impact": "Running as a non-root user can present challenges where you wish to bind mount volumes from the underlying host. In this case, care should be taken to ensure that the user running the contained process can read and write to the bound directory, according to their requirements."
+        },
+        {
+          "id": "4.2",
+          "desc": "Ensure that containers use only trusted base images (Manual)",
+          "result": "NOTE",
+          "remediation": "Configure and use Docker Content trust. View the history of each Docker image to evaluate its risk, dependent on the sensitivity of the application you wish to deploy using it. Scan Docker images for vulnerabilities at regular intervals.",
+          "remediation-impact": "None."
+        },
+        {
+          "id": "4.6",
+          "desc": "Ensure that HEALTHCHECK instructions have been added to container images (Automated)",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "desc": "Container Runtime",
+      "results": [
+        {
+          "id": "5.9",
+          "desc": "Ensure that only needed ports are open on the container (Manual)",
+          "result": "WARN",
+          "details": "Containers with open ports:  lab-bastion:2222 lab-web:2223 lab-web:18080 lab-db:2224 lab-db:15432",
+          "items": [
+            "lab-bastion:2222",
+            "lab-web:2223",
+            "lab-web:18080",
+            "lab-db:2224",
+            "lab-db:15432"
+          ],
+          "remediation": "You should ensure that the Dockerfile for each container image only exposes needed ports.",
+          "remediation-impact": "None."
+        },
+        {
+          "id": "5.10",
+          "desc": "Ensure that the host's network namespace is not shared (Automated)",
+          "result": "PASS"
+        },
+        {
+          "id": "5.11",
+          "desc": "Ensure that the memory usage for containers is limited (Automated)",
+          "result": "WARN",
+          "details": "Container running without memory restrictions:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion",
+            "lab-web",
+            "lab-db"
+          ],
+          "remediation": "You should run the container with only as much memory as it requires by using the --memory argument.",
+          "remediation-impact": "If correct memory limits are not set on each container, one process can expand its usage and cause other containers to run out of resources."
+        },
+        {
+          "id": "5.19",
+          "desc": "Ensure that the default ulimit is overwritten at runtime if needed (Manual)",
+          "result": "INFO",
+          "details": "Containers with no default ulimit override:  lab-bastion lab-web lab-db",
+          "items": [
+            "lab-bastion",
+            "lab-web",
+            "lab-db"
+          ],
+          "remediation": "You should only override the default ulimit settings if needed in a specific case.",
+          "remediation-impact": "If ulimits are not set correctly, overutilization by individual containers could make the host system unusable."
+        },
+        {
+          "id": "5.28",
+          "desc": "Ensure that Docker commands always make use of the latest version of their image (Manual)",
+          "result": "INFO",
+          "remediation": "You should use proper version pinning mechanisms (the <latest> tag which is assigned by default is still vulnerable to caching attacks) to avoid extracting cached older versions. Version pinning mechanisms should be used for base images, packages, and entire images. You can customize version pinning rules according to your requirements.",
+          "remediation-impact": "None."
+        }
+      ]
+    }
+  ],
+  "checks": 44,
+  "score": 7,
+  "end": 1791160245
+}

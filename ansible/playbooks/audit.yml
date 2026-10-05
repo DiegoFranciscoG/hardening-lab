@@ -1,0 +1,163 @@
+---
+# Auditoría de los nodos. El auditor trae sus herramientas (Lynis y contenido SCAP) y las retira al terminar;
+# en el nodo solo queda el escáner openscap-scanner del sistema.
+- name: Audit lab hosts
+  hosts: all
+  become: true
+  gather_facts: true
+  vars_files:
+    - vars/probes.yml
+  tasks:
+    - name: Create audit working directory
+      ansible.builtin.file:
+        path: "{{ hlab_audit_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Upload Lynis
+      ansible.builtin.unarchive:
+        src: "{{ hlab_tools_dir }}/lynis.tar.gz"
+        dest: "{{ hlab_audit_dir }}"
+        owner: root
+        group: root
+
+    - name: Run Lynis
+      ansible.builtin.command:
+        cmd: >-
+          ./lynis audit system --quick --no-colors --auditor hardening-lab
+          --report-file {{ hlab_audit_dir }}/lynis-report.dat --logfile {{ hlab_audit_dir }}/lynis.log
+        chdir: "{{ hlab_audit_dir }}/lynis"
+      changed_when: false
+
+    - name: Fetch Lynis report
+      ansible.builtin.fetch:
+        src: "{{ hlab_audit_dir }}/lynis-report.dat"
+        dest: "{{ hlab_run_dir }}/raw/lynis/{{ inventory_hostname }}.dat"
+        flat: true
+
+    - name: Upload SCAP data stream
+      ansible.builtin.copy:
+        src: "{{ hlab_tools_dir }}/ssg-ubuntu2404-ds.xml"
+        dest: "{{ hlab_audit_dir }}/ssg-ubuntu2404-ds.xml"
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Upload the OpenSCAP SCE helper (oscap 1.3.9 needs it when /tmp is noexec)
+      ansible.builtin.copy:
+        src: "{{ hlab_tools_dir }}/oscap-run-sce-script"
+        dest: /usr/local/bin/oscap-run-sce-script
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Evaluate CIS profile with OpenSCAP
+      ansible.builtin.command:
+        cmd: >-
+          oscap xccdf eval --profile {{ hlab_scap_profile }}
+          --results {{ hlab_audit_dir }}/oscap-results.xml
+          {{ hlab_audit_dir }}/ssg-ubuntu2404-ds.xml
+      register: hlab_oscap
+      changed_when: false
+      failed_when: hlab_oscap.rc not in [0, 2]
+
+    - name: Compress OpenSCAP results
+      ansible.builtin.command:
+        cmd: gzip -9 -f {{ hlab_audit_dir }}/oscap-results.xml
+      changed_when: false
+
+    - name: Fetch OpenSCAP results
+      ansible.builtin.fetch:
+        src: "{{ hlab_audit_dir }}/oscap-results.xml.gz"
+        dest: "{{ hlab_run_dir }}/raw/openscap/{{ inventory_hostname }}.xml.gz"
+        flat: true
+
+    - name: Collect tool and package versions
+      ansible.builtin.shell:
+        cmd: >-
+          set -o pipefail;
+          oscap --version | head -1 | awk '{print "openscap="$NF}';
+          dpkg-query -W -f='${Package}=${Version}\n' openssh-server sudo openscap-scanner nginx postgresql-16 fail2ban 2>/dev/null || true
+        executable: /bin/bash
+      register: hlab_versions
+      changed_when: false
+
+    - name: Run evidence probes
+      ansible.builtin.shell:
+        cmd: "{{ item.cmd }}"
+        executable: /bin/bash
+      loop: "{{ hlab_probes | selectattr('roles', 'contains', lab_role) | list }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: hlab_probe_results
+      changed_when: false
+      failed_when: false
+
+    - name: Create evidence directory on the controller
+      ansible.builtin.file:
+        path: "{{ hlab_run_dir }}/evidence/{{ inventory_hostname }}"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+      become: false
+
+    - name: Save evidence files on the controller
+      ansible.builtin.copy:
+        content: |
+          # host: {{ inventory_hostname }}
+          # probe: {{ item.item.name }}
+          # command: {{ item.item.cmd | regex_replace('\s+', ' ') | trim }}
+          # exit_code: {{ item.rc }}
+          {{ item.stdout }}
+          {% if item.stderr %}{{ item.stderr }}{% endif %}
+        dest: "{{ hlab_run_dir }}/evidence/{{ inventory_hostname }}/{{ item.item.name }}.txt"
+        mode: "0644"
+      loop: "{{ hlab_probe_results.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+      delegate_to: localhost
+      become: false
+
+    - name: Test network flows from this host
+      ansible.builtin.command:
+        cmd: >-
+          nc -z -w 2
+          {{ hostvars[item.target].lab_ip.baseline if hlab_lab_state == 'baseline'
+             else hostvars[item.target].lab_ip[item.network | default('admin')] }}
+          {{ item.port }}
+      loop: "{{ hlab_flow_tests | selectattr('source', 'equalto', inventory_hostname) | list }}"
+      loop_control:
+        label: "{{ item.source }} -> {{ item.target }}:{{ item.port }}"
+      register: hlab_flows
+      changed_when: false
+      failed_when: false
+
+    - name: Save facts, versions and flow results on the controller
+      ansible.builtin.copy:
+        content: "{{ hlab_host_facts | to_nice_json }}"
+        dest: "{{ hlab_run_dir }}/raw/facts/{{ inventory_hostname }}.json"
+        mode: "0644"
+      vars:
+        hlab_host_facts:
+          host: "{{ inventory_hostname }}"
+          role: "{{ lab_role }}"
+          lab_state: "{{ hlab_lab_state }}"
+          os: "{{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}"
+          kernel: "{{ ansible_facts['kernel'] }}"
+          virtualization: "{{ ansible_facts['virtualization_type'] }}"
+          oscap_rc: "{{ hlab_oscap.rc }}"
+          versions: "{{ hlab_versions.stdout_lines }}"
+          flow_tests: "{{ hlab_flows.results | map(attribute='item') | list }}"
+          flow_rcs: "{{ hlab_flows.results | map(attribute='rc') | list }}"
+      delegate_to: localhost
+      become: false
+
+    - name: Remove audit tools from the host
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ hlab_audit_dir }}"
+        - /usr/local/bin/oscap-run-sce-script
