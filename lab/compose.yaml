@@ -1,0 +1,137 @@
+# Laboratorio en estado BASELINE: tres nodos en una red plana y con los valores por defecto de Docker.
+# El estado endurecido se obtiene con `compose.hardened.yaml` (ver `make harden`).
+# Todos los puertos se publican solo en 127.0.0.1 del anfitrión.
+name: hlab
+
+x-node: &node
+  restart: always
+  volumes:
+    - ssh_public:/etc/lab-keys:ro
+  depends_on:
+    keygen:
+      condition: service_completed_successfully
+  labels:
+    hlab.lab: "true"
+
+services:
+  keygen:
+    # Genera la clave efímera de la cuenta de automatización y termina.
+    image: hlab/controller:1.0.0
+    user: "0:0"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        set -eu;
+        [ -f /keys/private/id_ed25519 ] || ssh-keygen -q -t ed25519 -N '' -C hlab-automation -f /keys/private/id_ed25519;
+        cp /keys/private/id_ed25519.pub /keys/public/authorized_keys;
+        chown ${LAB_UID:-10001}:${LAB_GID:-10001} /keys/private/id_ed25519 /keys/private/id_ed25519.pub;
+        chmod 0600 /keys/private/id_ed25519;
+        chmod 0644 /keys/public/authorized_keys
+    volumes:
+      - ssh_private:/keys/private
+      - ssh_public:/keys/public
+    network_mode: none
+
+  bastion:
+    <<: *node
+    build:
+      context: images/node
+      args:
+        LAB_ROLE: bastion
+    image: hlab/node-bastion:1.0.0
+    container_name: lab-bastion
+    hostname: lab-bastion
+    ports:
+      - "127.0.0.1:${LAB_SSH_PORT:-2222}:22"
+    networks:
+      flat:
+        ipv4_address: 10.213.0.11
+
+  web:
+    <<: *node
+    build:
+      context: images/node
+      args:
+        LAB_ROLE: web
+    image: hlab/node-web:1.0.0
+    container_name: lab-web
+    hostname: lab-web
+    ports:
+      - "127.0.0.1:${LAB_WEB_SSH_PORT:-2223}:22"
+      - "127.0.0.1:${LAB_HTTP_PORT:-18080}:80"
+    networks:
+      flat:
+        ipv4_address: 10.213.0.12
+
+  db:
+    <<: *node
+    build:
+      context: images/node
+      args:
+        LAB_ROLE: db
+    image: hlab/node-db:1.0.0
+    container_name: lab-db
+    hostname: lab-db
+    ports:
+      - "127.0.0.1:${LAB_DB_SSH_PORT:-2224}:22"
+      - "127.0.0.1:${LAB_DB_PORT:-15432}:5432"
+    networks:
+      flat:
+        ipv4_address: 10.213.0.13
+
+  controller:
+    profiles: ["tools"]
+    build:
+      context: ..
+      dockerfile: lab/images/controller/Dockerfile
+    image: hlab/controller:1.0.0
+    # Herramienta propia: sin root, sin capacidades, raíz de solo lectura en ambas fases.
+    user: "${LAB_UID:-10001}:${LAB_GID:-10001}"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=256m
+    working_dir: /workspace
+    environment:
+      ANSIBLE_CONFIG: /workspace/ansible/ansible.cfg
+      HLAB_RUN_ID: ${HLAB_RUN_ID:-}
+      HLAB_PHASE: ${HLAB_PHASE:-}
+      HLAB_LAB_STATE: ${HLAB_LAB_STATE:-baseline}
+      HLAB_GIT_SHA: ${HLAB_GIT_SHA:-}
+      HLAB_GIT_DIRTY: ${HLAB_GIT_DIRTY:-}
+      HLAB_STARTED_AT: ${HLAB_STARTED_AT:-}
+    volumes:
+      - ..:/workspace
+      - ssh_private:/keys:ro
+    networks:
+      flat:
+        ipv4_address: 10.213.0.10
+
+  docker-bench:
+    # Auditor del runtime Docker (CIS Docker Benchmark 1.6.0). Solo se ejecuta durante `make audit`.
+    profiles: ["audit"]
+    build:
+      context: images/docker-bench
+    image: hlab/docker-bench:1.0.0
+    network_mode: host
+    pid: host
+    userns_mode: host
+    cap_add:
+      - AUDIT_CONTROL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ../reports/runs/${HLAB_RUN_ID:-none}/raw/docker-bench:/out
+    command: ["-b", "-p", "-c", "container_images,container_runtime", "-i", "lab-,hlab/node", "-l", "/out/docker-bench"]
+
+networks:
+  flat:
+    ipam:
+      config:
+        - subnet: 10.213.0.0/24
+
+volumes:
+  ssh_private:
+  ssh_public:

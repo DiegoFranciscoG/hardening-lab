@@ -1,0 +1,3 @@
+---
+# El controlador llega al bastón por la red edge en el estado endurecido.
+ansible_host: "{{ lab_ip.baseline if hlab_lab_state == 'baseline' else lab_ip.edge }}"

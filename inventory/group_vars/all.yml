@@ -1,0 +1,35 @@
+---
+# Estado del laboratorio (baseline | hardened): decide por qué red se conecta Ansible.
+hlab_lab_state: "{{ lookup('ansible.builtin.env', 'HLAB_LAB_STATE') | default('baseline', true) }}"
+hlab_mgmt_network: "{{ 'baseline' if hlab_lab_state == 'baseline' else 'admin' }}"
+ansible_host: "{{ lab_ip[hlab_mgmt_network] }}"
+
+# Conexión: el controlador entra al bastión y salta desde ahí a web y db (ProxyCommand con la misma clave efímera).
+ansible_user: ansible
+ansible_python_interpreter: /usr/bin/python3
+ansible_ssh_private_key_file: /keys/id_ed25519
+hlab_ssh_opts: >-
+  -o StrictHostKeyChecking=accept-new
+  -o UserKnownHostsFile=/tmp/home/.ssh/known_hosts
+  -o IdentitiesOnly=yes
+  -o ConnectTimeout=10
+ansible_ssh_common_args: "{{ hlab_ssh_opts }}"
+
+# IP del contenedor controlador (lab/compose*.yaml).
+hlab_controller_ip: {baseline: 10.213.0.10, edge: 10.213.10.10}
+
+# Directorio de auditoría en el nodo (no /tmp: en el estado endurecido /tmp es noexec).
+hlab_audit_dir: /var/tmp/hlab-audit
+hlab_tools_dir: "{{ lookup('ansible.builtin.env', 'HLAB_TOOLS_DIR') | default('/opt/tools', true) }}"
+hlab_run_id: "{{ lookup('ansible.builtin.env', 'HLAB_RUN_ID') }}"
+hlab_run_dir: "/workspace/reports/runs/{{ hlab_run_id }}"
+hlab_scap_profile: xccdf_org.ssgproject.content_profile_cis_level1_server
+
+# Matriz de flujos esperada tras el endurecimiento (método "test" de NIST SP 800-53A).
+hlab_flow_tests:
+  - {control: HL-FW-003, source: lab-bastion, target: lab-db, port: 5432, network: data, expect: blocked}
+  - {control: HL-FW-003, source: lab-web, target: lab-db, port: 5432, network: data, expect: open}
+  - {control: HL-FW-004, source: lab-db, target: lab-web, port: 22, network: admin, expect: blocked}
+  - {control: HL-FW-004, source: lab-web, target: lab-bastion, port: 22, network: admin, expect: blocked}
+  - {control: HL-FW-004, source: lab-bastion, target: lab-web, port: 22, network: admin, expect: open}
+  - {control: HL-FW-004, source: lab-bastion, target: lab-db, port: 22, network: admin, expect: open}

@@ -1,0 +1,44 @@
+# ---- Secretos y entorno
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_ed25519*
+id_rsa*
+
+# ---- Estado efímero del laboratorio (claves, fase, Compose efectivo)
+.lab/
+
+# ---- Salidas generadas
+# El informe HTML se publica desde CI en GitHub Pages.
+reports/site/
+# Salidas crudas grandes: su SHA-256 queda en findings/*.json y CI las guarda como artefacto.
+reports/runs/*/raw/openscap/
+reports/runs/*/raw/ansible-check/
+reports/runs/*/raw/trivy/
+reports/runs/*/raw/docker-bench/console.log
+reports/runs/*/raw/docker-bench/docker-bench
+
+# ---- Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# ---- IDE / SO
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db

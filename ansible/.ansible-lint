@@ -1,0 +1,7 @@
+---
+profile: production
+exclude_paths:
+  - collections/
+skip_list:
+  # Los nodos son contenedores sin systemd: los servicios se gestionan con supervisorctl, no con service/systemd.
+  - command-instead-of-module

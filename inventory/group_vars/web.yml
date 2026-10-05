@@ -1,0 +1,4 @@
+---
+ansible_ssh_common_args: >-
+  {{ hlab_ssh_opts }}
+  -o ProxyCommand="ssh {{ hlab_ssh_opts }} -i /keys/id_ed25519 -W %h:%p ansible@{{ hostvars['lab-bastion'].ansible_host }}"
