@@ -1,0 +1,26 @@
+---
+- name: HL-SSH-011 | Configure the sshd jail with the nftables ban action
+  ansible.builtin.template:
+    src: jail.local.j2
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart fail2ban
+
+- name: HL-SSH-011 | Run fail2ban under the process supervisor
+  ansible.builtin.copy:
+    src: supervisor-fail2ban.conf
+    dest: /etc/supervisor/conf.d/10-role.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Update supervisor programs (fail2ban)
+
+- name: HL-SSH-011 | Apply pending fail2ban changes now
+  ansible.builtin.meta: flush_handlers
+
+- name: HL-SSH-011 | Ensure fail2ban is running
+  community.general.supervisorctl:
+    name: fail2ban
+    state: started

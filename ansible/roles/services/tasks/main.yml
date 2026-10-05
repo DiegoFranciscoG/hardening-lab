@@ -1,0 +1,67 @@
+---
+- name: HL-SVC-001, HL-SVC-003 | Purge insecure clients and unneeded packages
+  ansible.builtin.apt:
+    name: "{{ services_insecure_packages }}"
+    state: absent
+    purge: true
+
+- name: HL-LOG-001 | Start rsyslog under the process supervisor
+  ansible.builtin.copy:
+    src: supervisor-rsyslog.conf
+    dest: /etc/supervisor/conf.d/05-rsyslog.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Update supervisor programs
+
+- name: HL-LOG-001 | Disable the baseline rsyslog program definition
+  ansible.builtin.replace:
+    path: /etc/supervisor/conf.d/00-common.conf
+    regexp: '^\[program:rsyslog\][^\[]*'
+    replace: ''
+  notify: Update supervisor programs
+
+- name: HL-LOG-002 | Create log files with restrictive permissions
+  ansible.builtin.copy:
+    dest: /etc/rsyslog.d/00-hlab-permissions.conf
+    content: |
+      # hardening-lab HL-LOG-002: $FileCreateMode 0640 ya está en /etc/rsyslog.conf y CIS 6.1.3.4 exige
+      # declararlo una sola vez; aquí solo se restringe la umask de rsyslog.
+      $Umask 0027
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart rsyslog
+
+- name: HL-LOG-002 | Find log files with permissive modes
+  ansible.builtin.find:
+    paths: /var/log
+    recurse: true
+    file_type: file
+  register: services_log_files
+
+- name: HL-LOG-002 | Restrict existing log files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: "g-wx,o-rwx"
+  loop: "{{ services_log_files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: HL-UPD-001 | Enable unattended security upgrades
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: HL-LOG-001 | Apply pending supervisor changes now
+  ansible.builtin.meta: flush_handlers
+
+- name: HL-LOG-001 | Ensure rsyslog is running
+  community.general.supervisorctl:
+    name: rsyslog
+    state: started

@@ -1,0 +1,19 @@
+---
+file_permissions_account_files:
+  - {path: /etc/passwd, group: root, mode: "0644"}
+  - {path: /etc/passwd-, group: root, mode: "0644"}
+  - {path: /etc/group, group: root, mode: "0644"}
+  - {path: /etc/group-, group: root, mode: "0644"}
+  - {path: /etc/shadow, group: shadow, mode: "0640"}
+  - {path: /etc/shadow-, group: shadow, mode: "0640"}
+  - {path: /etc/gshadow, group: shadow, mode: "0640"}
+  - {path: /etc/gshadow-, group: shadow, mode: "0640"}
+  - {path: /etc/shells, group: root, mode: "0644"}
+file_permissions_cron_dirs:
+  - /etc/cron.hourly
+  - /etc/cron.daily
+  - /etc/cron.weekly
+  - /etc/cron.monthly
+  - /etc/cron.d
+# Texto del aviso legal del perfil CIS (sin datos del sistema operativo).
+file_permissions_banner: "Authorized uses only. All activity may be monitored and reported."

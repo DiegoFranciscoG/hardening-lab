@@ -1,0 +1,33 @@
+---
+# Valores del perfil CIS Ubuntu 24.04 Level 1 Server (variables de SSG 0.1.82).
+accounts_login_defs:
+  PASS_MAX_DAYS: "365"
+  PASS_MIN_DAYS: "1"
+  PASS_WARN_AGE: "7"
+  ENCRYPT_METHOD: "YESCRYPT"
+  SHA_CRYPT_MIN_ROUNDS: "5000"
+  SHA_CRYPT_MAX_ROUNDS: "100000"
+  UMASK: "027"
+accounts_inactive_days: 45
+accounts_tmout: 900
+accounts_umask: "027"
+accounts_su_group: sugroup
+accounts_sudo_timeout_minutes: 15
+accounts_secure_path: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+accounts_pwquality:
+  minlen: 14
+  minclass: 4
+  dcredit: -1
+  ucredit: -1
+  ocredit: -1
+  lcredit: -1
+  difok: 2
+  maxrepeat: 3
+  maxsequence: 3
+  dictcheck: 1
+  enforcing: 1
+accounts_faillock_deny: 4
+accounts_faillock_unlock_time: 900
+accounts_pwhistory_remember: 24
+# Cuentas de sistema que conservan su shell por definición de Debian/Ubuntu.
+accounts_shell_exempt: [root, sync, shutdown, halt]

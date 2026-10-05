@@ -1,0 +1,23 @@
+---
+# Reglas por rol derivadas del inventario (IP fijas en lab/compose.hardened.yaml).
+firewall_edge_subnet: 10.213.10.0/24
+firewall_admin_subnet: 10.213.20.0/24
+firewall_bastion_admin_ip: "{{ hostvars['lab-bastion'].lab_ip.admin }}"
+firewall_web_data_ip: "{{ hostvars['lab-web'].lab_ip.data }}"
+firewall_db_data_ip: "{{ hostvars['lab-db'].lab_ip.data }}"
+firewall_inbound:
+  bastion:
+    - {source: "{{ firewall_edge_subnet }}", port: 22, comment: "SSH desde el controlador y el anfitrion"}
+  web:
+    - {source: "{{ firewall_bastion_admin_ip }}", port: 22, comment: "SSH solo desde el bastion"}
+    - {source: "{{ firewall_edge_subnet }}", port: 8080, comment: "HTTP desde la red edge"}
+    - {source: "{{ firewall_edge_subnet }}", port: 8443, comment: "HTTPS desde la red edge"}
+  db:
+    - {source: "{{ firewall_bastion_admin_ip }}", port: 22, comment: "SSH solo desde el bastion"}
+    - {source: "{{ firewall_web_data_ip }}", port: 5432, comment: "PostgreSQL solo desde la capa web"}
+firewall_outbound:
+  bastion:
+    - {destination: "{{ firewall_admin_subnet }}", port: 22, comment: "Salto SSH hacia los nodos internos"}
+  web:
+    - {destination: "{{ firewall_db_data_ip }}", port: 5432, comment: "Consultas a la base de datos"}
+  db: []

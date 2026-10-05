@@ -1,0 +1,7 @@
+---
+# sshd re-ejecuta su configuración con SIGHUP sin cortar las sesiones abiertas.
+- name: Reload sshd
+  community.general.supervisorctl:
+    name: sshd
+    state: signalled
+    signal: HUP

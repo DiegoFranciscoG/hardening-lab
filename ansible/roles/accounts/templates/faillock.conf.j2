@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# hardening-lab HL-PAM-001 (CIS 5.3.3.1.x)
+deny = {{ accounts_faillock_deny }}
+unlock_time = {{ accounts_faillock_unlock_time }}
+even_deny_root
+root_unlock_time = 60

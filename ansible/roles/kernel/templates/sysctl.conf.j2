@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for key, value in kernel_sysctl_values.items() %}
+{{ key }} = {{ value }}
+{% endfor %}

@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+# hardening-lab HL-SSH-011: OpenSSH 9.6 (Ubuntu 24.04) no tiene PerSourcePenalties; fail2ban cubre la fuerza bruta.
+[DEFAULT]
+banaction = nftables-multiport
+banaction_allports = nftables-allports
+backend = polling
+ignoreip = {{ fail2ban_ignoreip }}
+
+[sshd]
+enabled = true
+port = 22
+logpath = /var/log/auth.log
+maxretry = {{ fail2ban_maxretry }}
+findtime = {{ fail2ban_findtime }}
+bantime = {{ fail2ban_bantime }}

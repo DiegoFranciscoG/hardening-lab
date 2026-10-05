@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# hardening-lab HL-SUDO-001 y HL-SUDO-002 (CIS 5.2.2, 5.2.3, 5.2.6; ruta segura para CIS 5.4.2.5)
+Defaults use_pty
+Defaults logfile="/var/log/sudo.log"
+Defaults timestamp_timeout={{ accounts_sudo_timeout_minutes }}
+Defaults secure_path="{{ accounts_secure_path }}"

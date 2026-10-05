@@ -1,0 +1,49 @@
+---
+# Módulos que no deben poder cargarse (CIS 1.1.1.x sistemas de archivos y USB; 3.2.x protocolos; Lynis STRG-1846).
+kernel_disabled_modules:
+  - cramfs
+  - freevxfs
+  - hfs
+  - hfsplus
+  - jffs2
+  - overlay
+  - squashfs
+  - udf
+  - usb-storage
+  - firewire-core
+  - dccp
+  - tipc
+  - rds
+  - sctp
+kernel_sysctl_kernel:
+  kernel.randomize_va_space: 2
+  kernel.yama.ptrace_scope: 1
+  fs.suid_dumpable: 0
+# Mismos valores que lab/compose.hardened.yaml: el runtime los fija Docker y el archivo los hace persistentes.
+kernel_sysctl_network:
+  net.ipv4.ip_forward: 0
+  net.ipv6.conf.all.forwarding: 0
+  net.ipv4.conf.all.send_redirects: 0
+  net.ipv4.conf.default.send_redirects: 0
+  net.ipv4.icmp_ignore_bogus_error_responses: 1
+  net.ipv4.icmp_echo_ignore_broadcasts: 1
+  net.ipv4.conf.all.accept_redirects: 0
+  net.ipv4.conf.default.accept_redirects: 0
+  net.ipv6.conf.all.accept_redirects: 0
+  net.ipv6.conf.default.accept_redirects: 0
+  net.ipv4.conf.all.secure_redirects: 0
+  net.ipv4.conf.default.secure_redirects: 0
+  net.ipv4.conf.all.rp_filter: 1
+  net.ipv4.conf.default.rp_filter: 1
+  net.ipv4.conf.all.accept_source_route: 0
+  net.ipv4.conf.default.accept_source_route: 0
+  net.ipv6.conf.all.accept_source_route: 0
+  net.ipv6.conf.default.accept_source_route: 0
+  net.ipv4.conf.all.log_martians: 1
+  net.ipv4.conf.default.log_martians: 1
+  net.ipv4.tcp_syncookies: 1
+  net.ipv6.conf.all.accept_ra: 0
+  net.ipv6.conf.default.accept_ra: 0
+# Parámetros que el contenedor no puede fijar en runtime sin efectos colaterales (ver EXC-005).
+kernel_sysctl_runtime_exempt:
+  - net.ipv4.ip_forward

@@ -1,0 +1,107 @@
+---
+- name: HL-PERM-001 | Check which account files exist
+  ansible.builtin.stat:
+    path: "{{ item.path }}"
+  loop: "{{ file_permissions_account_files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  register: file_permissions_account_stat
+
+- name: HL-PERM-001 | Set ownership and mode of account files
+  ansible.builtin.file:
+    path: "{{ item.item.path }}"
+    owner: root
+    group: "{{ item.item.group }}"
+    mode: "{{ item.item.mode }}"
+  loop: "{{ file_permissions_account_stat.results | selectattr('stat.exists') | list }}"
+  loop_control:
+    label: "{{ item.item.path }}"
+
+- name: HL-PERM-002 | Close the world-writable shared directory
+  ansible.builtin.file:
+    path: /srv/exchange
+    owner: root
+    group: root
+    mode: "0750"
+    state: directory
+
+- name: HL-PERM-003 | Restrict /etc/crontab
+  ansible.builtin.file:
+    path: /etc/crontab
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: HL-PERM-003 | Restrict cron directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: "0700"
+    state: directory
+  loop: "{{ file_permissions_cron_dirs }}"
+
+- name: HL-PERM-003 | Allow only root in cron.allow and at.allow
+  ansible.builtin.copy:
+    dest: "{{ item.path }}"
+    content: "root\n"
+    owner: root
+    group: "{{ item.group }}"
+    mode: "0640"
+  loop:
+    - {path: /etc/cron.allow, group: crontab}
+    - {path: /etc/at.allow, group: root}
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: HL-PERM-003 | Remove deny lists superseded by the allow lists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/cron.deny
+    - /etc/at.deny
+
+- name: HL-PERM-004 | Find user initialization files
+  ansible.builtin.find:
+    paths: [/root, /home]
+    patterns: ".*"
+    hidden: true
+    recurse: true
+    depth: 2
+    file_type: file
+  register: file_permissions_init_files
+
+- name: HL-PERM-004 | Remove group write and other access from user initialization files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: "u-x,g-wx,o-rwx"
+  loop: "{{ file_permissions_init_files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: HL-PERM-004 | Find home directories
+  ansible.builtin.find:
+    paths: /home
+    file_type: directory
+  register: file_permissions_homes
+
+- name: HL-PERM-004 | Restrict home directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: "0750"
+  loop: "{{ file_permissions_homes.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: HL-PERM-005 | Install login banners without system information
+  ansible.builtin.copy:
+    dest: "{{ item }}"
+    content: "{{ file_permissions_banner }}\n"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - /etc/issue
+    - /etc/issue.net
+    - /etc/motd

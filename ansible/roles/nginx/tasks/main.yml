@@ -1,0 +1,90 @@
+---
+- name: HL-WEB-002 | Give the nginx user its runtime, log and cache directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: www-data
+    group: adm
+    mode: "0750"
+  loop:
+    - /run/nginx
+    - /var/log/nginx
+    - /var/lib/nginx
+
+- name: HL-WEB-002 | Hand existing nginx log files to the nginx user
+  ansible.builtin.find:
+    paths: /var/log/nginx
+    file_type: file
+  register: nginx_logs
+
+- name: HL-WEB-002 | Set ownership of nginx log files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    owner: www-data
+    group: adm
+    mode: "0640"
+  loop: "{{ nginx_logs.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: HL-WEB-004 | Generate a self-signed TLS certificate for the lab
+  ansible.builtin.command:
+    cmd: >-
+      openssl req -x509 -newkey rsa:3072 -sha256 -days 90 -nodes
+      -subj /CN=lab-web -addext subjectAltName=DNS:lab-web,DNS:localhost
+      -keyout {{ nginx_tls_key }} -out {{ nginx_tls_cert }}
+    creates: "{{ nginx_tls_cert }}"
+  notify: Restart nginx
+
+- name: HL-WEB-004 | Publish the TLS certificate (public data)
+  ansible.builtin.file:
+    path: "{{ nginx_tls_cert }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: HL-WEB-004 | Let only the nginx user read the TLS private key
+  ansible.builtin.file:
+    path: "{{ nginx_tls_key }}"
+    owner: root
+    group: www-data
+    mode: "0640"
+
+- name: HL-WEB-004 | Allow the nginx group to traverse the private key directory
+  ansible.builtin.file:
+    path: /etc/ssl/private
+    owner: root
+    group: www-data
+    mode: "0710"
+
+- name: HL-WEB-001, HL-WEB-002, HL-WEB-003, HL-WEB-004 | Deploy the hardened nginx configuration
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart nginx
+
+- name: HL-WEB-001 | Remove the default site that ships with the package
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Restart nginx
+
+- name: HL-WEB-002 | Run nginx as www-data under the process supervisor
+  ansible.builtin.copy:
+    src: supervisor-nginx.conf
+    dest: /etc/supervisor/conf.d/10-role.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Update supervisor programs (nginx)
+
+- name: HL-WEB-002 | Apply pending nginx changes now
+  ansible.builtin.meta: flush_handlers
+
+- name: HL-WEB-002 | Ensure nginx is running
+  community.general.supervisorctl:
+    name: nginx
+    state: started

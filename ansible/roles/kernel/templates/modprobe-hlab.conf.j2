@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+# hardening-lab HL-KRN-001: módulos no cargables (CIS 1.1.1.x y 3.2.x). En un contenedor el kernel es del
+# anfitrión; el archivo documenta y fija la política para cuando el mismo rol se aplique a una VM.
+{% for module in kernel_disabled_modules %}
+install {{ module }} /bin/false
+blacklist {{ module }}
+{% endfor %}

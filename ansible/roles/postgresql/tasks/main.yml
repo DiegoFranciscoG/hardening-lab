@@ -1,0 +1,43 @@
+---
+- name: HL-DB-001, HL-DB-003 | Set listening interfaces, password hashing and connection logging
+  ansible.builtin.lineinfile:
+    path: "{{ postgresql_conf_dir }}/postgresql.conf"
+    regexp: '^#?\s*{{ item.key }}\s*='
+    line: "{{ item.key }} = {{ item.value }}"
+  loop: "{{ postgresql_settings | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  notify: Restart postgresql
+
+- name: HL-DB-002 | Restrict client authentication to the web tier
+  ansible.builtin.template:
+    src: pg_hba.conf.j2
+    dest: "{{ postgresql_conf_dir }}/pg_hba.conf"
+    owner: postgres
+    group: postgres
+    mode: "0640"
+  notify: Restart postgresql
+
+- name: HL-DB-004 | Find PostgreSQL configuration files
+  ansible.builtin.find:
+    paths: "{{ postgresql_conf_dir }}"
+    file_type: file
+  register: postgresql_conf_files
+
+- name: HL-DB-004 | Make PostgreSQL configuration files unreadable by other users
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    owner: postgres
+    group: postgres
+    mode: "0640"
+  loop: "{{ postgresql_conf_files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: HL-DB-001 | Apply pending PostgreSQL changes now
+  ansible.builtin.meta: flush_handlers
+
+- name: HL-DB-001 | Ensure PostgreSQL is running
+  community.general.supervisorctl:
+    name: postgresql
+    state: started

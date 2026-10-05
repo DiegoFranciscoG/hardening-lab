@@ -1,0 +1,120 @@
+---
+- name: HL-ACC-001, HL-ACC-002, HL-ACC-005 | Set password aging, hashing and umask in login.defs
+  ansible.builtin.lineinfile:
+    path: /etc/login.defs
+    regexp: "^#?\\s*{{ item.key }}\\s"
+    line: "{{ item.key }}\t{{ item.value }}"
+  loop: "{{ accounts_login_defs | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: HL-ACC-001 | Lock accounts after the password expires
+  ansible.builtin.lineinfile:
+    path: /etc/default/useradd
+    regexp: "^#?\\s*INACTIVE="
+    line: "INACTIVE={{ accounts_inactive_days }}"
+
+- name: HL-ACC-003 | Read local accounts
+  ansible.builtin.getent:
+    database: passwd
+
+- name: HL-ACC-003 | Remove the login shell from system accounts
+  ansible.builtin.user:
+    name: "{{ item.key }}"
+    shell: /usr/sbin/nologin
+  loop: "{{ ansible_facts.getent_passwd | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when:
+    - item.value[1] | int < 1000
+    - item.key not in accounts_shell_exempt
+    - item.value[5] not in ['/usr/sbin/nologin', '/sbin/nologin', '/bin/false', '/usr/bin/false']
+
+- name: HL-ACC-004 | Keep only existing system directories in the default PATH
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    regexp: "^PATH="
+    line: 'PATH="{{ accounts_secure_path }}"'
+
+- name: HL-ACC-005 | Set the shell timeout for interactive sessions
+  ansible.builtin.copy:
+    dest: /etc/profile.d/60-hlab-tmout.sh
+    content: |
+      # hardening-lab HL-ACC-005: cierra shells inactivas (CIS 5.4.3.2)
+      TMOUT={{ accounts_tmout }}
+      readonly TMOUT
+      export TMOUT
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: HL-ACC-005 | Set a restrictive umask for shells
+  ansible.builtin.lineinfile:
+    path: "{{ item }}"
+    regexp: "^\\s*umask\\s+\\d+"
+    line: "umask {{ accounts_umask }}"
+  loop:
+    - /etc/bash.bashrc
+    - /etc/profile
+
+- name: HL-ACC-006 | Remove the legacy passwordless sudo rule
+  ansible.builtin.file:
+    path: /etc/sudoers.d/90-deploy
+    state: absent
+
+- name: HL-SUDO-001, HL-SUDO-002 | Configure sudo defaults
+  ansible.builtin.template:
+    src: sudoers-hardening.j2
+    dest: /etc/sudoers.d/00-hlab-hardening
+    owner: root
+    group: root
+    mode: "0440"
+    validate: /usr/sbin/visudo -cf %s
+
+- name: HL-SUDO-003 | Create the empty group allowed to use su
+  ansible.builtin.group:
+    name: "{{ accounts_su_group }}"
+    state: present
+
+- name: HL-SUDO-003 | Restrict su to that group
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/su
+    regexp: "^\\s*#?\\s*auth\\s+required\\s+pam_wheel\\.so"
+    line: "auth       required   pam_wheel.so use_uid group={{ accounts_su_group }}"
+    insertafter: "^auth\\s+sufficient\\s+pam_rootok\\.so"
+
+- name: HL-PAM-002 | Configure password quality
+  ansible.builtin.template:
+    src: pwquality.conf.j2
+    dest: /etc/security/pwquality.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: HL-PAM-001 | Configure account lockout
+  ansible.builtin.template:
+    src: faillock.conf.j2
+    dest: /etc/security/faillock.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: HL-PAM-003 | Configure password history
+  ansible.builtin.template:
+    src: pwhistory.conf.j2
+    dest: /etc/security/pwhistory.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: HL-PAM-001, HL-PAM-003, HL-PAM-004 | Deploy the PAM authentication stacks
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/pam.d/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - common-auth
+    - common-account
+    - common-password

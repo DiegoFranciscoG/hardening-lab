@@ -1,0 +1,13 @@
+---
+# Clientes inseguros del baseline (CIS 2.2.x).
+services_insecure_packages:
+  - telnet
+  - inetutils-telnet
+  - ftp
+  - tnftp
+  - rsh-redone-client
+  - talk
+  - nis
+  - ldap-utils
+  - prelink
+  - apport

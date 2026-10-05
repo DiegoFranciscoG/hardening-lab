@@ -1,0 +1,84 @@
+---
+- name: HL-KRN-001 | Create the module policy directory
+  ansible.builtin.file:
+    path: /etc/modprobe.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: HL-KRN-001 | Make unused filesystem, storage and protocol modules unavailable
+  ansible.builtin.template:
+    src: modprobe-hlab.conf.j2
+    dest: /etc/modprobe.d/60-hlab-cis.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: HL-KRN-003 | Declare /tmp and /dev/shm as separate tmpfs with nodev, nosuid and noexec
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '^tmpfs\s+{{ item }}\s'
+    line: "tmpfs {{ item }} tmpfs defaults,rw,nosuid,nodev,noexec,size=64m 0 0"
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - /tmp
+    - /dev/shm
+
+- name: HL-KRN-002 | Persist kernel memory and process protections
+  ansible.builtin.template:
+    src: sysctl.conf.j2
+    dest: /etc/sysctl.d/60-hlab-kernel.conf
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    kernel_sysctl_values: "{{ kernel_sysctl_kernel }}"
+
+- name: HL-KRN-002 | Disable core dumps for all users
+  ansible.builtin.copy:
+    dest: /etc/security/limits.d/60-hlab-coredump.conf
+    content: |
+      # hardening-lab HL-KRN-002 (CIS 1.5.3)
+      * hard core 0
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: HL-NET-001, HL-NET-002, HL-NET-003 | Persist network parameters
+  ansible.builtin.template:
+    src: sysctl.conf.j2
+    dest: /etc/sysctl.d/60-hlab-network.conf
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    kernel_sysctl_values: "{{ kernel_sysctl_network }}"
+
+- name: HL-NET-002 | Remove the loose reverse-path filter shipped by Ubuntu
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.d/10-network-security.conf
+    regexp: '^net\.ipv4\.conf\.(all|default)\.rp_filter'
+    state: absent
+
+- name: HL-NET-001, HL-NET-002, HL-NET-003 | Read the runtime network parameters set by the container runtime
+  ansible.builtin.command:
+    cmd: "sysctl -n {{ item.key }}"
+  loop: "{{ kernel_sysctl_network | dict2items | rejectattr('key', 'in', kernel_sysctl_runtime_exempt) | list }}"
+  loop_control:
+    label: "{{ item.key }}"
+  register: kernel_runtime_sysctl
+  changed_when: false
+  check_mode: false
+
+- name: HL-NET-001, HL-NET-002, HL-NET-003 | Verify the runtime matches the hardened values
+  ansible.builtin.assert:
+    that: item.stdout | trim == item.item.value | string
+    fail_msg: "{{ item.item.key }} = {{ item.stdout | trim }} (se esperaba {{ item.item.value }}); revisa lab/compose.hardened.yaml"
+    quiet: true
+  loop: "{{ kernel_runtime_sysctl.results }}"
+  loop_control:
+    label: "{{ item.item.key }}"
