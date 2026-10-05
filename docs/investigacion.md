@@ -97,11 +97,34 @@ Fecha de consulta de todas las fuentes: **2026-10-04**. Cuando la fuente era un 
 4. **Desfase de versiones de CIS.** OpenSCAP evalúa CIS Ubuntu 24.04 **v1.0.0** (#3) y la vigente es la **v2.0.0** (#1). El informe declara la versión evaluada; no se afirma cumplimiento de la v2.0.0.
 5. **Cadena de suministro de las propias herramientas.** Después del incidente de Trivy (#20) toda herramienta descargada se fija por versión y se verifica con hash (y firma cuando existe), y toda acción de GitHub se fija por SHA.
 
+## 8. Verificaciones hechas durante la construcción (2026-10-05)
+
+| # | Fuente (oficial / confiable) | URL | Consultada | Qué se tomó de aquí |
+|---|---|---|---|---|
+| 54 | SSG 0.1.82, definición OVAL `oval:ssg-system_with_kernel:def:1` (dentro de `ssg-ubuntu2404-ds.xml`) | https://github.com/ComplianceAsCode/content/releases/tag/v0.1.82 | 2026-10-05 | La plataforma `system_with_kernel` se cumple si **el paquete `linux-base` está instalado**. Sin él, SSH, sudo y cuentas salían "no aplica". **Decisión:** los nodos instalan `linux-base` y no tienen el marcador `/.dockerenv`, así que OpenSCAP los evalúa como servidores completos. Lo que es del anfitrión falla y pasa a excepciones, no se esconde. |
+| 55 | Linux kernel docs — `networking/ip-sysctl` | https://docs.kernel.org/networking/ip-sysctl.html | 2026-10-05 | *"ip_forward … its change resets all configuration parameters to their default state (RFC1122 for hosts…)"*. Por defecto un host acepta redirecciones. Combinado con el orden aleatorio en que Docker aplica los sysctl, fijar `ip_forward` deja `accept_redirects` en 1 de forma no determinista. Origen de la excepción EXC-004. |
+| 56 | Trivy 0.75.0 — `trivy config --help` y ejecución real | https://github.com/aquasecurity/trivy/releases/tag/v0.75.0 | 2026-10-05 | **Corrige la fila #19:** en 0.75.0, `--misconfig-scanners` incluye `ansible` por defecto. Los checks propios para YAML genérico funcionan con `--misconfig-scanners yaml` y el selector `type: yaml`. Se analizan Dockerfiles, Ansible y el Compose efectivo. |
+| 57 | Perfil `cis_level1_server` de SSG 0.1.82: valores `refine-value` y estados OVAL | https://github.com/ComplianceAsCode/content/releases/tag/v0.1.82 | 2026-10-05 | `MaxAuthTries ≤ 4`, `MaxSessions ≤ 10`, `ClientAliveCountMax == 3`, `ClientAliveInterval 300`, `LoginGraceTime 60`. `sshd_strong_kex` y `sshd_strong_macs` con listas exactas. faillock `deny = 4` y `unlock_time = 900`. pwquality `minlen 14`, `minclass 4`, `difok 2`, `maxrepeat 3`. Historial de contraseñas 24. `umask 027`. `TMOUT 900`. Grupo de `su`: `sugroup`. sudo `timestamp_timeout 15`. La regla de LogLevel solo acepta `^INFO$`. |
+| 58 | Ubuntu Snapshot Service (`apt-get update --snapshot`) | https://snapshot.ubuntu.com/ | 2026-10-05 | Verificado al construir: con `ca-certificates`, apt de noble resuelve paquetes desde el snapshot `20260917T000000Z`, la misma fecha que la imagen base. Las versiones de paquetes quedan reproducibles; por eso se ignora DL3008 de hadolint. |
+| 59 | Sigstore cosign 3.1.3 — `verify-blob` del bundle de Trivy | https://github.com/sigstore/cosign/releases/tag/v3.1.3 | 2026-10-05 | `scripts/verify-tools.sh` respondió **Verified OK**: firma keyless del workflow de `aquasecurity/trivy` sobre `trivy_0.75.0_checksums.txt`. El SHA-256 fijado en el Dockerfile coincide con el publicado. |
+| 60 | OpenSCAP 1.3.9 — `src/SCE/sce_engine.c` y `utils/oscap-run-sce-script` (LGPL-2.1) | https://github.com/OpenSCAP/openscap/tree/1.3.9 | 2026-10-05 | oscap escribe los scripts SCE en `/tmp`; si no se pueden ejecutar porque `/tmp` es `noexec`, recurre a `oscap-run-sce-script`. El paquete de Ubuntu 24.04 **no lo incluye**, así que esas reglas daban `error` en el estado endurecido. **Decisión:** el controlador descarga el ayudante oficial de la versión 1.3.9 fijado por SHA-256 y el auditor lo instala solo durante la auditoría. |
+
+### Supuestos resueltos
+- **S4 (algoritmos SSH)**: se usan las listas exactas del perfil CIS de SSG para KEX y MAC (#57). Los cifrados son AES-GCM y AES-CTR, recomendados por BSI y aceptados por CIS; no se usa chacha20 (Terrapin).
+- **S5 (SSG 0.1.82 con oscap 1.3.9)**: funciona. Las reglas SCE necesitan el ayudante `oscap-run-sce-script` cuando `/tmp` es `noexec` (#60).
+- **S6 (fail2ban en contenedor)**: funciona en el bastión con `CAP_NET_ADMIN` (namespaced), `banaction = nftables-multiport` y rsyslog escribiendo `/var/log/auth.log`.
+
+### Conflictos entre herramientas (decididos y documentados)
+- `ClientAliveCountMax`: Lynis sugiere 2 y SSG exige exactamente 3. **Gana CIS** y la coincidencia de Lynis se quita de HL-SSH-006.
+- `LogLevel`: Lynis sugiere VERBOSE, SSG exige INFO y CIS acepta ambos. **Se elige VERBOSE** y SSG queda como excepción EXC-016.
+- Aviso legal: Lynis pide más palabras clave legales; SSG compara el texto exacto del perfil CIS. **Gana CIS** y BANN-7126 queda sin mapear.
+- `MaxAuthTries` y `MaxSessions`: se eligen 3 y 2, que satisfacen a la vez a CIS (≤ 4 y ≤ 10) y a Lynis.
+
 ## Supuestos (no verificados)
 
 - **SUPUESTO S1 — versión vigente del STIG.** NCP lista "Ver 1, Rel 6" del STIG de Ubuntu 24.04, pero la página no pudo leerse; la última confirmada con contenido es **V1R5**. Afecta solo a la referencia citada, porque el perfil `stig` de SSG 0.1.82 implementa V1R5.
 - **SUPUESTO S2 — equivalencia CAT ↔ severidad.** Se asume CAT I = `high`, CAT II = `medium` y CAT III = `low`, la convención del XCCDF de los STIG. Las definiciones CAT sí están verificadas (#10).
 - **SUPUESTO S3 — severidad de hallazgos sin severidad nativa.** Lynis `warning[]` = `medium`, Lynis `suggestion[]` = `low` y docker-bench `WARN` = `medium`, salvo que el catálogo de controles asigne otra (tomada de la regla SSG equivalente). Es una decisión de diseño explícita, no una norma.
-- **SUPUESTO S4 — lista final de algoritmos SSH.** Se fijará en D4 cruzando lo que acepta CIS 5.1.6/5.1.12/5.1.15 (regla SSG) con lo que soporta OpenSSH 9.6 (`ssh -Q kex/cipher/mac`) y priorizando lo recomendado por BSI (#32).
-- **SUPUESTO S5 — compatibilidad SSG 0.1.82 con oscap 1.3.9.** El data stream de 0.1.82 se generó para OpenSCAP reciente; si falla con la versión de Ubuntu (1.3.9), el plan B es usar el último SSG que funcione y anotarlo.
-- **SUPUESTO S6 — fail2ban en contenedor.** Requiere `CAP_NET_ADMIN` (namespaced) y logs en archivo vía rsyslog (no hay journald). Se confirma en D4.
+- ~~**SUPUESTO S4 — lista final de algoritmos SSH.**~~ (resuelto, ver sección 8) Se fijará en D4 cruzando lo que acepta CIS 5.1.6/5.1.12/5.1.15 (regla SSG) con lo que soporta OpenSSH 9.6 (`ssh -Q kex/cipher/mac`) y priorizando lo recomendado por BSI (#32).
+- ~~**SUPUESTO S5 — compatibilidad SSG 0.1.82 con oscap 1.3.9.**~~ (resuelto) El data stream de 0.1.82 se generó para OpenSCAP reciente; si falla con la versión de Ubuntu (1.3.9), el plan B es usar el último SSG que funcione y anotarlo.
+- ~~**SUPUESTO S6 — fail2ban en contenedor.**~~ (resuelto) Requiere `CAP_NET_ADMIN` (namespaced) y logs en archivo vía rsyslog (no hay journald). Se confirma en D4.
