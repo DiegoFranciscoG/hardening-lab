@@ -119,7 +119,7 @@ falla. El aprobador es un rol ficticio del laboratorio.
 - **Categoría**: Requisito operativo
 - **Aprobada por**: Responsable de seguridad del laboratorio (rol ficticio) el 2026-10-04; revisión antes del 2027-03-31
 
-**Justificación.** El bastión debe reenviar TCP (ssh -W) para que la automatización llegue a los nodos internos. El reenvío queda deshabilitado de forma global y solo se habilita para la cuenta ansible hacia el puerto 22 de los nodos.
+**Justificación.** El bastión debe reenviar TCP (ssh -W) para que la automatización llegue a los nodos internos. El reenvío queda deshabilitado de forma global y solo se habilita para la cuenta ansible hacia el puerto 22 de los nodos. Ninguna herramienta lo marca (sshd -T muestra la configuración global), pero se documenta porque es una desviación real del control.
 
 **Controles compensatorios:**
 - Bloque Match User ansible con PermitOpen limitado a <ip-admin>:22 de cada nodo
