@@ -1,0 +1,6 @@
+# host: lab-web
+# probe: pam_policy
+# command: echo '# pwquality'; grep -vE '^\s*(#|$)' /etc/security/pwquality.conf || true; echo '# faillock'; grep -vE '^\s*(#|$)' /etc/security/faillock.conf || true
+# exit_code: 0
+# pwquality
+# faillock

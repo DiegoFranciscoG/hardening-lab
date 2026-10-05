@@ -1,0 +1,143 @@
+name: hlab
+services:
+  bastion:
+    build:
+      context: images/node
+      dockerfile: Dockerfile
+      args:
+        LAB_ROLE: bastion
+    container_name: lab-bastion
+    depends_on:
+      keygen:
+        condition: service_completed_successfully
+        required: true
+    hostname: lab-bastion
+    image: hlab/node-bastion:1.0.0
+    labels:
+      hlab.lab: "true"
+    networks:
+      flat:
+        ipv4_address: 10.213.0.11
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 22
+        published: "2222"
+        protocol: tcp
+    restart: always
+    volumes:
+      - type: volume
+        source: ssh_public
+        target: /etc/lab-keys
+        read_only: true
+        volume: {}
+  db:
+    build:
+      context: images/node
+      dockerfile: Dockerfile
+      args:
+        LAB_ROLE: db
+    container_name: lab-db
+    depends_on:
+      keygen:
+        condition: service_completed_successfully
+        required: true
+    hostname: lab-db
+    image: hlab/node-db:1.0.0
+    labels:
+      hlab.lab: "true"
+    networks:
+      flat:
+        ipv4_address: 10.213.0.13
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 22
+        published: "2224"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5432
+        published: "15432"
+        protocol: tcp
+    restart: always
+    volumes:
+      - type: volume
+        source: ssh_public
+        target: /etc/lab-keys
+        read_only: true
+        volume: {}
+  keygen:
+    command:
+      - set -eu; [ -f /keys/private/id_ed25519 ] || ssh-keygen -q -t ed25519 -N '' -C hlab-automation -f /keys/private/id_ed25519; cp /keys/private/id_ed25519.pub /keys/public/authorized_keys; chown 10001:10001 /keys/private/id_ed25519 /keys/private/id_ed25519.pub; chmod 0600 /keys/private/id_ed25519; chmod 0644 /keys/public/authorized_keys
+    entrypoint:
+      - /bin/sh
+      - -c
+    image: hlab/controller:1.0.0
+    network_mode: none
+    user: "0:0"
+    volumes:
+      - type: volume
+        source: ssh_private
+        target: /keys/private
+        volume: {}
+      - type: volume
+        source: ssh_public
+        target: /keys/public
+        volume: {}
+  web:
+    build:
+      context: images/node
+      dockerfile: Dockerfile
+      args:
+        LAB_ROLE: web
+    container_name: lab-web
+    depends_on:
+      keygen:
+        condition: service_completed_successfully
+        required: true
+    hostname: lab-web
+    image: hlab/node-web:1.0.0
+    labels:
+      hlab.lab: "true"
+    networks:
+      flat:
+        ipv4_address: 10.213.0.12
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 22
+        published: "2223"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 80
+        published: "18080"
+        protocol: tcp
+    restart: always
+    volumes:
+      - type: volume
+        source: ssh_public
+        target: /etc/lab-keys
+        read_only: true
+        volume: {}
+networks:
+  flat:
+    name: hlab_flat
+    ipam:
+      config:
+        - subnet: 10.213.0.0/24
+volumes:
+  ssh_private:
+    name: hlab_ssh_private
+  ssh_public:
+    name: hlab_ssh_public
+x-node:
+  depends_on:
+    keygen:
+      condition: service_completed_successfully
+  labels:
+    hlab.lab: "true"
+  restart: always
+  volumes:
+    - ssh_public:/etc/lab-keys:ro

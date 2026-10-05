@@ -1,0 +1,20 @@
+# host: lab-bastion
+# probe: sudoers
+# command: echo '# Defaults'; grep -rhE '^\s*Defaults' /etc/sudoers /etc/sudoers.d/; echo '# NOPASSWD'; grep -rhE 'NOPASSWD' /etc/sudoers /etc/sudoers.d/ || true; echo '# archivos'; ls -l /etc/sudoers.d/
+# exit_code: 0
+# Defaults
+Defaults	env_reset
+Defaults	mail_badpass
+Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
+Defaults	use_pty
+Defaults use_pty
+Defaults logfile="/var/log/sudo.log"
+Defaults timestamp_timeout=15
+Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+# NOPASSWD
+ansible ALL=(ALL) NOPASSWD: ALL
+# archivos
+total 12
+-r--r----- 1 root root  284 Oct  5 03:07 00-hlab-hardening
+-r--r----- 1 root root   32 Oct  4 23:25 10-ansible
+-r--r----- 1 root root 1068 Jan 29  2024 README

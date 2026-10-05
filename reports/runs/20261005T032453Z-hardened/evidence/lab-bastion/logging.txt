@@ -1,0 +1,10 @@
+# host: lab-bastion
+# probe: logging
+# command: supervisorctl status rsyslog; stat -c '%a %U:%G %n' /var/log/auth.log /var/log/syslog 2>&1; grep -hE '^\$FileCreateMode|^\$Umask' /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null || true
+# exit_code: 0
+rsyslog                          RUNNING   pid 910, uptime 0:18:04
+640 root:root /var/log/auth.log
+640 root:root /var/log/syslog
+$FileCreateMode 0640
+$Umask 0022
+$Umask 0027

@@ -1,0 +1,9 @@
+# host: lab-bastion
+# probe: services
+# command: supervisorctl status
+# exit_code: 3
+cron                             RUNNING   pid 15, uptime 0:06:26
+fail2ban                         RUNNING   pid 1394, uptime 0:04:25
+nftables                         EXITED    Oct 05 03:09 AM
+rsyslog                          RUNNING   pid 910, uptime 0:05:07
+sshd                             RUNNING   pid 14, uptime 0:06:26

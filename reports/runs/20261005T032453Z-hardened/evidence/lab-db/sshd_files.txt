@@ -1,0 +1,12 @@
+# host: lab-db
+# probe: sshd_files
+# command: stat -c '%a %U:%G %n' /etc/ssh/sshd_config /etc/ssh/sshd_config.d/* /etc/ssh/ssh_host_*
+# exit_code: 1
+600 root:root /etc/ssh/sshd_config
+600 root:root /etc/ssh/ssh_host_ecdsa_key
+644 root:root /etc/ssh/ssh_host_ecdsa_key.pub
+600 root:root /etc/ssh/ssh_host_ed25519_key
+644 root:root /etc/ssh/ssh_host_ed25519_key.pub
+600 root:root /etc/ssh/ssh_host_rsa_key
+644 root:root /etc/ssh/ssh_host_rsa_key.pub
+stat: cannot statx '/etc/ssh/sshd_config.d/*': No such file or directory

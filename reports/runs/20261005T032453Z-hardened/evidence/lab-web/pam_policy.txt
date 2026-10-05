@@ -1,0 +1,22 @@
+# host: lab-web
+# probe: pam_policy
+# command: echo '# pwquality'; grep -vE '^\s*(#|$)' /etc/security/pwquality.conf || true; echo '# faillock'; grep -vE '^\s*(#|$)' /etc/security/faillock.conf || true
+# exit_code: 0
+# pwquality
+minlen = 14
+minclass = 4
+dcredit = -1
+ucredit = -1
+ocredit = -1
+lcredit = -1
+difok = 2
+maxrepeat = 3
+maxsequence = 3
+dictcheck = 1
+enforcing = 1
+enforce_for_root
+# faillock
+deny = 4
+unlock_time = 900
+even_deny_root
+root_unlock_time = 60

@@ -1,0 +1,26 @@
+# host: lab-web
+# probe: nginx_config
+# command: nginx -T 2>&1 | grep -E 'server_tokens|listen|add_header|autoindex|user |client_max_body_size|limit_except|ssl_' ; ps -o user=,args= -C nginx
+# exit_code: 0
+user www-data;
+	# server_tokens off;
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+	ssl_prefer_server_ciphers on;
+#		listen     localhost:110;
+#		listen     localhost:143;
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	# listen 443 ssl default_server;
+	# listen [::]:443 ssl default_server;
+	# Read up on ssl_ciphers to ensure a secure configuration.
+#	listen 80;
+#	listen [::]:80;
+root     nginx: master process /usr/sbin/nginx -g daemon off;
+www-data nginx: worker process
+www-data nginx: worker process
+www-data nginx: worker process
+www-data nginx: worker process
+www-data nginx: worker process
+www-data nginx: worker process
+www-data nginx: worker process
+www-data nginx: worker process

@@ -1,0 +1,15 @@
+# host: lab-db
+# probe: postgresql_config
+# command: runuser -u postgres -- psql -XAt -c "select name, setting from pg_settings where name in ('listen_addresses','log_connections','log_disconnections','password_encryption','ssl')"; echo '# pg_hba'; grep -vE '^\s*(#|$)' /etc/postgresql/16/main/pg_hba.conf; ps -o user=,args= -C postgres | head -1
+# exit_code: 0
+listen_addresses|localhost,10.213.30.13
+log_connections|on
+log_disconnections|on
+password_encryption|scram-sha-256
+ssl|on
+# pg_hba
+local   all       postgres                                   peer
+local   all       all                                        peer
+host    all       all       127.0.0.1/32                     scram-sha-256
+host    all       all       10.213.30.12/32       scram-sha-256
+postgres /usr/lib/postgresql/16/bin/postgres -D /var/lib/postgresql/16/main -c config_file=/etc/postgresql/16/main/postgresql.conf

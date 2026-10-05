@@ -1,0 +1,6 @@
+# host: lab-db
+# probe: updates
+# command: cat /etc/apt/apt.conf.d/20auto-upgrades 2>&1
+# exit_code: 0
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";

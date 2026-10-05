@@ -1,0 +1,19 @@
+# host: lab-db
+# probe: file_permissions
+# command: stat -c '%a %U:%G %n' /etc/passwd /etc/passwd- /etc/group /etc/group- /etc/shadow /etc/shadow- /etc/gshadow /etc/gshadow- /etc/crontab /etc/cron.d /etc/cron.daily /etc/cron.hourly /etc/cron.weekly /etc/cron.monthly 2>&1; echo '# directorios escribibles por todos sin sticky bit'; find / -xdev -type d -perm -0002 ! -perm -1000 2>/dev/null
+# exit_code: 0
+644 root:root /etc/passwd
+644 root:root /etc/passwd-
+644 root:root /etc/group
+644 root:root /etc/group-
+640 root:shadow /etc/shadow
+640 root:shadow /etc/shadow-
+640 root:shadow /etc/gshadow
+640 root:shadow /etc/gshadow-
+600 root:root /etc/crontab
+700 root:root /etc/cron.d
+700 root:root /etc/cron.daily
+700 root:root /etc/cron.hourly
+700 root:root /etc/cron.weekly
+700 root:root /etc/cron.monthly
+# directorios escribibles por todos sin sticky bit

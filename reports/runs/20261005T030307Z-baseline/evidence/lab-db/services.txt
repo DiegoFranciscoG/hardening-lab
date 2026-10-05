@@ -1,0 +1,8 @@
+# host: lab-db
+# probe: services
+# command: supervisorctl status
+# exit_code: 3
+cron                             RUNNING   pid 21, uptime 0:01:56
+postgresql                       RUNNING   pid 22, uptime 0:01:56
+rsyslog                          STOPPED   Not started
+sshd                             RUNNING   pid 20, uptime 0:01:56

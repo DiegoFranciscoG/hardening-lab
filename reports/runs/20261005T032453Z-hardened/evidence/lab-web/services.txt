@@ -1,0 +1,9 @@
+# host: lab-web
+# probe: services
+# command: supervisorctl status
+# exit_code: 3
+cron                             RUNNING   pid 16, uptime 0:19:22
+nftables                         EXITED    Oct 05 03:09 AM
+nginx                            RUNNING   pid 1414, uptime 0:17:09
+rsyslog                          RUNNING   pid 874, uptime 0:18:02
+sshd                             RUNNING   pid 15, uptime 0:19:22

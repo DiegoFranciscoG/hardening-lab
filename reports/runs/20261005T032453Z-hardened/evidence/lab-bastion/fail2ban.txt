@@ -1,0 +1,13 @@
+# host: lab-bastion
+# probe: fail2ban
+# command: fail2ban-client status sshd 2>&1
+# exit_code: 0
+Status for the jail: sshd
+|- Filter
+|  |- Currently failed:	0
+|  |- Total failed:	0
+|  `- File list:	/var/log/auth.log
+`- Actions
+   |- Currently banned:	0
+   |- Total banned:	0
+   `- Banned IP list:	

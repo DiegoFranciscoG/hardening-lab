@@ -126,7 +126,8 @@ def dumbbell(name: str, title: str, panels: Sequence[tuple[str, Sequence[Pair]]]
         tips = _Tooltips()
         for ax, (panel_title, pairs) in zip(axes[0], panels, strict=True):
             _style(ax, theme)
-            ax.set_xlim(0, 100)
+            ax.set_xlim(0, 106)
+            ax.set_xticks([0, 20, 40, 60, 80, 100])
             ax.set_title(panel_title, color=theme["text"], fontsize=10, loc="left", pad=8)
             for y, pair in enumerate(pairs):
                 if pair.before is not None and pair.after is not None:

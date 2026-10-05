@@ -1,0 +1,9 @@
+{
+  "ansible-core": "2.21.4",
+  "hardening-lab": "1.0.0",
+  "lynis": "3.1.7",
+  "lynis_sha256": "b5314a07fd85fa3ffc7da57b508f0108ec3280d84e4af823f805d95cbbc2428c",
+  "scap-security-guide": "0.1.82",
+  "trivy": "0.75.0",
+  "trivy_sha256": "c6e65abddb348e25f10549df887045629cf28cc72453cd1c63acb717316b3f3f"
+}

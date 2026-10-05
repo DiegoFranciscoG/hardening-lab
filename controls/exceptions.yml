@@ -120,6 +120,8 @@ exceptions:
     justification: >-
       El bastión debe reenviar TCP (ssh -W) para que la automatización llegue a los nodos internos. El reenvío queda
       deshabilitado de forma global y solo se habilita para la cuenta ansible hacia el puerto 22 de los nodos.
+      Ninguna herramienta lo marca (sshd -T muestra la configuración global), pero se documenta porque es una
+      desviación real del control.
     compensating_controls:
       - Bloque Match User ansible con PermitOpen limitado a <ip-admin>:22 de cada nodo
       - nftables del bastión solo permite salir por TCP/22 hacia la red de administración
