@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src '{{ script_hash }}'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>hardening-lab · Informe</title>
+<style>
+:root {
+  color-scheme: light;
+  --surface: #fcfcfb; --surface-2: #f3f2ef; --border: #e4e3df;
+  --text: #0b0b0b; --muted: #52514e; --accent: #2a78d6;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b; --neutral: #9a9993;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface: #1a1a19; --surface-2: #242423; --border: #383835;
+    --text: #ffffff; --muted: #c3c2b7; --accent: #3987e5; --neutral: #8a8983;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #1a1a19; --surface-2: #242423; --border: #383835;
+  --text: #ffffff; --muted: #c3c2b7; --accent: #3987e5; --neutral: #8a8983;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--surface); color: var(--text);
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+main { max-width: 1180px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 1.7rem; margin: 0 0 4px; }
+h2 { font-size: 1.25rem; margin: 40px 0 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+h3 { font-size: 1rem; margin: 20px 0 6px; }
+p, li { color: var(--text); }
+.muted { color: var(--muted); }
+a { color: var(--accent); }
+code { font-size: .88em; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+.lede { color: var(--muted); max-width: 70ch; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 20px 0; }
+.kpi { border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; background: var(--surface-2); }
+.kpi .label { color: var(--muted); font-size: .82rem; }
+.kpi .value { font-size: 1.6rem; font-weight: 650; margin-top: 2px; }
+.kpi .detail { color: var(--muted); font-size: .82rem; }
+figure { margin: 18px 0; }
+figcaption { color: var(--muted); font-size: .9rem; margin-bottom: 6px; }
+.chart svg { max-width: 100%; height: auto; display: block; }
+.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 8px 24px; }
+@media (max-width: 640px) { .chart-grid { grid-template-columns: 1fr; } }
+.chart .dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .chart .light { display: none; }
+  :root:not([data-theme="light"]) .chart .dark { display: block; }
+}
+:root[data-theme="dark"] .chart .light { display: none; }
+:root[data-theme="dark"] .chart .dark { display: block; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: .88rem; }
+caption { text-align: left; color: var(--muted); padding: 8px 10px; }
+th, td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); font-weight: 600; position: sticky; top: 0; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+details { margin: 8px 0; }
+summary { cursor: pointer; color: var(--accent); }
+.badge { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; font-weight: 600; font-size: .82rem; }
+.badge::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--neutral); flex: none; }
+.badge.pass::before { background: var(--good); }
+.badge.exception::before { background: var(--warning); }
+.badge.error::before { background: var(--serious); }
+.badge.fail::before { background: var(--critical); }
+.was { display: block; color: var(--muted); font-size: .76rem; font-weight: 400; }
+.ev { display: block; font-size: .76rem; }
+.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0; }
+.filters input, .filters select { font: inherit; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--surface); color: var(--text); }
+.verdict { font-weight: 700; }
+.verdict.drift { color: var(--critical); }
+.verdict.ok { color: var(--good); }
+footer { margin-top: 48px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--border); padding-top: 12px; }
+@media (max-width: 640px) { h1 { font-size: 1.35rem; } .kpi .value { font-size: 1.35rem; } }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>hardening-lab · Informe de cumplimiento</h1>
+  <p class="lede">Laboratorio propio de tres nodos (bastión, web y base de datos) auditado con Lynis, OpenSCAP (CIS Ubuntu
+  24.04 v1.0.0, nivel 1 servidor), docker-bench-security (CIS Docker 1.6.0), Trivy y pruebas propias; endurecido con Ansible.
+  Todos los datos son de ejecuciones reales del laboratorio; los hosts y responsables son ficticios.</p>
+  {% if data.before and data.after %}
+  <p class="muted">Antes: <code>{{ data.before.run.run_id }}</code> · Después: <code>{{ data.after.run.run_id }}</code>
+  {% if data.drift_run %} · Última re-auditoría: <code>{{ data.drift_run.run_id }}</code>{% endif %}</p>
+  {% endif %}
+</header>
+
+{% if data.before and data.after %}
+<section aria-label="Indicadores principales" class="kpis">
+  <div class="kpi"><div class="label">Cumplimiento del catálogo (estricto)</div>
+    <div class="value">{{ data.before.tally.strict_compliance|pct }} → {{ data.after.tally.strict_compliance|pct }}</div>
+    <div class="detail">pass / (pass + falla + excepción)</div></div>
+  <div class="kpi"><div class="label">Con excepciones aprobadas</div>
+    <div class="value">{{ data.before.tally.compliance_with_exceptions|pct }} → {{ data.after.tally.compliance_with_exceptions|pct }}</div>
+    <div class="detail">(pass + excepción) / (pass + falla + excepción)</div></div>
+  <div class="kpi"><div class="label">Controles × host en falla</div>
+    <div class="value">{{ counts_before['fail'] }} → {{ counts_after['fail'] }}</div>
+    <div class="detail">{{ counts_after['exception'] }} cubiertos por excepción documentada</div></div>
+  <div class="kpi"><div class="label">Deriva de configuración</div>
+    {% if data.drift %}
+    <div class="value verdict {{ 'drift' if data.drift.verdict.value == 'drift' else 'ok' }}">{{ 'Detectada' if data.drift.verdict.value == 'drift' else 'Sin deriva' }}</div>
+    <div class="detail">{{ data.drift.regressions|length }} regresiones · {{ data.drift.ansible_changed_tasks|length }} tareas con cambios</div>
+    {% else %}<div class="value">—</div><div class="detail">sin re-auditorías</div>{% endif %}</div>
+</section>
+{% endif %}
+
+<h2 id="graficos">Antes y después</h2>
+{% macro figure(chart) %}
+<figure class="chart">
+  <figcaption>{{ chart.title }}</figcaption>
+  <div class="light">{{ chart.svg.light|safe }}</div>
+  <div class="dark">{{ chart.svg.dark|safe }}</div>
+</figure>
+{% endmacro %}
+{% if data.charts %}{{ figure(data.charts[0]) }}{% endif %}
+<div class="chart-grid">
+{% for chart in data.charts[1:] %}{{ figure(chart) }}{% endfor %}
+</div>
+
+<details>
+  <summary>Ver los datos de los gráficos en tabla</summary>
+  <div class="table-wrap">
+  <table>
+    <caption>Puntajes nativos por host (antes → después). Las escalas no se suman entre herramientas.</caption>
+    <thead><tr><th>Host</th><th class="num">Lynis índice</th><th class="num">OpenSCAP CIS L1</th>
+      <th class="num">Catálogo estricto %</th><th class="num">Catálogo c/ excepciones %</th>
+      <th class="num">Trivy fallos</th><th class="num">docker-bench fallos</th></tr></thead>
+    <tbody>
+    {% for row in tools_table %}
+    <tr><td>{{ row.host }}</td>
+      <td class="num">{{ row.lynis_before|num }} → {{ row.lynis_after|num }}</td>
+      <td class="num">{{ row.openscap_before|num }} → {{ row.openscap_after|num }}</td>
+      <td class="num">{{ row.catalog_before|num }} → {{ row.catalog_after|num }}</td>
+      <td class="num">{{ row.catalog_exc_before|num }} → {{ row.catalog_exc_after|num }}</td>
+      <td class="num">{{ row['trivy_before']|num }} → {{ row['trivy_after']|num }}</td>
+      <td class="num">{{ row['docker-bench_before']|num }} → {{ row['docker-bench_after']|num }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">Puntaje global de docker-bench (+1 por PASS, −1 por WARN): {{ bench_scores.before|num }} → {{ bench_scores.after|num }}.
+  Datos completos: <a href="data/history.csv">history.csv</a>{% if data.before %}, <a href="data/{{ data.before.run.run_id }}.csv">resumen antes</a>{% endif %}{% if data.after %}, <a href="data/{{ data.after.run.run_id }}.csv">resumen después</a>{% endif %}.</p>
+</details>
+
+{% if data.after %}
+<h2 id="dominios">Resultado por dominio (después)</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Dominio</th><th class="num">Cumple</th><th class="num">Excepción</th><th class="num">Falla</th><th class="num">Error</th><th class="num">Sin evidencia</th></tr></thead>
+  <tbody>
+  {% for row in by_domain %}
+  <tr><td>{{ row.domain }}</td>
+    <td class="num">{{ row.tally.counts['pass'] or 0 }}</td><td class="num">{{ row.tally.counts['exception'] or 0 }}</td>
+    <td class="num">{{ row.tally.counts['fail'] or 0 }}</td><td class="num">{{ row.tally.counts['error'] or 0 }}</td>
+    <td class="num">{{ row.tally.counts['notchecked'] or 0 }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+
+<h2 id="controles">Controles y evidencia por host</h2>
+<p class="muted">Estado después del endurecimiento; debajo, el estado antes. Cada enlace abre la salida de la sonda que respalda el
+control (método <em>examine</em> de NIST SP 800-53A) y su SHA-256 está en <code>controls.json</code>.</p>
+<div class="filters">
+  <label for="control-filter">Buscar</label>
+  <input id="control-filter" type="search" placeholder="ID, título o dominio">
+  <label for="status-filter">Estado</label>
+  <select id="status-filter">
+    <option value="">Todos</option>
+    <option value="pass">Cumple</option><option value="exception">Excepción</option>
+    <option value="fail">Falla</option><option value="error">Error</option><option value="notchecked">Sin evidencia</option>
+  </select>
+  <span id="filter-count" class="muted" aria-live="polite"></span>
+</div>
+<div class="table-wrap">
+<table id="control-matrix">
+  <thead><tr><th>Control</th><th>Severidad</th>{% for host in hosts %}<th>{{ host }}</th>{% endfor %}</tr></thead>
+  <tbody>
+  {% for row in matrix %}
+  <tr data-statuses="{{ row.statuses }}" data-search="{{ (row.control.control_id ~ ' ' ~ row.control.title_es ~ ' ' ~ row.control.domain.value)|lower }}">
+    <td><strong>{{ row.control.control_id }}</strong><br>{{ row.control.title_es }}<br><span class="muted">{{ row.control.domain.value }} · {{ row.control.method.value }}</span></td>
+    <td>{{ severity_labels.get(row.control.severity, row.control.severity.value) }}</td>
+    {% for cell in row.cells %}
+    <td>
+      {% if cell.after %}
+      <span class="badge {{ cell.after.status.value }}">{{ status_labels[cell.after.status] }}</span>
+      {% if cell.after.exception_id %}<span class="was">{{ cell.after.exception_id }}</span>{% endif %}
+      {% if cell.before %}<span class="was">antes: {{ status_labels[cell.before]|lower }}</span>{% endif %}
+      {% for ev in cell.after.evidence %}<a class="ev" href="evidence/{{ data.after.run.run_id }}/{{ ev.path|replace('evidence/', '') }}">{{ ev.path.split('/')[-1] }}</a>{% endfor %}
+      {% else %}<span class="muted">no aplica al rol</span>{% endif %}
+    </td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endif %}
+
+<h2 id="excepciones">Excepciones justificadas</h2>
+<p class="muted">Desviaciones identificadas, documentadas y aprobadas (NIST SP 800-53 CM-6(c)), cada una con control compensatorio
+(NIST SP 800-128) y fecha de revisión. Una excepción vencida deja de cubrir el control.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ID</th><th>Controles</th><th>Alcance</th><th>Justificación</th><th>Compensación</th><th>Riesgo residual</th><th>Revisión</th></tr></thead>
+  <tbody>
+  {% for exc in exceptions %}
+  <tr><td><strong>{{ exc.exception_id }}</strong><br><span class="muted">{{ exception_status[exc.exception_id] }}</span></td>
+    <td>{{ exc.control_ids|join(', ') }}</td>
+    <td>{{ (exc.scope.hosts + exc.scope.roles|map(attribute='value')|list)|join(', ') }}</td>
+    <td>{{ exc.justification }}</td>
+    <td><ul>{% for c in exc.compensating_controls %}<li>{{ c }}</li>{% endfor %}</ul></td>
+    <td>{{ exc.residual_severity.value }}</td>
+    <td>{{ exc.review_by }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+
+<h2 id="deriva">Deriva de configuración</h2>
+{% if data.drift %}
+<p>Comparación de <code>{{ data.drift.current_run_id }}</code> contra la línea base aprobada <code>{{ data.drift.baseline_run_id }}</code>:
+<span class="verdict {{ 'drift' if data.drift.verdict.value == 'drift' else 'ok' }}">{{ 'deriva detectada' if data.drift.verdict.value == 'drift' else 'sin deriva' }}</span>.</p>
+{% if data.drift.regressions %}
+<div class="table-wrap"><table>
+  <caption>Regresiones (un control que cumplía o estaba exceptuado y ahora falla)</caption>
+  <thead><tr><th>Host</th><th>Control</th><th>Antes</th><th>Ahora</th></tr></thead>
+  <tbody>{% for r in data.drift.regressions %}<tr><td>{{ r.host }}</td><td>{{ r.control_id }}</td><td>{{ r.before.value if r.before else '—' }}</td><td>{{ r.after.value if r.after else '—' }}</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endif %}
+{% if data.drift.ansible_changed_tasks %}
+<h3>Tareas que Ansible cambiaría (modo check)</h3>
+<ul>{% for t in data.drift.ansible_changed_tasks %}<li><code>{{ t.host }}</code> · {{ t.task }}</li>{% endfor %}</ul>
+{% endif %}
+<p class="muted">La re-auditoría programada (GitHub Actions, semanal) repite esta comparación y falla el job si encuentra regresiones.
+Tras remediar con <code>make harden</code>, la auditoría endurecida más reciente es la que se muestra arriba como «después».</p>
+{% else %}
+<p class="muted">Todavía no hay re-auditorías. Ejecuta <code>make approve-baseline</code> y luego <code>make drift</code>.</p>
+{% endif %}
+
+<h2 id="historial">Historial de auditorías</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Run</th><th>Fase</th><th>Estado</th><th>Commit</th>{% for host in hosts %}<th class="num">{{ host }} c/ exc.</th>{% endfor %}</tr></thead>
+  <tbody>
+  {% for run in data.runs %}
+  <tr><td><code>{{ run.run_id }}</code></td><td>{{ run.phase.value }}</td><td>{{ run.status.value }}</td><td><code>{{ run.git_sha[:7] }}</code></td>
+    {% for host in hosts %}{% set ns = namespace(v=None) %}{% for r in data.history if r.run_id == run.run_id and r.host == host and r.tool == 'catalog' %}{% set ns.v = r.compliance_with_exceptions %}{% endfor %}
+    <td class="num">{{ ns.v|pct }}</td>{% endfor %}</tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+
+<h2 id="metodo">Método y límites</h2>
+<ul>
+  <li><strong>Catálogo propio</strong>: {{ catalog.controls|length }} controles con ID estable que agrupan reglas CIS (vía SCAP Security Guide), pruebas de Lynis,
+  chequeos de docker-bench y Trivy, aserciones sobre la evidencia y pruebas de flujos de red. Gana el estado más grave entre las fuentes.</li>
+  <li><strong>Cumplimiento</strong>: estricto = pass / (pass + falla + excepción); con excepciones = (pass + excepción) / (pass + falla + excepción).
+  «No aplica», «sin evidencia» e «informativo» no entran al denominador; los errores se muestran aparte. Sin ponderaciones inventadas.</li>
+  <li><strong>Versiones evaluadas</strong>:
+  {% if data.after %}{% for b in data.after.run.benchmarks %}{{ b.name }} {{ b.version }} ({{ b.via }}){{ '; ' if not loop.last }}{% endfor %}.
+  Herramientas: {% for t in data.after.run.tools if not t.name.endswith('_sha256') %}{{ t.name }} {{ t.version }}{{ ', ' if not loop.last }}{% endfor %}.{% endif %}
+  La versión vigente de CIS Ubuntu 24.04 es la 2.0.0; el contenido abierto de SSG implementa la 1.0.0, así que no se afirma cumplimiento de la 2.0.0.</li>
+  <li><strong>Contenedor ≠ máquina virtual</strong>: auditd, AppArmor, systemd y parte de los sysctl son responsabilidad del anfitrión; se reportan como
+  excepciones con compensación, no se ocultan como «no aplica».</li>
+  <li>Detalle de fuentes y decisiones: <a href="{{ repo_url }}">repositorio</a> (docs/investigacion.md, docs/modelo-datos.md, docs/excepciones.md).</li>
+</ul>
+
+<footer>
+  Generado {{ generated_at.strftime('%Y-%m-%d %H:%M UTC') }}{% if data.after %} desde el commit <code>{{ data.after.run.git_sha[:7] }}</code>{% endif %} ·
+  hardening-lab · Diego Francisco Granda Zhingre · MIT
+</footer>
+</main>
+<script>{{ filter_script|safe }}</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+---
+# DEMOSTRACIÓN de deriva: simula cambios manuales en hosts ya endurecidos para probar que `make drift` los
+# detecta. Solo actúa sobre los contenedores del laboratorio; `make harden` los revierte.
+- name: Drift the web node configuration
+  hosts: lab-web
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Re-enable root login over SSH as a forgotten manual change
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^PermitRootLogin"
+        line: PermitRootLogin yes
+
+    - name: Reload sshd so the change is live
+      community.general.supervisorctl:
+        name: sshd
+        state: signalled
+        signal: HUP
+
+    - name: Loosen the permissions of /etc/shadow
+      ansible.builtin.file:
+        path: /etc/shadow
+        mode: "0644"
+
+- name: Drift the database node firewall at runtime
+  hosts: lab-db
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Switch the input chain to accept everything without touching the persistent file
+      ansible.builtin.command:
+        cmd: /usr/sbin/nft add chain inet filter input '{ policy accept; }'
+      changed_when: true
