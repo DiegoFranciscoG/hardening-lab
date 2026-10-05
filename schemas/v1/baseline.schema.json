@@ -1,0 +1,34 @@
+{
+  "$id": "https://github.com/DiegoFranciscoG/hardening-lab/schemas/v1/baseline.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "approved_at": {
+      "format": "date-time",
+      "title": "Approved At",
+      "type": "string"
+    },
+    "approved_by": {
+      "title": "Approved By",
+      "type": "string"
+    },
+    "run_id": {
+      "pattern": "^\\d{8}T\\d{6}Z-(baseline|hardened|drift|scheduled)$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "approved_at",
+    "approved_by"
+  ],
+  "title": "Baseline",
+  "type": "object"
+}

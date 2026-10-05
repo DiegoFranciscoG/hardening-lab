@@ -1,0 +1,143 @@
+{
+  "$defs": {
+    "ExceptionCategory": {
+      "enum": [
+        "host_responsibility",
+        "not_applicable_container",
+        "operational_requirement",
+        "risk_accepted"
+      ],
+      "title": "ExceptionCategory",
+      "type": "string"
+    },
+    "ExceptionScope": {
+      "additionalProperties": false,
+      "properties": {
+        "hosts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Hosts",
+          "type": "array"
+        },
+        "roles": {
+          "items": {
+            "$ref": "#/$defs/Role"
+          },
+          "title": "Roles",
+          "type": "array"
+        }
+      },
+      "title": "ExceptionScope",
+      "type": "object"
+    },
+    "ExceptionStatus": {
+      "enum": [
+        "active",
+        "expired",
+        "revoked"
+      ],
+      "title": "ExceptionStatus",
+      "type": "string"
+    },
+    "Role": {
+      "enum": [
+        "bastion",
+        "web",
+        "db"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "Severity": {
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "info"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/DiegoFranciscoG/hardening-lab/schemas/v1/exception.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Desviación aprobada de la configuración segura (NIST SP 800-53 CM-6(c)).",
+  "properties": {
+    "approved_by": {
+      "title": "Approved By",
+      "type": "string"
+    },
+    "approved_on": {
+      "format": "date",
+      "title": "Approved On",
+      "type": "string"
+    },
+    "category": {
+      "$ref": "#/$defs/ExceptionCategory"
+    },
+    "compensating_controls": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Compensating Controls",
+      "type": "array"
+    },
+    "control_ids": {
+      "items": {
+        "pattern": "^HL-(SSH|ACC|SUDO|PAM|PERM|SVC|NET|KRN|FW|LOG|AUD|UPD|CTR|WEB|DB)-\\d{3}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Control Ids",
+      "type": "array"
+    },
+    "exception_id": {
+      "pattern": "^EXC-\\d{3}$",
+      "title": "Exception Id",
+      "type": "string"
+    },
+    "justification": {
+      "minLength": 40,
+      "title": "Justification",
+      "type": "string"
+    },
+    "references": {
+      "items": {
+        "type": "string"
+      },
+      "title": "References",
+      "type": "array"
+    },
+    "residual_severity": {
+      "$ref": "#/$defs/Severity"
+    },
+    "review_by": {
+      "format": "date",
+      "title": "Review By",
+      "type": "string"
+    },
+    "scope": {
+      "$ref": "#/$defs/ExceptionScope"
+    },
+    "status": {
+      "$ref": "#/$defs/ExceptionStatus",
+      "default": "active"
+    }
+  },
+  "required": [
+    "exception_id",
+    "control_ids",
+    "scope",
+    "category",
+    "justification",
+    "residual_severity",
+    "approved_by",
+    "approved_on",
+    "review_by"
+  ],
+  "title": "ControlException",
+  "type": "object"
+}

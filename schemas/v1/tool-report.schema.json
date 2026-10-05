@@ -1,0 +1,239 @@
+{
+  "$defs": {
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "title": "Check Id",
+          "type": "string"
+        },
+        "control_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Control Id"
+        },
+        "details": {
+          "default": "",
+          "title": "Details",
+          "type": "string"
+        },
+        "exception_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exception Id"
+        },
+        "finding_id": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Finding Id",
+          "type": "string"
+        },
+        "host": {
+          "title": "Host",
+          "type": "string"
+        },
+        "item": {
+          "default": "",
+          "title": "Item",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^\\d{8}T\\d{6}Z-(baseline|hardened|drift|scheduled)$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity"
+        },
+        "status": {
+          "$ref": "#/$defs/Status"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "tool": {
+          "$ref": "#/$defs/Tool"
+        }
+      },
+      "required": [
+        "finding_id",
+        "run_id",
+        "host",
+        "tool",
+        "check_id",
+        "title",
+        "control_id",
+        "status",
+        "severity",
+        "observed_at"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "RawArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "title": "RawArtifact",
+      "type": "object"
+    },
+    "Score": {
+      "additionalProperties": false,
+      "properties": {
+        "host": {
+          "title": "Host",
+          "type": "string"
+        },
+        "maximum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "host",
+        "value"
+      ],
+      "title": "Score",
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "info"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "Status": {
+      "enum": [
+        "pass",
+        "fail",
+        "exception",
+        "notapplicable",
+        "notchecked",
+        "info",
+        "error"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "Tool": {
+      "enum": [
+        "lynis",
+        "openscap",
+        "docker-bench",
+        "trivy",
+        "lab-probe",
+        "ansible-check"
+      ],
+      "title": "Tool",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/DiegoFranciscoG/hardening-lab/schemas/v1/tool-report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "raw": {
+      "items": {
+        "$ref": "#/$defs/RawArtifact"
+      },
+      "title": "Raw",
+      "type": "array"
+    },
+    "run_id": {
+      "pattern": "^\\d{8}T\\d{6}Z-(baseline|hardened|drift|scheduled)$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scores": {
+      "items": {
+        "$ref": "#/$defs/Score"
+      },
+      "title": "Scores",
+      "type": "array"
+    },
+    "tool": {
+      "$ref": "#/$defs/Tool"
+    },
+    "tool_version": {
+      "title": "Tool Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "tool",
+    "tool_version",
+    "generated_at",
+    "raw",
+    "scores",
+    "findings"
+  ],
+  "title": "ToolReport",
+  "type": "object"
+}

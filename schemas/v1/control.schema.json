@@ -1,0 +1,221 @@
+{
+  "$defs": {
+    "Assertion": {
+      "additionalProperties": false,
+      "description": "Expectativa sobre la salida de una sonda de evidencia (regex multilínea).",
+      "properties": {
+        "expect": {
+          "default": "present",
+          "enum": [
+            "present",
+            "absent"
+          ],
+          "title": "Expect",
+          "type": "string"
+        },
+        "pattern": {
+          "title": "Pattern",
+          "type": "string"
+        },
+        "probe": {
+          "title": "Probe",
+          "type": "string"
+        }
+      },
+      "required": [
+        "probe",
+        "pattern"
+      ],
+      "title": "Assertion",
+      "type": "object"
+    },
+    "ControlRef": {
+      "additionalProperties": false,
+      "properties": {
+        "framework": {
+          "$ref": "#/$defs/Framework"
+        },
+        "match": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Regex opcional sobre título/detalle del hallazgo",
+          "title": "Match"
+        },
+        "ref_id": {
+          "minLength": 1,
+          "title": "Ref Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "framework",
+        "ref_id"
+      ],
+      "title": "ControlRef",
+      "type": "object"
+    },
+    "Domain": {
+      "enum": [
+        "ssh",
+        "accounts",
+        "sudo_pam",
+        "file_permissions",
+        "services",
+        "kernel_network",
+        "firewall",
+        "logging",
+        "auditing",
+        "updates",
+        "container_runtime",
+        "web",
+        "database"
+      ],
+      "title": "Domain",
+      "type": "string"
+    },
+    "Framework": {
+      "enum": [
+        "cis_ubuntu2404_v1",
+        "cis_docker_v1_6",
+        "ssg",
+        "lynis",
+        "docker_bench",
+        "trivy",
+        "lab_probe",
+        "ansible_check"
+      ],
+      "title": "Framework",
+      "type": "string"
+    },
+    "Method": {
+      "enum": [
+        "examine",
+        "test"
+      ],
+      "title": "Method",
+      "type": "string"
+    },
+    "Remediation": {
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        }
+      },
+      "required": [
+        "role"
+      ],
+      "title": "Remediation",
+      "type": "object"
+    },
+    "Role": {
+      "enum": [
+        "bastion",
+        "web",
+        "db"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "Severity": {
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "info"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/DiegoFranciscoG/hardening-lab/schemas/v1/control.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "applies_to": {
+      "items": {
+        "$ref": "#/$defs/Role"
+      },
+      "minItems": 1,
+      "title": "Applies To",
+      "type": "array"
+    },
+    "assertions": {
+      "items": {
+        "$ref": "#/$defs/Assertion"
+      },
+      "title": "Assertions",
+      "type": "array"
+    },
+    "control_id": {
+      "pattern": "^HL-(SSH|ACC|SUDO|PAM|PERM|SVC|NET|KRN|FW|LOG|AUD|UPD|CTR|WEB|DB)-\\d{3}$",
+      "title": "Control Id",
+      "type": "string"
+    },
+    "domain": {
+      "$ref": "#/$defs/Domain"
+    },
+    "evidence": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "method": {
+      "$ref": "#/$defs/Method"
+    },
+    "refs": {
+      "items": {
+        "$ref": "#/$defs/ControlRef"
+      },
+      "title": "Refs",
+      "type": "array"
+    },
+    "remediation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Remediation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "severity": {
+      "$ref": "#/$defs/Severity"
+    },
+    "title_es": {
+      "minLength": 10,
+      "title": "Title Es",
+      "type": "string"
+    }
+  },
+  "required": [
+    "control_id",
+    "domain",
+    "title_es",
+    "severity",
+    "method",
+    "applies_to"
+  ],
+  "title": "Control",
+  "type": "object"
+}

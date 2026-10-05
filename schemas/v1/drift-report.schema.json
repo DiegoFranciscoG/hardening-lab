@@ -1,0 +1,168 @@
+{
+  "$defs": {
+    "DriftChange": {
+      "additionalProperties": false,
+      "properties": {
+        "after": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Status"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "before": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Status"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "control_id": {
+          "title": "Control Id",
+          "type": "string"
+        },
+        "host": {
+          "title": "Host",
+          "type": "string"
+        }
+      },
+      "required": [
+        "host",
+        "control_id",
+        "before",
+        "after"
+      ],
+      "title": "DriftChange",
+      "type": "object"
+    },
+    "DriftTask": {
+      "additionalProperties": false,
+      "properties": {
+        "control_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Control Ids",
+          "type": "array"
+        },
+        "host": {
+          "title": "Host",
+          "type": "string"
+        },
+        "task": {
+          "title": "Task",
+          "type": "string"
+        }
+      },
+      "required": [
+        "host",
+        "task",
+        "control_ids"
+      ],
+      "title": "DriftTask",
+      "type": "object"
+    },
+    "DriftVerdict": {
+      "enum": [
+        "no_drift",
+        "drift"
+      ],
+      "title": "DriftVerdict",
+      "type": "string"
+    },
+    "Status": {
+      "enum": [
+        "pass",
+        "fail",
+        "exception",
+        "notapplicable",
+        "notchecked",
+        "info",
+        "error"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/DiegoFranciscoG/hardening-lab/schemas/v1/drift-report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "ansible_changed_tasks": {
+      "items": {
+        "$ref": "#/$defs/DriftTask"
+      },
+      "title": "Ansible Changed Tasks",
+      "type": "array"
+    },
+    "baseline_run_id": {
+      "title": "Baseline Run Id",
+      "type": "string"
+    },
+    "current_run_id": {
+      "title": "Current Run Id",
+      "type": "string"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "improvements": {
+      "items": {
+        "$ref": "#/$defs/DriftChange"
+      },
+      "title": "Improvements",
+      "type": "array"
+    },
+    "missing_checks": {
+      "items": {
+        "$ref": "#/$defs/DriftChange"
+      },
+      "title": "Missing Checks",
+      "type": "array"
+    },
+    "new_checks": {
+      "items": {
+        "$ref": "#/$defs/DriftChange"
+      },
+      "title": "New Checks",
+      "type": "array"
+    },
+    "regressions": {
+      "items": {
+        "$ref": "#/$defs/DriftChange"
+      },
+      "title": "Regressions",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "verdict": {
+      "$ref": "#/$defs/DriftVerdict"
+    }
+  },
+  "required": [
+    "baseline_run_id",
+    "current_run_id",
+    "generated_at",
+    "regressions",
+    "improvements",
+    "new_checks",
+    "missing_checks",
+    "ansible_changed_tasks",
+    "verdict"
+  ],
+  "title": "DriftReport",
+  "type": "object"
+}
