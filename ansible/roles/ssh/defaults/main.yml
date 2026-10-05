@@ -1,0 +1,34 @@
+---
+# Valores del perfil CIS Ubuntu 24.04 Level 1 Server (SSG 0.1.82) y BSI TR-02102-4.
+ssh_allowed_group: sshusers
+ssh_max_auth_tries: 3
+ssh_max_sessions: 2
+ssh_max_startups: "10:30:60"
+ssh_login_grace_time: 60
+ssh_client_alive_interval: 300
+ssh_client_alive_count_max: 3
+# Lista exacta de la variable sshd_strong_kex del perfil CIS.
+ssh_kex_algorithms:
+  - sntrup761x25519-sha512@openssh.com
+  - curve25519-sha256
+  - curve25519-sha256@libssh.org
+  - ecdh-sha2-nistp256
+  - ecdh-sha2-nistp384
+  - ecdh-sha2-nistp521
+  - diffie-hellman-group-exchange-sha256
+  - diffie-hellman-group16-sha512
+  - diffie-hellman-group18-sha512
+  - diffie-hellman-group14-sha256
+# AES-GCM y AES-CTR: recomendados por BSI TR-02102-4 y aceptados por CIS (sin chacha20 por Terrapin).
+ssh_ciphers:
+  - aes256-gcm@openssh.com
+  - aes128-gcm@openssh.com
+  - aes256-ctr
+  - aes192-ctr
+  - aes128-ctr
+# Lista exacta de la variable sshd_strong_macs del perfil CIS.
+ssh_macs:
+  - hmac-sha2-512-etm@openssh.com
+  - hmac-sha2-256-etm@openssh.com
+  - hmac-sha2-512
+  - hmac-sha2-256

@@ -1,0 +1,11 @@
+---
+- name: Update supervisor programs (nginx)
+  ansible.builtin.command:
+    cmd: supervisorctl update
+  register: nginx_supervisor_update
+  changed_when: nginx_supervisor_update.stdout | length > 0
+
+- name: Restart nginx
+  community.general.supervisorctl:
+    name: nginx
+    state: restarted

@@ -1,0 +1,11 @@
+---
+- name: Load nftables ruleset
+  ansible.builtin.command:
+    cmd: /usr/sbin/nft -f /etc/nftables.conf
+  changed_when: true
+
+- name: Update supervisor programs (firewall)
+  ansible.builtin.command:
+    cmd: supervisorctl update
+  register: firewall_supervisor_update
+  changed_when: firewall_supervisor_update.stdout | length > 0

@@ -1,0 +1,7 @@
+---
+nginx_listen_port: 8080
+nginx_tls_port: 8443
+nginx_tls_cert: /etc/ssl/certs/hlab-web.crt
+nginx_tls_key: /etc/ssl/private/hlab-web.key
+nginx_client_max_body_size: 1m
+nginx_csp: "default-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"

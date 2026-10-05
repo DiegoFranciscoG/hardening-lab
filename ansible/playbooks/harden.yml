@@ -1,0 +1,35 @@
+---
+# Endurecimiento del sistema operativo de los nodos. El runtime de contenedores se endurece antes con
+# lab/compose.hardened.yaml (make harden). Cada tarea se llama "HL-XXX-NNN | ..." para enlazarla al catálogo.
+- name: Harden every lab host
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - accounts
+    - file_permissions
+    - services
+    - kernel
+    - ssh
+    - firewall
+
+- name: Harden the bastion
+  hosts: bastion
+  become: true
+  gather_facts: false
+  roles:
+    - fail2ban
+
+- name: Harden the web tier
+  hosts: web
+  become: true
+  gather_facts: false
+  roles:
+    - nginx
+
+- name: Harden the database tier
+  hosts: db
+  become: true
+  gather_facts: false
+  roles:
+    - postgresql

@@ -1,0 +1,34 @@
+# {{ ansible_managed }}
+# hardening-lab HL-FW-001, HL-FW-003 y HL-FW-004 (CIS 4.3.x): denegación por defecto en input, forward y output.
+# Solo se reemplaza la tabla propia; las reglas NAT que Docker crea en el namespace (DNS embebido) se conservan.
+
+table inet filter
+delete table inet filter
+
+table inet filter {
+  chain input {
+    type filter hook input priority filter; policy drop;
+    iif "lo" accept
+    ip saddr 127.0.0.0/8 iif != "lo" drop
+    ip6 saddr ::1 iif != "lo" drop
+    ct state vmap { established : accept, related : accept, invalid : drop }
+    ip protocol icmp icmp type { echo-request, destination-unreachable, time-exceeded } limit rate 10/second accept
+{% for rule in firewall_inbound[lab_role] %}
+    ip saddr {{ rule.source }} tcp dport {{ rule.port }} ct state new accept comment "{{ rule.comment }}"
+{% endfor %}
+  }
+
+  chain forward {
+    type filter hook forward priority filter; policy drop;
+  }
+
+  chain output {
+    type filter hook output priority filter; policy drop;
+    oif "lo" accept
+    ct state vmap { established : accept, related : accept, invalid : drop }
+    ip protocol icmp icmp type { echo-request, echo-reply, destination-unreachable, time-exceeded } accept
+{% for rule in firewall_outbound[lab_role] %}
+    ip daddr {{ rule.destination }} tcp dport {{ rule.port }} ct state new accept comment "{{ rule.comment }}"
+{% endfor %}
+  }
+}

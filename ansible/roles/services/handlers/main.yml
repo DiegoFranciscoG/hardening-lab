@@ -1,0 +1,11 @@
+---
+- name: Update supervisor programs
+  ansible.builtin.command:
+    cmd: supervisorctl update
+  register: services_supervisor_update
+  changed_when: services_supervisor_update.stdout | length > 0
+
+- name: Restart rsyslog
+  community.general.supervisorctl:
+    name: rsyslog
+    state: restarted

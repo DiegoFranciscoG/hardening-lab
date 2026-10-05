@@ -1,0 +1,66 @@
+# {{ ansible_managed }}
+# hardening-lab — controles HL-SSH-001 a HL-SSH-010 (CIS Ubuntu 24.04 sección 5.1, BSI TR-02102-4).
+# Sin "Include": ningún archivo adicional puede debilitar esta configuración sin que lo detecte la deriva.
+
+Port 22
+AddressFamily inet
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_rsa_key
+
+KexAlgorithms {{ ssh_kex_algorithms | join(',') }}
+Ciphers {{ ssh_ciphers | join(',') }}
+MACs {{ ssh_macs | join(',') }}
+RekeyLimit 1G 1h
+
+SyslogFacility AUTH
+LogLevel VERBOSE
+
+LoginGraceTime {{ ssh_login_grace_time }}
+PermitRootLogin no
+StrictModes yes
+MaxAuthTries {{ ssh_max_auth_tries }}
+MaxSessions {{ ssh_max_sessions }}
+MaxStartups {{ ssh_max_startups }}
+
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+HostbasedAuthentication no
+IgnoreRhosts yes
+PasswordAuthentication no
+PermitEmptyPasswords no
+KbdInteractiveAuthentication no
+GSSAPIAuthentication no
+KerberosAuthentication no
+UsePAM yes
+AllowGroups {{ ssh_allowed_group }}
+
+DisableForwarding yes
+AllowAgentForwarding no
+AllowTcpForwarding no
+AllowStreamLocalForwarding no
+X11Forwarding no
+PermitTunnel no
+GatewayPorts no
+PermitUserEnvironment no
+
+TCPKeepAlive no
+ClientAliveInterval {{ ssh_client_alive_interval }}
+ClientAliveCountMax {{ ssh_client_alive_count_max }}
+
+PrintMotd no
+PrintLastLog yes
+Compression no
+Banner /etc/issue.net
+AcceptEnv LANG LC_*
+Subsystem sftp internal-sftp
+{% if lab_role == 'bastion' %}
+
+# El bastión reenvía SSH (ssh -W) solo para la cuenta de automatización y solo hacia el puerto 22 de los
+# nodos internos. Excepción EXC-008 sobre HL-SSH-005; el resto de cuentas sigue sin reenvíos.
+Match User ansible
+    DisableForwarding no
+    AllowTcpForwarding yes
+    PermitOpen {% for host in groups['all'] | difference(['lab-bastion']) | sort %}{{ hostvars[host].lab_ip.admin }}:22 {% endfor %}
+
+{% endif %}

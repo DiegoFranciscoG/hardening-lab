@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# hardening-lab HL-PAM-001: pam_faillock en la pila de cuentas reinicia el contador tras un acceso válido.
+account	[success=1 new_authtok_reqd=done default=ignore]	pam_unix.so
+account	requisite			pam_deny.so
+account	required			pam_permit.so
+account	required			pam_faillock.so

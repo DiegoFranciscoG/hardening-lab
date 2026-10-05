@@ -1,0 +1,51 @@
+---
+- name: HL-FW-002 | Remove competing firewall front-ends
+  ansible.builtin.apt:
+    name: [ufw, iptables-persistent]
+    state: absent
+    purge: true
+
+- name: HL-FW-001, HL-FW-003, HL-FW-004 | Install the nftables ruleset for this role
+  ansible.builtin.template:
+    src: nftables.rules.j2
+    dest: /etc/nftables.rules
+    owner: root
+    group: root
+    mode: "0600"
+    validate: /usr/sbin/nft -c -f %s
+  notify: Load nftables ruleset
+
+- name: HL-FW-001 | Make the ruleset permanent through /etc/nftables.conf
+  ansible.builtin.copy:
+    dest: /etc/nftables.conf
+    content: |
+      #!/usr/sbin/nft -f
+      # hardening-lab HL-FW-001 (CIS 4.3.10): la configuración persistente incluye el conjunto de reglas.
+      include "/etc/nftables.rules"
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Load nftables ruleset
+
+- name: HL-FW-001 | Load the ruleset at boot under the process supervisor
+  ansible.builtin.copy:
+    src: supervisor-nftables.conf
+    dest: /etc/supervisor/conf.d/01-nftables.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Update supervisor programs (firewall)
+
+- name: HL-FW-001 | Read the active input chain
+  ansible.builtin.command:
+    cmd: /usr/sbin/nft list chain inet filter input
+  register: firewall_active
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: HL-FW-001 | Reload the ruleset when the running firewall drifted from the file
+  ansible.builtin.command:
+    cmd: /usr/sbin/nft -f /etc/nftables.conf
+  when: "'policy drop' not in firewall_active.stdout"
+  changed_when: true

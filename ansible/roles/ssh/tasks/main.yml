@@ -1,0 +1,53 @@
+---
+- name: HL-SSH-008 | Create the group allowed to log in over SSH
+  ansible.builtin.group:
+    name: "{{ ssh_allowed_group }}"
+    system: true
+    state: present
+
+- name: HL-SSH-008 | Add the automation account to the SSH group
+  ansible.builtin.user:
+    name: ansible
+    groups: "{{ ssh_allowed_group }}"
+    append: true
+
+- name: HL-SSH-001, HL-SSH-002, HL-SSH-003, HL-SSH-004, HL-SSH-005, HL-SSH-006, HL-SSH-007, HL-SSH-009 | Deploy the hardened sshd_config
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0600"
+    validate: /usr/sbin/sshd -t -f %s
+  notify: Reload sshd
+
+- name: HL-SSH-005 | Find leftover sshd drop-in files
+  ansible.builtin.find:
+    paths: /etc/ssh/sshd_config.d
+    patterns: "*.conf"
+  register: ssh_dropins
+
+- name: HL-SSH-005 | Remove leftover sshd drop-in files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ ssh_dropins.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  notify: Reload sshd
+
+- name: HL-SSH-010 | Find SSH host keys
+  ansible.builtin.find:
+    paths: /etc/ssh
+    patterns: "ssh_host_*_key*"
+  register: ssh_host_keys
+
+- name: HL-SSH-010 | Restrict permissions on SSH host keys
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    owner: root
+    group: root
+    mode: "{{ '0644' if item.path.endswith('.pub') else '0600' }}"
+  loop: "{{ ssh_host_keys.files }}"
+  loop_control:
+    label: "{{ item.path }}"

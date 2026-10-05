@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# hardening-lab HL-PAM-002 (CIS 5.3.3.2.x)
+{% for key, value in accounts_pwquality.items() %}
+{{ key }} = {{ value }}
+{% endfor %}
+enforce_for_root

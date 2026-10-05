@@ -1,0 +1,11 @@
+---
+- name: Update supervisor programs (fail2ban)
+  ansible.builtin.command:
+    cmd: supervisorctl update
+  register: fail2ban_supervisor_update
+  changed_when: fail2ban_supervisor_update.stdout | length > 0
+
+- name: Restart fail2ban
+  community.general.supervisorctl:
+    name: fail2ban
+    state: restarted

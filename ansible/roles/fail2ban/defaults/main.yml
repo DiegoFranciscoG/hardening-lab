@@ -1,0 +1,6 @@
+---
+fail2ban_maxretry: 5
+fail2ban_findtime: 10m
+fail2ban_bantime: 1h
+# El controlador nunca se bloquea a sí mismo (usa clave, pero un fallo de red no debe cortar la automatización).
+fail2ban_ignoreip: "127.0.0.1/8 {{ hlab_controller_ip.edge }}"
