@@ -106,8 +106,14 @@ footer { margin-top: 48px; color: var(--muted); font-size: .85rem; border-top: 1
     <div class="detail">{{ counts_after['exception'] }} cubiertos por excepción documentada</div></div>
   <div class="kpi"><div class="label">Deriva de configuración</div>
     {% if data.drift %}
+    {% set remediated = data.after and data.after.run.run_id > data.drift.current_run_id %}
+    {% if data.drift.verdict.value == 'drift' and remediated %}
+    <div class="value verdict ok">Remediada</div>
+    <div class="detail">Detectada: {{ data.drift.regressions|length }} regresiones · {{ data.drift.ansible_changed_tasks|length }} tareas con cambios; corregida con <code>make harden</code></div>
+    {% else %}
     <div class="value verdict {{ 'drift' if data.drift.verdict.value == 'drift' else 'ok' }}">{{ 'Detectada' if data.drift.verdict.value == 'drift' else 'Sin deriva' }}</div>
     <div class="detail">{{ data.drift.regressions|length }} regresiones · {{ data.drift.ansible_changed_tasks|length }} tareas con cambios</div>
+    {% endif %}
     {% else %}<div class="value">—</div><div class="detail">sin re-auditorías</div>{% endif %}</div>
 </section>
 {% endif %}
