@@ -1,0 +1,56 @@
+name: Deriva programada
+
+# Re-audita cada semana el laboratorio construido desde main y lo compara con la última auditoría endurecida
+# aprobada por CI en main (mismo entorno). Falla y deja el detalle en el resumen si algo se desvió.
+# Nota: GitHub desactiva los workflows programados de repos públicos tras 60 días sin actividad.
+on:
+  schedule:
+    - cron: "23 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  drift:
+    name: Re-auditoría y comparación con la línea base
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Descargar la línea base aprobada por el último CI verde de main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run_id="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --branch main --status success \
+            --limit 1 --json databaseId --jq '.[0].databaseId')"
+          gh run download "$run_id" --repo "$GITHUB_REPOSITORY" --name hardened-baseline --dir /tmp/baseline
+          baseline_id="$(jq -r .run_id /tmp/baseline/run.json)"
+          mkdir -p "reports/runs/$baseline_id"
+          cp -r /tmp/baseline/. "reports/runs/$baseline_id/"
+          echo "BASELINE_RUN=$baseline_id" >> "$GITHUB_ENV"
+      - name: Levantar y endurecer el laboratorio desde el código actual
+        run: make lab-up harden
+      - name: Aprobar la línea base descargada
+        run: make approve-baseline BASELINE_RUN="$BASELINE_RUN"
+      - name: Re-auditar y comparar (código de salida 3 = deriva)
+        id: drift
+        run: make drift DRIFT_PHASE=scheduled 2>&1 | tee /tmp/drift.txt
+      - name: Resumen
+        if: always()
+        run: |
+          echo "### Deriva respecto de $BASELINE_RUN" >> "$GITHUB_STEP_SUMMARY"
+          grep -E "Deriva|REGRESIÓN|CAMBIO" /tmp/drift.txt | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY" || true
+      - name: Guardar la re-auditoría
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: drift-report
+          path: reports/runs/
+          retention-days: 30
+      - name: Destruir el laboratorio
+        if: always()
+        run: make lab-down
