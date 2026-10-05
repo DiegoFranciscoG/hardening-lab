@@ -1,0 +1,135 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secrets:
+    name: Secretos (gitleaks)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Instalar gitleaks 8.30.1 (SHA-256 verificado)
+        run: |
+          curl -fsSLo gl.tgz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gl.tgz" | sha256sum -c -
+          tar -xzf gl.tgz gitleaks
+      - name: Escanear historial completo
+        run: ./gitleaks git . --redact --verbose --exit-code 1
+
+  python:
+    name: Python (lint, tipos, tests y cobertura)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: "0.12.23"
+          python-version: "3.14"
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy src
+      - run: uv run pytest --cov --cov-report=term-missing --cov-report=xml
+      - name: Configuración del laboratorio consistente
+        run: uv run hlab validate
+      - name: Artefactos generados al día (JSON Schema y documento de excepciones)
+        run: |
+          uv run hlab schemas --out /tmp/schemas > /dev/null
+          diff -r schemas/v1 /tmp/schemas
+          uv run hlab exceptions-doc --out /tmp/excepciones.md > /dev/null
+          diff docs/excepciones.md /tmp/excepciones.md
+
+  iac:
+    name: IaC (yamllint, ansible-lint, hadolint)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: "0.12.23"
+          python-version: "3.14"
+      - run: uvx yamllint==1.38.0 --strict .
+      - name: ansible-lint (perfil production)
+        working-directory: ansible
+        run: |
+          uvx --with ansible-core==2.21.4 ansible-galaxy collection install -r requirements.yml -p collections
+          ANSIBLE_COLLECTIONS_PATH="$PWD/collections" uvx --with ansible-core==2.21.4 ansible-lint==26.9.0 --profile production playbooks roles
+      - name: hadolint 2.15.1 (SHA-256 verificado)
+        run: |
+          curl -fsSLo hadolint https://github.com/hadolint/hadolint/releases/download/v2.15.1/hadolint-linux-x86_64
+          echo "c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507  hadolint" | sha256sum -c -
+          chmod +x hadolint
+          ./hadolint lab/images/*/Dockerfile
+
+  lab:
+    name: Laboratorio de principio a fin
+    runs-on: ubuntu-24.04
+    needs: [secrets, python, iac]
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: make all (lab-up, audit, harden, audit, report)
+        run: make all
+      - name: Idempotencia (segunda pasada sin cambios)
+        run: make idempotence
+      - name: Resumen en el job
+        run: |
+          run="$(ls -d reports/runs/*-hardened | sort | tail -1)"
+          echo "### Auditoría endurecida $(basename "$run")" >> "$GITHUB_STEP_SUMMARY"
+          grep -E ',catalog,' reports/history.csv | tail -3 | cut -d, -f2,6,22,23 | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY"
+          echo "HARDENED_RUN=$(basename "$run")" >> "$GITHUB_ENV"
+      - name: Línea base para la deriva programada
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: hardened-baseline
+          path: reports/runs/${{ env.HARDENED_RUN }}
+          retention-days: 90
+      - name: Informe y salidas crudas
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: reports
+          path: reports/
+          retention-days: 30
+      - name: Publicar informe (artefacto de Pages)
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: reports/site
+      - name: Destruir el laboratorio
+        if: always()
+        run: make lab-down
+
+  pages:
+    name: GitHub Pages
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: lab
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
