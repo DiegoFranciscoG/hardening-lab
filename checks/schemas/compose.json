@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/DiegoFranciscoG/hardening-lab/checks/schemas/compose.json",
+  "title": "Compose efectivo del laboratorio (subconjunto usado por los checks HLC)",
+  "type": "object",
+  "required": ["services"],
+  "properties": {
+    "name": {"type": "string"},
+    "services": {"type": "object"},
+    "networks": {"type": "object"},
+    "volumes": {"type": "object"}
+  }
+}
