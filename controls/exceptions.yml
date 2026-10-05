@@ -1,0 +1,283 @@
+# Desviaciones aprobadas de la configuración segura (NIST SP 800-53 CM-6(c), NIST SP 800-128).
+# Cada una: qué control no se aplica, en qué hosts, por qué, qué lo compensa y cuándo se revisa.
+# El aprobador es un rol ficticio del laboratorio. docs/excepciones.md se genera con `hlab exceptions-doc`.
+exceptions:
+  - exception_id: EXC-001
+    control_ids: [HL-AUD-001]
+    scope: {roles: [bastion, web, db]}
+    category: host_responsibility
+    justification: >-
+      El subsistema de auditoría del kernel no está aislado por namespaces: auditd solo puede ejecutarse en el
+      namespace inicial, es decir, en el anfitrión. Dentro de un contenedor no hay forma de cargar reglas de audit.
+    compensating_controls:
+      - Registro de sudo en /var/log/sudo.log con use_pty (HL-SUDO-001)
+      - LogLevel VERBOSE de SSH enviado a rsyslog (HL-SSH-007, HL-LOG-001)
+      - Detección de deriva programada con re-auditoría y ansible --check
+    residual_severity: medium
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "Lista linux-audit (mantenedores del subsistema): auditd no es namespaced"
+      - "CIS Ubuntu 24.04 v1.0.0 sección 6.2 (Level 2)"
+
+  - exception_id: EXC-002
+    control_ids: [HL-KRN-004]
+    scope: {roles: [bastion, web, db]}
+    category: host_responsibility
+    justification: >-
+      AppArmor lo aplica el anfitrión al crear el contenedor (perfil docker-default en Linux con AppArmor).
+      Instalarlo o configurarlo dentro del nodo no tiene efecto; Docker Desktop no expone AppArmor en su VM.
+    compensating_controls:
+      - Perfil seccomp por defecto de Docker activo (docker-bench 5.22 en PASS)
+      - cap_drop ALL con capacidades mínimas y sin contenedores privilegiados (HL-CTR-002, HL-CTR-003)
+    residual_severity: medium
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Docker Benchmark 5.2"
+      - "Docker Docs: Docker Engine security"
+
+  - exception_id: EXC-003
+    control_ids: [HL-SVC-004]
+    scope: {roles: [bastion, web, db]}
+    category: operational_requirement
+    justification: >-
+      AIDE compara el sistema contra una base local; en contenedores la integridad se garantiza mejor por diseño:
+      imagen fijada por digest, reconstrucción reproducible y re-auditoría que detecta cualquier cambio de configuración.
+    compensating_controls:
+      - Imágenes base fijadas por digest y paquetes desde snapshot de Ubuntu
+      - Detección de deriva (re-auditoría + ansible --check) contra la línea base aprobada
+      - Trivy sobre Dockerfiles, Compose y Ansible en cada auditoría
+    residual_severity: low
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Ubuntu 24.04 v1.0.0 6.3.1 y 6.3.2"
+      - "NIST SP 800-190 (contramedidas de imagen)"
+
+  - exception_id: EXC-004
+    control_ids: [HL-NET-004]
+    scope: {roles: [bastion, web, db]}
+    category: not_applicable_container
+    justification: >-
+      Cambiar net.ipv4.ip_forward reinicia los demás parámetros de red al valor por defecto del kernel y Docker
+      aplica los sysctl en orden aleatorio, por lo que fijarlo en el contenedor deja accept_redirects en 1 de forma
+      no determinista. El namespace hereda ip_forward=1 del anfitrión de Docker.
+    compensating_controls:
+      - Cadena forward de nftables con policy drop en todos los nodos (HL-FW-001)
+      - Persistencia net.ipv4.ip_forward=0 en /etc/sysctl.d para cuando el rol se aplique a una VM
+    residual_severity: low
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "docs.kernel.org networking/ip-sysctl: ip_forward reinicia la configuración al cambiar"
+
+  - exception_id: EXC-005
+    control_ids: [HL-CTR-008]
+    scope: {roles: [bastion, web, db]}
+    category: not_applicable_container
+    justification: >-
+      Los nodos emulan servidores completos administrados por SSH: el proceso 1 (supervisord) y sshd requieren root
+      para separar privilegios y cambiar de usuario. Los servicios de negocio sí corren sin root.
+    compensating_controls:
+      - nginx (incluido el proceso maestro) como www-data y PostgreSQL como postgres (HL-WEB-002)
+      - cap_drop ALL con capacidades mínimas, sin privileged ni docker.sock (HL-CTR-002, HL-CTR-003)
+      - SSH solo por clave, grupo autorizado y acceso únicamente a través del bastión (HL-SSH-*, HL-FW-004)
+    residual_severity: medium
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Docker Benchmark 4.1 y 5.7"
+      - "OWASP Docker Security Cheat Sheet, regla 2"
+
+  - exception_id: EXC-006
+    control_ids: [HL-CTR-006]
+    scope: {roles: [bastion, web, db]}
+    category: operational_requirement
+    justification: >-
+      no-new-privileges impide que sudo eleve privilegios, y la automatización necesita sudo para aplicar y verificar
+      el endurecimiento. El controlador, que no administra hosts, sí usa no-new-privileges.
+    compensating_controls:
+      - Cuenta de automatización sin contraseña (bloqueada), solo con clave efímera y solo desde el bastión
+      - sudo con use_pty y registro propio (HL-SUDO-001)
+    residual_severity: medium
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Docker Benchmark 5.26"
+      - "Docker Docs: --security-opt no-new-privileges"
+
+  - exception_id: EXC-007
+    control_ids: [HL-SSH-005]
+    scope: {hosts: [lab-bastion]}
+    category: operational_requirement
+    justification: >-
+      El bastión debe reenviar TCP (ssh -W) para que la automatización llegue a los nodos internos. El reenvío queda
+      deshabilitado de forma global y solo se habilita para la cuenta ansible hacia el puerto 22 de los nodos.
+    compensating_controls:
+      - Bloque Match User ansible con PermitOpen limitado a <ip-admin>:22 de cada nodo
+      - nftables del bastión solo permite salir por TCP/22 hacia la red de administración
+    residual_severity: low
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Ubuntu 24.04 v1.0.0 5.1.8"
+
+  - exception_id: EXC-008
+    control_ids: [HL-SUDO-004]
+    scope: {roles: [bastion, web, db]}
+    category: operational_requirement
+    justification: >-
+      La cuenta de automatización no tiene contraseña (está bloqueada) y entra solo con una clave efímera, por lo
+      que NOPASSWD es la única forma de que Ansible eleve privilegios sin guardar secretos.
+    compensating_controls:
+      - Cuenta bloqueada para contraseña y con clave generada en cada laboratorio
+      - SSH a los nodos solo desde el bastión (HL-FW-004) y del bastión solo desde el controlador
+      - Cada sudo queda registrado en /var/log/sudo.log (HL-SUDO-001)
+    residual_severity: medium
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Ubuntu 24.04 v1.0.0 5.2.4 (Level 2)"
+
+  - exception_id: EXC-009
+    control_ids: [HL-CTR-007]
+    scope: {roles: [bastion, web, db]}
+    category: operational_requirement
+    justification: >-
+      El laboratorio demuestra endurecimiento en sitio con Ansible, que necesita escribir la configuración del sistema;
+      una raíz de solo lectura lo impediría. En producción el patrón sería imagen dorada endurecida y read_only.
+    compensating_controls:
+      - /tmp y /dev/shm en tmpfs con noexec, nosuid y nodev
+      - Detección de deriva que reporta cualquier cambio respecto de la línea base
+    residual_severity: low
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Docker Benchmark 5.13"
+      - "NIST SP 800-190 (contenedores inmutables)"
+
+  - exception_id: EXC-010
+    control_ids: [HL-CTR-002]
+    scope: {roles: [bastion, web, db]}
+    category: operational_requirement
+    justification: >-
+      Cada nodo aplica su propio firewall nftables, que requiere CAP_NET_ADMIN. La capacidad es namespaced: solo
+      afecta la pila de red del propio contenedor, no la del anfitrión.
+    compensating_controls:
+      - Se quitan todas las demás capacidades por defecto (MKNOD, NET_RAW, SETFCAP, SETPCAP, FSETID)
+      - Sin modo privilegiado ni namespaces del anfitrión compartidos (HL-CTR-003, HL-CTR-012)
+    residual_severity: low
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Docker Benchmark 5.4"
+
+  - exception_id: EXC-011
+    control_ids: [HL-CTR-009]
+    scope: {roles: [bastion, web, db]}
+    category: operational_requirement
+    justification: >-
+      El bastión publica SSH y la web publica HTTP/HTTPS para el anfitrión; además la imagen de nodo declara EXPOSE 22
+      porque todos los nodos se administran por SSH. La base de datos no publica ningún puerto.
+    compensating_controls:
+      - Todos los puertos se publican solo en 127.0.0.1 (HL-CTR-001)
+      - nftables restringe cada puerto a su origen esperado (HL-FW-001, HL-FW-004)
+    residual_severity: low
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Docker Benchmark 5.9"
+
+  - exception_id: EXC-012
+    control_ids: [HL-CTR-013]
+    scope: {roles: [bastion, web, db]}
+    category: operational_requirement
+    justification: >-
+      Las imágenes del laboratorio se construyen en local y no se descargan de un registro, así que Docker Content
+      Trust no aplica a ellas. La integridad de las bases se asegura fijándolas por digest.
+    compensating_controls:
+      - Imágenes base fijadas por digest SHA-256
+      - Herramientas descargadas verificadas por SHA-256/SHA-512 y Trivy por firma Sigstore
+    residual_severity: low
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Docker Benchmark 4.5"
+
+  - exception_id: EXC-013
+    control_ids: [HL-FW-002, HL-LOG-003]
+    scope: {roles: [bastion, web, db]}
+    category: not_applicable_container
+    justification: >-
+      Los nodos no ejecutan systemd ni journald (el proceso 1 es supervisord), por lo que las reglas que verifican
+      unidades de systemd no pueden evaluarse ni cumplirse.
+    compensating_controls:
+      - supervisord carga /etc/nftables.conf al arrancar y mantiene rsyslog activo
+      - Logs de los contenedores con rotación (json-file, max-size 10m)
+    residual_severity: low
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Ubuntu 24.04 v1.0.0 4.1.1, 4.3.9 y 6.1.x"
+
+  - exception_id: EXC-014
+    control_ids: [HL-SVC-005]
+    scope: {roles: [bastion, web, db]}
+    category: host_responsibility
+    justification: >-
+      Los contenedores comparten el reloj del anfitrión y no tienen CAP_SYS_TIME: sincronizar la hora es
+      responsabilidad del anfitrión de Docker.
+    compensating_controls:
+      - Marcas de tiempo de auditoría en UTC desde un único reloj (el del anfitrión)
+    residual_severity: low
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Ubuntu 24.04 v1.0.0 2.3.1.1"
+
+  - exception_id: EXC-015
+    control_ids: [HL-SVC-002]
+    scope: {hosts: [lab-web]}
+    category: operational_requirement
+    justification: >-
+      CIS 2.1.18 pide quitar el servidor web cuando no se usa; en lab-web servir HTTP/HTTPS es precisamente su función.
+    compensating_controls:
+      - nginx sin root, sin versión expuesta, con cabeceras de seguridad, TLS y métodos limitados (HL-WEB-*)
+    residual_severity: low
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Ubuntu 24.04 v1.0.0 2.1.18"
+
+  - exception_id: EXC-016
+    control_ids: [HL-SSH-007]
+    scope: {roles: [bastion, web, db]}
+    category: operational_requirement
+    justification: >-
+      CIS 5.1.14 admite LogLevel INFO o VERBOSE, pero la regla de SSG solo acepta INFO. Se elige VERBOSE porque además
+      registra la huella de la clave usada en cada acceso, lo que mejora la trazabilidad (Lynis también lo recomienda).
+    compensating_controls:
+      - VERBOSE incluye todo lo que registra INFO
+    residual_severity: info
+    approved_by: "Responsable de seguridad del laboratorio (rol ficticio)"
+    approved_on: 2026-10-04
+    review_by: 2027-03-31
+    references:
+      - "CIS Ubuntu 24.04 v1.0.0 5.1.14"
+      - "SSG regla sshd_set_loglevel_info (patrón ^INFO$)"
