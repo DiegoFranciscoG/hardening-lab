@@ -1,0 +1,31 @@
+# pre-commit: mismos chequeos que CI, antes de cada commit (uv run pre-commit install).
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --force-exclude
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format --check --force-exclude
+        language: system
+        types: [python]
+      - id: mypy
+        name: mypy
+        entry: uv run mypy src
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: hlab-validate
+        name: hlab validate (inventario, catálogo y excepciones)
+        entry: uv run hlab validate
+        language: system
+        pass_filenames: false
+        files: ^(inventory|controls)/
+      - id: yamllint
+        name: yamllint
+        entry: uvx yamllint==1.38.0 --strict
+        language: system
+        types: [yaml]

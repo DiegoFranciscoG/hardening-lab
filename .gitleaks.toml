@@ -33,6 +33,11 @@ keywords = ["password", "passwd", "secret"]
 regexTarget = "secret"
 regexes = ['''(?i)^(changeme|cambiar\w*|example|ejemplo|your_?\w*|tu_?\w*|removed\w*|removido\w*|\*+|x{3,}|none|null|true|false|required|requerido)$''']
 
+# password_encryption de PostgreSQL es el nombre de un algoritmo de hash (scram-sha-256), no una contraseña.
+[[rules.allowlists]]
+regexTarget = "secret"
+regexes = ['''^scram-sha-256$''']
+
 [[rules]]
 id = "password-atributo-xml"
 description = "Atributo password con valor en XML (glassfish/persistence)"

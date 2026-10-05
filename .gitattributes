@@ -1,0 +1,6 @@
+# Todo el texto con LF: los scripts y plantillas se ejecutan dentro de contenedores Linux.
+* text=auto eol=lf
+*.png binary
+*.gif binary
+*.jpg binary
+*.gz binary
