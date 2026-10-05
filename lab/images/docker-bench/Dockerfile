@@ -20,5 +20,5 @@ LABEL org.opencontainers.image.title="hardening-lab docker-bench-security" \
 
 HEALTHCHECK NONE
 WORKDIR /opt/docker-bench
-# Necesita root y docker.sock para inspeccionar el daemon: excepción EXC-010, solo en ejecuciones de auditoría.
+# Necesita root y docker.sock para inspeccionar el daemon: solo corre durante `make audit` (ver SECURITY.md).
 ENTRYPOINT ["/usr/bin/dumb-init", "/bin/sh", "docker-bench-security.sh"]
