@@ -69,9 +69,11 @@ jobs:
       - run: uvx yamllint==1.38.0 --strict .
       - name: ansible-lint (perfil production)
         working-directory: ansible
+        env:
+          ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}/ansible/collections
         run: |
           uvx --with ansible-core==2.21.4 ansible-galaxy collection install -r requirements.yml -p collections
-          ANSIBLE_COLLECTIONS_PATH="$PWD/collections" uvx --with ansible-core==2.21.4 ansible-lint==26.9.0 --profile production playbooks roles
+          uvx --with ansible-core==2.21.4 ansible-lint==26.9.0 --profile production playbooks roles
       - name: hadolint 2.15.1 (SHA-256 verificado)
         run: |
           curl -fsSLo hadolint https://github.com/hadolint/hadolint/releases/download/v2.15.1/hadolint-linux-x86_64
