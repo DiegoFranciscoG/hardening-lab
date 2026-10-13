@@ -101,13 +101,13 @@ jobs:
           grep -E ',catalog,' reports/history.csv | tail -3 | cut -d, -f2,6,22,23 | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY"
           echo "HARDENED_RUN=$(basename "$run")" >> "$GITHUB_ENV"
       - name: Línea base para la deriva programada
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: hardened-baseline
           path: reports/runs/${{ env.HARDENED_RUN }}
           retention-days: 90
       - name: Informe y salidas crudas
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: reports
           path: reports/
