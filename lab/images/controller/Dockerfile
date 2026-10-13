@@ -1,7 +1,7 @@
 # Controlador del laboratorio: Ansible, Lynis, Trivy, contenido SCAP y el paquete hlab.
 # Todo artefacto descargado se verifica con el hash publicado por su proyecto.
 
-FROM python:3.14.8-slim-trixie@sha256:c3e521df8b2b498a7a682e7e18676771cb80c6b75b8699af886b2d554ce40151 AS downloads
+FROM python:3.15.0rc3-slim-trixie@sha256:a3af3d230522dd52f7f2191b39e1892912dbcb0c8dee22afdec3dc83baf0f549 AS downloads
 
 ARG TRIVY_VERSION=0.75.0
 # SHA-256 del tarball según trivy_0.75.0_checksums.txt, cuya firma Sigstore se valida con scripts/verify-tools.sh
@@ -38,7 +38,7 @@ RUN curl -fsSLo ssg.zip "https://github.com/ComplianceAsCode/content/releases/do
 
 FROM ghcr.io/astral-sh/uv:0.12.23@sha256:61d393e44e249f2e4b526b6c7ddcecce245946826e608e11c93ad4f5bba55b21 AS uv
 
-FROM python:3.14.8-slim-trixie@sha256:c3e521df8b2b498a7a682e7e18676771cb80c6b75b8699af886b2d554ce40151
+FROM python:3.15.0rc3-slim-trixie@sha256:a3af3d230522dd52f7f2191b39e1892912dbcb0c8dee22afdec3dc83baf0f549
 
 ARG TRIVY_SHA256=c6e65abddb348e25f10549df887045629cf28cc72453cd1c63acb717316b3f3f
 ARG LYNIS_VERSION=3.1.7
