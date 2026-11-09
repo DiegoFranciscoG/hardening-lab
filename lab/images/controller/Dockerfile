@@ -36,7 +36,7 @@ RUN curl -fsSLo ssg.zip "https://github.com/ComplianceAsCode/content/releases/do
  && unzip -q -j ssg.zip "*/ssg-ubuntu2404-ds.xml" -d ssg \
  && rm ssg.zip
 
-FROM ghcr.io/astral-sh/uv:0.12.23@sha256:61d393e44e249f2e4b526b6c7ddcecce245946826e608e11c93ad4f5bba55b21 AS uv
+FROM ghcr.io/astral-sh/uv:0.13.7@sha256:96f40d3904aad8d0bd010539001d36c8e2188b981e1334471a90c4a1d93bb490 AS uv
 
 FROM python:3.14.8-slim-trixie@sha256:c3e521df8b2b498a7a682e7e18676771cb80c6b75b8699af886b2d554ce40151
 
