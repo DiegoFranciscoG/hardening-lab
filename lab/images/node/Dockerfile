@@ -1,6 +1,6 @@
 # Nodo del laboratorio: emula un servidor Ubuntu 24.04 "recién instalado" (estado baseline).
 # Un solo Dockerfile para los tres roles; LAB_ROLE decide el servicio (nginx, PostgreSQL o fail2ban).
-FROM ubuntu:noble-20260917@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+FROM ubuntu:noble-20261110@sha256:73b999393d07f2bf65a40373778a44dc9a6d54ad7718d29247d8ff9413c4d6a8
 
 ARG LAB_ROLE=bastion
 # Snapshot del archivo de Ubuntu con la misma fecha que la imagen base: versiones de paquetes reproducibles.
